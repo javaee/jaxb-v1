@@ -27,7 +27,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.1 $ $Date: 2004-06-25 21:11:32 $
+ * @version $Revision: 1.2 $ $Date: 2004-11-24 18:43:40 $
  * @since JAXB1.0
  */
 public class DOMScanner
@@ -192,10 +192,16 @@ public class DOMScanner
             Attr a = (Attr)attributes.item(i);
             String name = a.getName();
             if(name.startsWith("xmlns")) {
-                if(name.length()==5)
+                if(name.length()==5) {
                     receiver.endPrefixMapping("");
-                else
-                    receiver.endPrefixMapping(a.getLocalName());
+                } else {
+                    String localName = a.getLocalName();
+                    if(localName==null) {
+                        // DOM built without namespace support has this problem
+                        localName = name.substring(6);
+                    }
+                    receiver.startPrefixMapping( localName, a.getValue() );
+                }
             }
         }
     }
