@@ -129,7 +129,7 @@
 	        
 	        <fsget dest="${jaxb.libs.util}/bsh-2.0b1.jar" 
 	               usetimestamp="true">
-	          <source                url="${internal.repository}/bsh-2.0b1.jar" if="in.wspack" />
+	          <source                url="${internal.repository}/bsh-2.0b1-patched.jar" if="in.wspack" />
 	          <source url="http://www.ibiblio.org/maven/bsh/jars/bsh-2.0b1.jar" />
 	        </fsget>
 	        
