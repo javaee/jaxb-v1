@@ -16,6 +16,15 @@
         
         To control which tests are excluded, run the build like this:
         
+	    ant -Dtest.data=/full/path/to/test/data
+	
+	To test another JAXB RI, do this:
+	
+            ant -Dxjc.schema.test.options="-externalxjc /path/t/another/jaxb-ri-home"
+
+	You can also specify the version of the RI to be tested to exclude/include
+	tests correctly:
+
             ant -Dxjc.schema.test.options="-version 1.0.3"
     </description>
   
