@@ -214,7 +214,7 @@ interface PurchaseOrder extends PurchaseOrderType, javax.xml.bind.Element {
        <tt>PurchaseOrderType.java</tt> to perform a substitution with an instance
        of <tt>USTaxExemptPurchaseOrderType.java</tt>.
        
-<pre class=code>
+<pre class=code><xmp>
 // unmarshal a PurchaseOrder
 PurchaseOrder po = 
     (PurchaseOrder)u.unmarshal( new FileInputStream( "ipo.xml" ) );
@@ -226,7 +226,7 @@ USTaxExemptPurchaseOrderType uspo =
 	    
 // perform the type substitution
 po.setValueObject(uspo);
-</pre>
+</xmp></pre>
 
     <p>Marshalling the <tt>po</tt> object causes the proper xsi:type attribute to
        appear in the XML data including the additional content added in the tax-exempt
@@ -256,7 +256,7 @@ po.setValueObject(uspo);
        and perform a cast before being able to access the data specific to the
        derived tax-exempt type:</p>
     
-<pre class=code>
+<pre class=code><xmp>
 po = (PurchaseOrder)u.unmarshal( new FileInputStream( "ustaxexemptpo.xml" ) );
 
 // Access data added to element <ipo:purchaseOrder> via type substitution.
@@ -268,7 +268,7 @@ if (pot instanceof USTaxExemptPurchaseOrderType) {
     USTaxExemptPurchaseOrderType taxexemptpo = (USTaxExemptPurchaseOrderType)pot;
     System.out.println("US Tax exempt id: " + taxexemptpo.getTaxExemptId());
 }
-</pre>
+</xmp></pre>
     </blockquote>
     
 	<p>
@@ -353,7 +353,7 @@ interface T {
 
 	
 	
-	<a name="DTD"></a>
+	<a name="dtd"></a>
 	<h3>DTD</h3>
 	<blockquote>
 	<p>
@@ -386,8 +386,8 @@ $ xjc.sh -dtd test.dtd
 	
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.1 $<br/>
-	  $Date: 2004-06-25 21:11:19 $
+	  $Revision: 1.2 $<br/>
+	  $Date: 2004-09-23 20:51:10 $
 	</font>
   </body>
 </html>
