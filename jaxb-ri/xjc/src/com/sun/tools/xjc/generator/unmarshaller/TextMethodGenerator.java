@@ -139,15 +139,17 @@ class TextMethodGenerator extends HandlerMethodGenerator {
             return needsGuard;
         }
         
-        if(action.alphabet instanceof Alphabet.BoundText) {
-            parent.eatText( block, action.alphabet.asBoundText(), $value );
-        }
-        // otherwise we simply ignore this value
-        
         // [RESULT]
         //     <goto state N>;
         //     return;
         generateGoto(block,action.to);
+        
+        if(action.alphabet instanceof Alphabet.BoundText) {
+            // eat the text after changing the state so that
+            // we can recover from errors more gracefully.
+            parent.eatText( block, action.alphabet.asBoundText(), $value );
+        }
+        
         block._return();
         return needsGuard;
     }

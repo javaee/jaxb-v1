@@ -467,14 +467,16 @@ abstract class HandlerMethodGenerator {
             // [RESULT]
             // if(...) {
             //     String v = context.eatAttribute(idx);
-            //     <parse the attribute value>;
             //     <go to next state>;
+            //     <parse the attribute value>;
             //     continue outer;
             // }
             JVar $v = _then.decl(JMod.FINAL, codeModel.ref(String.class),"v",
                 $context.invoke("eatAttribute").arg($attIdx));
-            parent.eatText( _then, aoi.valueHandler, $v );
             generateGoto( _then, aoi.nextState );
+            parent.eatText( _then, aoi.valueHandler, $v );
+            // go to the next state first so that the error in the attribute value parsing
+            // won't affect the state transition
             
             // UGLY.
             // See java.net issue 6. Sometimes re-routing of a token
