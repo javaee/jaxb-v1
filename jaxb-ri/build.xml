@@ -37,7 +37,7 @@
         sub-project to be built.  Please run 'ant -projecthelp' in the spec project
         for more detail.
 
-       $Id: build.xml,v 1.2 2004-06-25 22:51:14 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.3 2004-06-26 00:21:43 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -544,7 +544,6 @@ Class-Path: ${manifest.classpath}
         <!-- clean sub-projects -->
         <ant dir="codemodel"          target="clean-codemodel" />
         <ant dir="test"               target="clean-test" />
-        <ant dir="spec"               target="clean-spec" />
         <ant dir="runtime"            target="clean-runtime" />
         <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />
         <ant dir="xjc"                target="clean-xjc" />
