@@ -128,6 +128,12 @@ class DefaultParticleBinder extends ParticleBinder {
                 return;
             }
             
+            if(builder.selector.bindToType(p)!=null) {
+                check(p);
+                mark(p);
+                return;
+            }
+            
             XSTerm t = p.getTerm();
             
             if(p.getMaxOccurs()!=1
@@ -407,45 +413,49 @@ class DefaultParticleBinder extends ParticleBinder {
             XSTerm t = p.getTerm();
             
             if(marked(p)) {
-                Expression exp;
+                Expression exp = builder.selector.bindToType(p);
                 
-                if( isLocalElementDecl(t) && builder.selector.bindToType(t)==null) {
-                    // type builder will always map an element to a class (which is
-                    // a necessary behavior when we are processing a part of
-                    // a content model by it), but this behavior is not appropriate
-                    // in this special case. 
-                    exp = builder.fieldBuilder.build(t);
+                if(exp!=null) {
+                    exp = builder.fieldBuilder.createFieldItem( getLabel(p), false, exp, p );
                 } else {
-                    Expression typeExp;
-                    if( needSkip(t) ) {
-                        XSElementDecl e = t.asElementDecl();
-                        // skip the class bound to the element and directly
-                        // bind to the type
-                        
-                        // UGLY CODE
-                        // remember that this particle is skipping the corresponding
-                        // global element class so that AGMFragmentBuilder can correctly
-                        // generate the fragment
-                        builder.particlesWithGlobalElementSkip.add(p);
-                        ElementPattern eexp = builder.typeBuilder.elementDeclFlat(e);
-                        
-                        if( e.isAbstract() ) {
-                            typeExp = Expression.nullSet;
-                        } else
-                        if( needSkippableElement(e) )
-                            // (<foo>FooType</foo>)|Foo)
-                            typeExp = pool.createChoice( builder.selector.bindToType(e), eexp );
-                        else
-                            typeExp = eexp;
-                            
-                        // include substitution groups
-                        typeExp = pool.createChoice( builder.getSubstitionGroupList(e), typeExp );
-                            
+                    if( isLocalElementDecl(t) && builder.selector.bindToType(t)==null) {
+                        // type builder will always map an element to a class (which is
+                        // a necessary behavior when we are processing a part of
+                        // a content model by it), but this behavior is not appropriate
+                        // in this special case. 
+                        exp = builder.fieldBuilder.build(t);
                     } else {
-                        typeExp = builder.typeBuilder.build(t);
+                        Expression typeExp;
+                        if( needSkip(t) ) {
+                            XSElementDecl e = t.asElementDecl();
+                            // skip the class bound to the element and directly
+                            // bind to the type
+                            
+                            // UGLY CODE
+                            // remember that this particle is skipping the corresponding
+                            // global element class so that AGMFragmentBuilder can correctly
+                            // generate the fragment
+                            builder.particlesWithGlobalElementSkip.add(p);
+                            ElementPattern eexp = builder.typeBuilder.elementDeclFlat(e);
+                            
+                            if( e.isAbstract() ) {
+                                typeExp = Expression.nullSet;
+                            } else
+                            if( needSkippableElement(e) )
+                                // (<foo>FooType</foo>)|Foo)
+                                typeExp = pool.createChoice( builder.selector.bindToType(e), eexp );
+                            else
+                                typeExp = eexp;
+                                
+                            // include substitution groups
+                            typeExp = pool.createChoice( builder.getSubstitionGroupList(e), typeExp );
+                                
+                        } else {
+                            typeExp = builder.typeBuilder.build(t);
+                        }
+                        exp = builder.fieldBuilder.createFieldItem(
+                            getLabel(p), false, typeExp, p );
                     }
-                    exp = builder.fieldBuilder.createFieldItem(
-                        getLabel(p), false, typeExp, p );
                 }
                 
                 return builder.processMinMax( exp, p );
