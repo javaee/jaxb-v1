@@ -34,8 +34,13 @@ public class Util {
             //        will be thrown) 
             throw (SAXException)e;
         
+        String message = e.getMessage();
+        if(message==null) {
+            message = e.toString();
+        }
+        
         ValidationEvent ve = new PrintConversionEventImpl(
-            ValidationEvent.ERROR, e.getMessage(),
+            ValidationEvent.ERROR, message,
             new ValidationEventLocatorImpl(caller), e );
         serializer.reportError(ve);
     }
