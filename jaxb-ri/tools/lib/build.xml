@@ -19,16 +19,27 @@
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
-    <target name="prepare-libs">
+
+    <target name="prepare-libs" depends="download-libs,
+        unzip.ant-contrib,
+        unzip.args4j,
+        unzip.gsc,
+        unzip.jing,
+        unzip.relaxngcc"
+        description="Download all the 3rd party jar files." />
+
+    <target name="-download-libs.check">
+       <available file="${jaxb.libs.util}/download.complete"
+                  property="download.completed"/>
+    </target>
+
+    <target name="download-libs" depends="-download-libs.check" unless="download.completed">
         <mkdir dir="${jaxb.libs.util}"/>
         <get src="http://www.ibiblio.org/maven/xerces/jars/xercesImpl-2.6.2.jar" 
              dest="${jaxb.libs.util}/xercesImpl-2.6.2.jar" 
              usetimestamp="true"/>
         <get src="http://www.ibiblio.org/maven/xalan/jars/xalan-2.5.1.jar" 
              dest="${jaxb.libs.util}/xalan-2.5.1.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/servletapi/jars/servletapi-2.3.jar" 
-             dest="${jaxb.libs.util}/servletapi-2.3.jar" 
              usetimestamp="true"/>
         <get src="http://www.ibiblio.org/maven/ant/jars/optional-1.5.4.jar" 
              dest="${jaxb.libs.util}/optional-1.5.4.jar" 
@@ -81,7 +92,7 @@
         <get src="http://sfx4j.dev.java.net/files/documents/1061/1600/sfx4j-1.0-RC.jar" 
              dest="${jaxb.libs.util}/sfx4j-1.0-RC.jar" 
              usetimestamp="true"/>
-        <get src="http://prdownloads.sourceforge.net/args4j/args4j-1.0.zip?download" 
+        <get src="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" 
              dest="${jaxb.libs.util}/args4j-1.0.zip" 
              usetimestamp="true"/>
         <get src="http://www.kohsuke.org/gsc/gsc.20031120.zip" 
@@ -90,5 +101,109 @@
         <get src="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&amp;content-type=application/x-java-archive" 
              dest="${jaxb.libs.util}/vmtools-0.5.jar" 
              usetimestamp="true"/>
+        
+        <!--
+          we obsereved a problem with the get task where it fails to connect to the server
+          when files are already downloaded locally.
+          To avoid this problem, we use the existence of this file to avoid running
+          this target more than once.
+          
+          This is fragile, because you have to manually delete this file when this build
+          script changes and needs a new jar.
+          
+          But I think it's still better than failing. In any case, hopefully the whole
+          exercise of downloading things from the web will be a bridge solution.
+        -->
+        <echo file="${jaxb.libs.util}/download.complete">Download all completed</echo>
     </target>
+    
+    
+    
+    
+    
+    
+    
+    <!--
+       individual unzip tasks
+    -->
+    
+    <target name="-unzip.ant-contrib.check">
+        <available file="${jaxb.libs.util}/ant-contrib-0.6.jar"
+                   property="ant-contrib.available"/>
+    </target>
+    <target name="unzip.ant-contrib" depends="-unzip.ant-contrib.check" unless="ant-contrib.available">
+        <!-- unzip the jars -->
+        <unzip src="${jaxb.libs.util}/ant-contrib-0.6-bin.zip"
+               dest="${jaxb.libs.util}">
+            <patternset includes="lib/ant-contrib-0.6.jar"/>
+        </unzip>
+        <move  file="${jaxb.libs.util}/lib/ant-contrib-0.6.jar"
+             tofile="${jaxb.libs.util}/ant-contrib-0.6.jar" />
+        <delete dir="${jaxb.libs.util}/lib/"/>
+    </target>
+    
+    
+    <target name="-unzip.args4j.check">
+        <available file="${jaxb.libs.util}/args4j-1.0.jar"
+                   property="args4j.available"/>
+    </target>
+    <target name="unzip.args4j" depends="-unzip.args4j.check" unless="args4j.available">
+        <!-- unzip the jars -->
+        <unzip src="${jaxb.libs.util}/args4j-1.0.zip"
+               dest="${jaxb.libs.util}">
+            <patternset includes="args4j-1.0/args4j-1.0.jar"/>
+        </unzip>
+        <move  file="${jaxb.libs.util}/args4j-1.0/args4j-1.0.jar"
+             tofile="${jaxb.libs.util}/args4j-1.0.jar" />
+        <delete dir="${jaxb.libs.util}/args4j-1.0/"/>
+    </target>
+    
+    
+    <target name="-unzip.gsc.check">
+        <available file="${jaxb.libs.util}/gsc.jar"
+                   property="gsc.available"/>
+    </target>
+    <target name="unzip.gsc" depends="-unzip.gsc.check" unless="gsc.available">
+        <!-- unzip the jars -->
+        <unzip src="${jaxb.libs.util}/gsc.20031120.zip"
+               dest="${jaxb.libs.util}">
+            <patternset includes="gsc.20031120/gsc.jar"/>
+        </unzip>
+        <move  file="${jaxb.libs.util}/gsc.20031120/gsc.jar"
+             tofile="${jaxb.libs.util}/gsc.jar" />
+        <delete dir="${jaxb.libs.util}/gsc.20031120/"/>
+    </target>
+    
+    
+    <target name="-unzip.jing.check">
+        <available file="${jaxb.libs.util}/jing.jar"
+                   property="jing.available"/>
+    </target>
+    <target name="unzip.jing" depends="-unzip.jing.check" unless="jing.available">
+        <!-- unzip the jars -->
+        <unzip src="${jaxb.libs.util}/jing-20030619.zip"
+               dest="${jaxb.libs.util}">
+            <patternset includes="jing-20030619/bin/jing.jar"/>
+        </unzip>
+        <move  file="${jaxb.libs.util}/jing-20030619/bin/jing.jar"
+             tofile="${jaxb.libs.util}/jing.jar" />
+        <delete dir="${jaxb.libs.util}/jing-20030619"/>
+    </target>
+    
+    
+    <target name="-unzip.relaxngcc.check">
+        <available file="${jaxb.libs.util}/relaxngcc.jar"
+                   property="relaxngcc.available"/>
+    </target>
+    <target name="unzip.relaxngcc" depends="-unzip.relaxngcc.check" unless="relaxngcc.available">
+        <!-- unzip the jars -->
+        <unzip src="${jaxb.libs.util}/relaxngcc-20031218.zip"
+               dest="${jaxb.libs.util}">
+            <patternset includes="relaxngcc-20031218/relaxngcc.jar"/>
+        </unzip>
+        <move  file="${jaxb.libs.util}/relaxngcc-20031218/relaxngcc.jar"
+             tofile="${jaxb.libs.util}/relaxngcc.jar" />
+        <delete dir="${jaxb.libs.util}/relaxngcc-20031218"/>
+    </target>
+    
 </project>
