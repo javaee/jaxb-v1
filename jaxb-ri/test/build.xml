@@ -65,7 +65,6 @@
         <pathelement path="${codemodel.classes}"/>
         <pathelement path="${xjc.classes}"/>
         <pathelement path="${runtime.classes}"/>
-        <pathelement path="${spec.classes}"/>
         <pathelement path="${test.work}"/>
         <pathelement path="${test.classes}"/>
         <fileset dir="${env.JAVA_HOME}" includes="lib/tools.jar" />
@@ -353,44 +352,8 @@
         <arg line="${AdditionalOptions}" />
 
         <!-- test directories to be run -->
-        <arg path="${test.schemas}/WarmUp"/>
-        <arg path="${test.schemas}/BugRegressions"/>
-        <arg path="${test.schemas}/BugZillaRegressions"/>
-        <arg path="${test.schemas}/ClassCustomization"/>
-        <arg path="${test.schemas}/Cheiron"/>
-        <arg path="${test.schemas}/Compiler"/>
-        <arg path="${test.schemas}/Conversion"/>
-        <arg path="${test.schemas}/Datatype"/>
-        <arg path="${test.schemas}/DefaultValue"/>
-        <arg path="${test.schemas}/Dom.w3c"/>
-        <arg path="${test.schemas}/Dom.dom4j"/>
-        <arg path="${test.schemas}/Enum"/>
-        <arg path="${test.schemas}/Fixed"/>
-        <arg path="${test.schemas}/ID"/>
-        <arg path="${test.schemas}/individual"/>
-        <arg path="${test.schemas}/InfosetMarshaller"/>
-        <arg path="${test.schemas}/JAXRPC"/>
-        <arg path="${test.schemas}/Marshaller"/>
-        <arg path="${test.schemas}/ModelGroupBinding"/>
-        <arg path="${test.schemas}/NameCollision"/>
-        <arg path="${test.schemas}/PartialGeneration" />
-        <arg path="${test.schemas}/Performance" />
-        <arg path="${test.schemas}/PropertyCustomization"/>
-        <arg path="${test.schemas}/RELAXNG"/>
-        <arg path="${test.schemas}/RELAXNG2"/>
-        <arg path="${test.schemas}/Roundtrip"/>
-        <arg path="${test.schemas}/Runtime"/>
-        <arg path="${test.schemas}/RuntimeValidation"/>
-        <arg path="${test.schemas}/StrictConformance"/>
-        <arg path="${test.schemas}/TypeSubstitution"/>
-        <arg path="${test.schemas}/Unmarshaller"/>
-        <arg path="${test.schemas}/VendorExtension"/>
-        <arg path="${test.schemas}/WFMC"/>
-        <arg path="${test.schemas}/Whitespace"/>
-        <arg path="${test.schemas}/WSDL"/>
-        <arg path="${test.schemas}/WS-Security"/>
-        <arg path="${test.schemas}/XMLDSig"/>
-        <arg path="${test.schemas}/XPDL"/>
+        <arg path="${test.data}/WarmUp"/>
+        <arg path="${test.data}"/>
       </java>
       
       <!-- one more reminder -->
