@@ -37,7 +37,7 @@
         sub-project to be built.  Please run 'ant -projecthelp' in the spec project
         for more detail.
 
-       $Id: build.xml,v 1.1 2004-06-25 21:11:00 kohsuke Exp $
+       $Id: build.xml,v 1.2 2004-06-25 22:51:14 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -52,9 +52,13 @@
         <tstamp>
             <format property="now" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
         </tstamp>
+
         <property name="build.id" value="${now}(${user.name})" />
         <property name="build.version" value="${release.impl.version}-${build.id}-${release.impl.version.suffix}" />
         <echo message="The build id is: ${build.version}" />
+
+        <!-- download all necessary libs -->
+        <ant dir="tools/lib" target="prepare-libs" />
     </target>
 
     <!-- compile all of the sources into <project>/build/classes-->

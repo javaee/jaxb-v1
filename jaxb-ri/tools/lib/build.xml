@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="libs" basedir="../.." default="prepare-libs">
+
+    <description>
+        Download all the necessary libs from the web.  You 
+        may need to set a proxy if you're behind a firewall.
+    </description>
+	
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <target name="prepare-libs">
+        <mkdir dir="${jaxb.libs.util}"/>
+        <get src="http://www.ibiblio.org/maven/xerces/jars/xercesImpl-2.6.2.jar" 
+             dest="${jaxb.libs.util}/xercesImpl-2.6.2.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/xalan/jars/xalan-2.5.1.jar" 
+             dest="${jaxb.libs.util}/xalan-2.5.1.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/servletapi/jars/servletapi-2.3.jar" 
+             dest="${jaxb.libs.util}/servletapi-2.3.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/ant/jars/optional-1.5.4.jar" 
+             dest="${jaxb.libs.util}/optional-1.5.4.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/nekohtml/jars/nekohtml-0.8.1.jar" 
+             dest="${jaxb.libs.util}/nekohtml-0.8.1.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/junit/jars/junit-3.8.jar" 
+             dest="${jaxb.libs.util}/junit-3.8.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/jfreechart/jars/jfreechart-0.9.16.jar" 
+             dest="${jaxb.libs.util}/jfreechart-0.9.16.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/jdom/jars/jdom-b9.jar" 
+             dest="${jaxb.libs.util}/jdom-b9.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/jcommon/jars/jcommon-0.9.1.jar" 
+             dest="${jaxb.libs.util}/jcommon-0.9.1.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/dom4j/jars/dom4j-1.4.jar" 
+             dest="${jaxb.libs.util}/dom4j-1.4.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/commons-logging/jars/commons-logging-1.0.4.jar" 
+             dest="${jaxb.libs.util}/commons-logging-1.0.4.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/bsh/jars/bsh-2.0b1.jar" 
+             dest="${jaxb.libs.util}/bsh-2.0b1.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/antlr/jars/antlr-2.7.2.jar" 
+             dest="${jaxb.libs.util}/antlr-2.7.2.jar" 
+             usetimestamp="true"/>
+        <get src="http://voxel.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" 
+             dest="${jaxb.libs.util}/relaxngcc-20031218.zip" 
+             usetimestamp="true"/>
+        <get src="http://voxel.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" 
+             dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
+             usetimestamp="true"/>
+        <get src="http://www.beanshell.org/bsh-classgen-2.0b1.jar" 
+             dest="${jaxb.libs.util}/bsh-classgen-2.0b1.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.beanshell.org/bsh-reflect-2.0b1.jar" 
+             dest="${jaxb.libs.util}/bsh-reflect-2.0b1.jar" 
+             usetimestamp="true"/>
+        <get src="http://cvs.sourceforge.net/viewcvs.py/*checkout*/ebxmlrr/maven/repository/activation/jars/activation-1.0.2.jar" 
+             dest="${jaxb.libs.util}/activation-1.0.2.jar" 
+             usetimestamp="true"/>
+        <get src="http://www.thaiopensource.com/download/jing-20030619.zip" 
+             dest="${jaxb.libs.util}/jing-20030619.zip" 
+             usetimestamp="true"/>
+        <get src="http://sfx4j.dev.java.net/files/documents/1061/1600/sfx4j-1.0-RC.jar" 
+             dest="${jaxb.libs.util}/sfx4j-1.0-RC.jar" 
+             usetimestamp="true"/>
+        <get src="http://prdownloads.sourceforge.net/args4j/args4j-1.0.zip?download" 
+             dest="${jaxb.libs.util}/args4j-1.0.zip" 
+             usetimestamp="true"/>
+        <get src="http://www.kohsuke.org/gsc/gsc.20031120.zip" 
+             dest="${jaxb.libs.util}/gsc.20031120.zip" 
+             usetimestamp="true"/>
+        <get src="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&amp;content-type=application/x-java-archive" 
+             dest="${jaxb.libs.util}/vmtools-0.5.jar" 
+             usetimestamp="true"/>
+    </target>
+</project>
