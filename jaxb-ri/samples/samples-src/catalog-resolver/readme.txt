@@ -17,3 +17,11 @@ A brief description of the catalog file format can be found in
 "catalog.cat" itself. For more detailed discussion about the entity
 resolution and the format of the catalog files, see 
 http://wwws.sun.com/software/xml/developers/resolver/article/
+
+
+DEBUG TIPS
+==========
+
+If you suspect that the catlog resolution is not happening
+(for example, you see errors like UnknownHostException), then 
+use the -debug option of XJC.
