@@ -31,7 +31,7 @@ public class JMods implements JGenerable {
 
     private static int CLASS
 	= (JMod.PUBLIC | JMod.PRIVATE | JMod.PROTECTED
-	   | JMod.STATIC | JMod.FINAL);
+	   | JMod.STATIC | JMod.FINAL | JMod.ABSTRACT);
 
     private static int INTERFACE = JMod.PUBLIC;
 
