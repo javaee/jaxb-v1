@@ -3,7 +3,7 @@
  Reads jaxb release note html files and inserts a toc based on the
  data in docs/toc.xml
   
- $Id: toc.xsl,v 1.1 2004-06-25 21:14:02 kohsuke Exp $
+ $Id: toc.xsl,v 1.2 2004-09-23 17:45:57 ryan_shoemaker Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
@@ -44,20 +44,10 @@
         <br/>
     </xsl:template>
 
-    <!--xsl:template match="toc">
-        <hr width="85%"/>
-        <xsl:text> | </xsl:text>
-        <xsl:for-each select="document">
-            <a>
-                <xsl:attribute name="href">
-                    <xsl:value-of select="@url"/>
-                </xsl:attribute>
-                <xsl:value-of select="@name"/>
-            </a>
-            <xsl:text> | </xsl:text>
-        </xsl:for-each>
-        <hr width="85%"/>
-    </xsl:template-->
+    <!-- strip away xmp tags -->
+    <xsl:template match="XMP">
+        <xsl:apply-templates/>
+    </xsl:template>
     
     <!-- copy everything else as is -->
     <xsl:template match="@*|node()">
