@@ -41,7 +41,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.8 2004-08-17 14:45:57 ryan_shoemaker Exp $
+        $Id: build.xml,v 1.9 2004-10-26 17:35:07 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -405,6 +405,7 @@ Class-Path: ${manifest.classpath}
                 description="This pattern set defines which files will be in/excluded in the src bundle">
         <include name="**/*.java"/>
         <include name="**/*.properties"/>
+        <include name="**/*.rng"/>
     </patternset>
     
     <target name="src-installer"
