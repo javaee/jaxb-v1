@@ -89,8 +89,8 @@
         <get src="http://iso-relax.sf.net/jing-20030619-patched.jar" 
              dest="${jaxb.libs.util}/jing.jar" 
              usetimestamp="true"/>
-        <get src="http://sfx4j.dev.java.net/files/documents/1061/1600/sfx4j-1.0-RC.jar" 
-             dest="${jaxb.libs.util}/sfx4j-1.0-RC.jar" 
+        <get src="https://sfx4j.dev.java.net/nonav/releases/sfx4j-1.0-RC2.jar" 
+             dest="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" 
              usetimestamp="true"/>
         <get src="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" 
              dest="${jaxb.libs.util}/args4j-1.0.zip" 
