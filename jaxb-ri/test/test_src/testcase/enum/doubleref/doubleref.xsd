@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- refer to the same simple type twice -->
+  <xs:element name="core1" type="size"/>
+  <xs:element name="core2" type="size"/>
+  
+  <xs:simpleType name="size">
+  	<xs:restriction base="xs:NCName">
+  		<xs:enumeration value="small"/>
+  		<xs:enumeration value="medium"/>
+  		<xs:enumeration value="large"/>
+  	</xs:restriction>
+  </xs:simpleType>
+</xs:schema>

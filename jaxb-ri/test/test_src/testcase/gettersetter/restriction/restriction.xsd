@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Created by vivekp on January 9, 2002, 3:15 PM -->
+<!-- Test handling of primitive type restriction-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.restriction">
+  <xs:element name="employee">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="age" type="WORK-AGE"/>
+            <xs:element name="id" type="EMP-ID"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:simpleType name="WORK-AGE">
+    <xs:restriction base="xs:int">
+        <xs:minInclusive value="10"/>
+        <xs:maxInclusive value="200"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!---employee id is of the for: XX999999-->
+  <xs:simpleType name="EMP-ID">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="([A-Z]{2}[0-9]{2})"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>

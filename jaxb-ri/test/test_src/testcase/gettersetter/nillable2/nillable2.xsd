@@ -1,0 +1,23 @@
+<?xml version = "1.0"?>
+<!--Test for element declared nillable and optional-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.nillable2">
+  <xs:element name = "cart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="item"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+<!--item-->
+  <xs:element name="item">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element name="quantity" type="xs:int" nillable="true" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

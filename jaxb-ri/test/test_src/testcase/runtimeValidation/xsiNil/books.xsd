@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:include schemaLocation="typeLib.xsdm"/>
+
+<xs:element name="Collection">
+   <xs:complexType>
+      <xs:sequence>
+        <xs:element name ="books">
+           <xs:complexType>
+              <xs:sequence>
+                <xs:element name="magazine" type="magazineType" minOccurs="0"
+                           maxOccurs="unbounded"/>
+              </xs:sequence>
+           </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+</xs:element>
+
+</xs:schema>
+           

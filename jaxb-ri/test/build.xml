@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+<project name="test" basedir=".." default="test-all">
+
+    <description>
+        Client Unit Tests
+        =================
+        
+        This project contains test cases that are executed in the junit
+        test harness.  A test case is composed of a set of java test
+        sources, schema files, and instance docs.  Before the java test
+        sources are compiled and executed, the schema files are processed
+        by xjc and then all of the test sources and generated java files
+        are compiled, and finally the test is executed.
+        
+        See jaxb-ri/test/test_src/testcase/sample.
+        
+        To control which tests are excluded, run the build like this:
+        
+            ant -Dxjc.schema.test.options="-version 1.0.3"
+    </description>
+  
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+    <property environment="env" />
+    
+    
+    <property name="xjc.schema.test.options" value="" /><!-- deprecated property -->
+    <property name="batch.test.options" value="${xjc.schema.test.options}" />
+    
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+      <classpath>
+        <fileset dir="${jaxb.libs}/util" includes="ant-contrib-*.jar"/>
+      </classpath>
+    </taskdef>
+    
+    
+    <!-- convenience targets when building alone -->
+    <target name="clean"   
+            depends="clean-test" 
+            description="clean jaxb-ri/test/build and jaxb-ri/test/work"/>
+    <target name="compile" 
+            depends="compile-test"  
+            description="compile all of the schemas and test sources into jaxb-ri/test/work"/>
+    
+    
+    <target name="test-all"
+            description="run all the tests"
+            depends="test-junit,qa-test"/>
+    
+    
+    <!-- remove all intermediate files -->
+    <target name="clean-test">
+        <delete dir="${test.root}/build" />
+        <mkdir  dir="${test.root}/build/classes" />
+        <delete dir="${test.root}/log" />
+        <mkdir  dir="${test.root}/log" />
+        <delete dir="${test.work}" />
+        <mkdir  dir="${test.work}" />
+    </target>
+  
+  
+  
+    <!-- classpath -->
+    <path id="test.classpath">
+        <pathelement path="${codemodel.classes}"/>
+        <pathelement path="${xjc.classes}"/>
+        <pathelement path="${runtime.classes}"/>
+        <pathelement path="${spec.classes}"/>
+        <pathelement path="${test.work}"/>
+        <pathelement path="${test.classes}"/>
+        <fileset dir="${env.JAVA_HOME}" includes="lib/tools.jar" />
+        <fileset dir="${jaxb.libs}">
+            <include name="redist/**/*.jar"/>
+            <include name="rebundle/**/*.jar"/>
+            <include name="util/**/*.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="prepare-test">  
+      <!-- create the working directory and copy all of the test
+           source code over.  This will also be the directory 
+           where the schema's are compiled -->
+      <mkdir dir="${test.work}" />
+      <mkdir dir="${test.log}" />
+    </target>
+    
+    <target name="compile-test" 
+            depends="prepare-test">
+      <!-- compile test harness code -->
+      <mkdir dir="${test.classes}"/>
+      <javac srcdir="${test.src}" destdir="${test.classes}"
+             debug="true" optimize="false"
+             deprecation="${compile.deprecation}" >
+          <classpath refid="test.classpath" />
+      </javac>
+      <!-- prepare .ssuite files -->
+      <ant target="split" antfile="${test.schemas}/build.xml" />
+      <!-- copy schema files for test descriptor into the build directory -->
+      <copy todir="${test.classes}">
+        <fileset dir="${test.schemas}" includes="*.rnc" />
+      </copy>
+    </target>
+    
+    
+    <target name="jar"
+            depends="compile-test"
+            description="package the test harness into a jar file and a src zip file">
+        <jar jarfile="${test.root}/build/jaxb-ri-test.jar">
+            <fileset dir="${test.classes}" excludes="testcase/**/*" />
+        </jar>
+        <zip zipfile="${test.root}/build/jaxb-ri-test.src.zip">
+            <fileset dir="${test.src}" />
+        </zip>
+    </target>
+    
+    
+    <target name="compile-schemas" 
+            depends="compile-test">
+      <!-- run ScriptTests -->
+      <java classname="util.TestBuilder" fork="true">
+        <classpath path="${test.classes}" />
+        <classpath refid="test.classpath" />
+        <classpath path="${xjc.src}" />
+        
+        <!-- target directory -->
+        <arg path="${test.work}"/>
+        
+        <!-- test directories to be run -->
+        <arg path="${test.test_src}"/>
+      </java>
+      <!-- this interacts with other ObjectFactories, so delete it -->
+      <delete dir="${test.work}" includes="ObjectFactory.*"/>
+    </target>
+  
+    <target name="compile-sources" 
+            depends="compile-schemas">
+        <javac srcdir="${test.test_src};${test.work}" destdir="${test.classes}"
+            debug="true" optimize="false"
+            deprecation="${compile.deprecation}" >
+            <classpath path="${test.work}"/>
+            <classpath refid="test.classpath" />
+            <classpath path="${test.classes}" />
+        </javac>
+    </target>
+    
+    
+    
+    <target name="performance-visualizer" depends="compile-test"
+            description="Generates charts from the performance result">
+        <mkdir dir="${test.log}/performance" />
+        <java classname="batch.performance.visualizer.Visualizer" fork="true">
+            <classpath path="${test.classes}" />
+            <classpath refid="test.classpath" />
+            <!-- when run from crontab, we need this option to make JFreeChart happy. -->
+            <sysproperty key="java.awt.headless" value="true" />
+            
+            <arg path="${basedir}/../result.xml" />
+            <arg path="${test.log}/performance"/>
+        </java>
+    </target>
+    
+    <target name="test-junit" 
+          depends="compile-sources"
+          description="execute client unit tests - requires junit.jar on system classpath">
+      <!--
+      -->
+      <echo>running JUnit</echo>
+      <junit printsummary="no" fork="yes"
+        haltonerror="no" haltonfailure="no">
+        
+        <formatter type="brief" usefile="false" />
+        
+        <classpath refid="test.classpath"/>
+        <classpath path="${test.test_src}"/>
+        
+        <!-- this key will allow the JAXB test clients to find their
+             schemas via the following path:
+             
+             System.getProperty( "testcase.root" ) + "/testcase/sample/sample.xml"
+        -->
+        <sysproperty key="testcase.root" value="${test.test_src}"/>
+        
+        <batchtest todir="${test.log}">
+            <fileset dir="${test.classes}">
+                <include name="testcase/**/*JUnitTest.class"/>
+                <include name="testcase/**/*JUTest.class"/>
+                <include name="testcase/**/*Test.class"/>
+            </fileset>
+        </batchtest>
+      </junit>
+    </target>
+
+
+
+
+
+<!--
+
+    batch test
+
+-->
+
+
+    <target name="performance-test"
+      description="Runs the performance batch test">
+      
+      <antcall target="run-batch-test">
+        <param name="RunnerClass" value="PerformanceTestRunner" />
+        <param name="AdditionalOptions" value="-xml ${test.root}/performanceResult.xml" />
+      </antcall>
+    </target>
+    
+    
+    <target name="qa-test"
+      description="Runs the quality assuarance batch test">
+      
+      <antcall target="run-batch-test">
+        <param name="RunnerClass" value="QATestRunner" />
+        <param name="AdditionalOptions" value="" />
+      </antcall>
+    </target>
+    
+    <!-- internal target to invoke the test framework -->
+    <target name="run-batch-test" depends="compile-test">
+      <!-- the RI to be tested -->
+      <property name="object.root" value="${jaxb.root}"/>
+      
+      <echo>Testing the JAXB RI at ${object.root}</echo>
+      <if>
+        <equals arg1="${object.root}" arg2="${jaxb.root}" />
+        <then>
+          <echo>Set the object.root parameter to Ant to test another version of the RI.</echo>
+        </then>
+      </if>
+      
+      <taskdef name="foreheadConf" classname="com.sun.ant.taskdefs.forehead.ForeheadConfTask">
+        <classpath>
+          <pathelement path="${test.classes}"/>
+        </classpath>
+      </taskdef>
+      
+      
+      <!--
+        Forehead configuration file (http://forehead.werken.com/)
+        
+        For the test harness to test against arbitrary version of the RI,
+        The test harness has to be launched in an App server like class loader
+        hierarchy. This configuration file specifies how that hierarchy is
+        built
+      -->
+      <foreheadConf file="${test.root}/build/forehead.conf"
+        aliasFile="${test.root}/build/classes/forehead.alias">
+        <classLoader name="root">
+          <!-- subject and object communciate via the JAXB API. -->
+          <pathelement path="${jaxb.libs}/redist/jaxb-api.jar" />
+          <!-- DTDs need dom4j, and so does several DOM binding tests. -->
+          <pathelement path="${jaxb.libs}/util/dom4j.jar" />
+          <pathelement path="${jaxb.libs}/redist/jax-qname.jar"/>
+          
+          <!-- all the test harness runs in this class loader -->
+          <classLoader name="subject" mainClass="${RunnerClass}">
+            <path refid="test.classpath" />
+          </classLoader>
+          
+          
+          <classLoader name="ow">
+            <fileset dir="${object.root}">
+              <include name="tools/lib/redist/namespace.jar"/>
+            </fileset>
+            
+          <!--
+            the first layer is the runtime classes for the object.
+            generated code uses this class loader as the parent class loader.
+          -->
+          <classLoader name="object" alias="object">
+            <!-- for the JAXB RI workspace image -->
+            <fileset dir="${object.root}" includes="tools/lib/redist/*.jar"/>
+            <fileset dir="${object.root}" includes="tools/lib/rebundle/*.jar"/>
+            <pathelement path="${object.root}/runtime/build/classes" />
+            <pathelement path="${object.root}/runtime-deprecated/build/classes" />
+            
+            <!-- TODO: for JWSDP image -->
+            
+            <!--
+              then the second layer is for the object's XJC.
+            -->
+            <classLoader name="xjc" alias="xjc">
+              <fileset dir="${object.root}" includes="tools/lib/util/*.jar"/>
+              
+              <!-- for the JAXB RI workspace image -->
+              <pathelement path="${object.root}/xjc/build/classes" />
+              <pathelement path="${object.root}/xjc/src" />
+              <pathelement path="${object.root}/codemodel/build/classes" />
+              <fileset dir="${env.JAVA_HOME}" includes="lib/tools.jar" />
+              
+              <!-- TODO: for JWSDP image -->
+            </classLoader>
+          </classLoader>
+          
+          <!-- classLoader that doesn't have MSV. Used for tests. -->
+          <classLoader name="object-nomsv" alias="object-nomsv">
+            <pathelement path="${object.root}/runtime/build/classes" />
+            <pathelement path="${object.root}/runtime-deprecated/build/classes" />
+            <!-- no other rebundle jars, no redist jars -->
+          </classLoader>
+          </classLoader>
+        </classLoader>
+      </foreheadConf>
+      
+      
+      
+      <!-- this interacts with other ObjectFactories, so delete it -->
+      <delete dir="${test.work}" includes="ObjectFactory.*"/>
+      
+      <ant dir="${jaxb.root}/tools/jing-rnc-driver" />
+      
+      <property name="batch.logfile" value="${test.root}/batchTest.log"/>
+      
+      <echo>Sending detailed output to ${batch.logfile}</echo>
+      
+      <java classname="com.werken.forehead.Forehead" fork="true" failonerror="true">
+        <!-- non-0 error code means catastrophic test failure -->
+        
+        <sysproperty key="forehead.conf.file" value="${test.root}/build/forehead.conf"/>
+        <!-- use this option to check where classes are loaded from. incomplete for now-->
+        <!--sysproperty key="forehead.debug" value="true"/-->
+        
+        <!-- if you need to attach debugger ... -->
+        <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
+        <jvmarg value="-verbose:class"/-->
+        
+        <jvmarg value="-Xmx192m"/>
+        <jvmarg value="-Xms128m"/>
+        
+        <!--
+          We use Forehead to set up the classpath so that we can isolate
+          the test subject.
+          
+          DO NOT ADD ANY OTHER CLASSPATH!
+        -->
+        <classpath>
+          <pathelement path="${jaxb.libs.util}/forehead.jar" />
+        </classpath>
+        
+        
+        <arg value="-r"/><!-- recursive -->
+        <!-- make the console output shorter and send the log to a file -->
+        <arg value="-progress"/>
+        <arg value="-o"/>
+        <arg value="${batch.logfile}"/>
+
+        <arg line="${xjc.schema.test.options}" /><!-- additional options -->
+        <arg line="${AdditionalOptions}" />
+
+        <!-- test directories to be run -->
+        <arg path="${test.schemas}/WarmUp"/>
+        <arg path="${test.schemas}/BugRegressions"/>
+        <arg path="${test.schemas}/BugZillaRegressions"/>
+        <arg path="${test.schemas}/ClassCustomization"/>
+        <arg path="${test.schemas}/Cheiron"/>
+        <arg path="${test.schemas}/Compiler"/>
+        <arg path="${test.schemas}/Conversion"/>
+        <arg path="${test.schemas}/Datatype"/>
+        <arg path="${test.schemas}/DefaultValue"/>
+        <arg path="${test.schemas}/Dom.w3c"/>
+        <arg path="${test.schemas}/Dom.dom4j"/>
+        <arg path="${test.schemas}/Enum"/>
+        <arg path="${test.schemas}/Fixed"/>
+        <arg path="${test.schemas}/ID"/>
+        <arg path="${test.schemas}/individual"/>
+        <arg path="${test.schemas}/InfosetMarshaller"/>
+        <arg path="${test.schemas}/JAXRPC"/>
+        <arg path="${test.schemas}/Marshaller"/>
+        <arg path="${test.schemas}/ModelGroupBinding"/>
+        <arg path="${test.schemas}/NameCollision"/>
+        <arg path="${test.schemas}/PartialGeneration" />
+        <arg path="${test.schemas}/Performance" />
+        <arg path="${test.schemas}/PropertyCustomization"/>
+        <arg path="${test.schemas}/RELAXNG"/>
+        <arg path="${test.schemas}/RELAXNG2"/>
+        <arg path="${test.schemas}/Roundtrip"/>
+        <arg path="${test.schemas}/Runtime"/>
+        <arg path="${test.schemas}/RuntimeValidation"/>
+        <arg path="${test.schemas}/StrictConformance"/>
+        <arg path="${test.schemas}/TypeSubstitution"/>
+        <arg path="${test.schemas}/Unmarshaller"/>
+        <arg path="${test.schemas}/VendorExtension"/>
+        <arg path="${test.schemas}/WFMC"/>
+        <arg path="${test.schemas}/Whitespace"/>
+        <arg path="${test.schemas}/WSDL"/>
+        <arg path="${test.schemas}/WS-Security"/>
+        <arg path="${test.schemas}/XMLDSig"/>
+        <arg path="${test.schemas}/XPDL"/>
+      </java>
+      
+      <!-- one more reminder -->
+      <echo>See ${batch.logfile} for details</echo>
+      
+    </target>
+
+</project>

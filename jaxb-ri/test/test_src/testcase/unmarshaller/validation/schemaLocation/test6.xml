@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- all in one -->
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="bogus.xsd"
+	xsi:schemaLocation="urn:foo bogus2.xsd urn:bar bogus3.xsd"
+	xmlns:ascii="http://www.w3.org/2001/XMLSchema">
+	<foo xsi:type="ascii:int">10</foo>
+</root>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="foo" targetNamespace="foo" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="1.0">
+
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:attribute name="att1" type="xs:int">
+        <xs:annotation><xs:appinfo>
+          <jaxb:property name="aBc"/>
+        </xs:appinfo></xs:annotation>
+      </xs:attribute>
+      <xs:attribute ref="att2">
+        <xs:annotation><xs:appinfo>
+          <jaxb:property name="Def"/>
+        </xs:appinfo></xs:annotation>
+      </xs:attribute>
+      <xs:attribute ref="att3">
+        <xs:annotation><xs:appinfo>
+          <jaxb:property name="ghI"/>
+        </xs:appinfo></xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sub">
+    <xs:complexType>
+      <xs:attribute ref="att3" />
+    </xs:complexType>
+  </xs:element>
+
+  
+  <xs:attribute name="att2" type="xs:NCName"/>
+
+  <xs:attribute name="att3" type="xs:short">
+    <xs:annotation><xs:appinfo>
+      <jaxb:property name="jkL"/>
+    </xs:appinfo></xs:annotation>
+  </xs:attribute>
+  
+</xs:schema>
+

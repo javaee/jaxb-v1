@@ -1,0 +1,619 @@
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<title>JAXB RI @@IMPL_VERSION@@ -- RELAX NG extension</title>
+  <link rel="stylesheet" type="text/css" href="style/default.css"/>
+	<style>
+		pre.console {
+			background-color: black;
+			color: white;
+			font-weight: bold;
+			padding: 0.5em;
+			margin-left: 2em;
+		}
+		pre.schema {
+			background-color: rgb(240,240,255);
+			border: 1px solid navy;
+			color: navy;
+			font-weight: bold;
+			padding: 0.5em;
+			margin-left: 2em;
+		}
+		span.customization {
+			color: red;
+		}
+	</style>
+</head><body>
+    <center>
+  <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      Experimental RELAX NG support
+  </h1>
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@<br />
+      <JAXB-TOC/>
+    </center>
+  
+	<!--div align=right style="font-size:smaller">
+		By <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke Kawaguchi</a><br>
+		$Id: relaxng.html,v 1.1 2004-06-25 21:11:18 kohsuke Exp $
+	</div-->
+	
+	
+	
+	<ol>
+		<li><a href="#overview">Overview</a>
+		<li><a href="#synopsis">Synopsis</a>
+		<li><a href="#custom">Supported Customization</a>
+		<ol>
+			<li><a href="#schemaBindings">&lt;jaxb:schemaBindings></a>
+			<li><a href="#class">&lt;jaxb:class></a>
+			<li><a href="#property">&lt;jaxb:property></a>
+			<li><a href="#javaType">&lt;jaxb:javaType></a><img src="new.gif"/>
+		</ol>
+		<li><a href="#extension">Extension Customization</a>
+		<ol>
+			<li><a href="#super">&lt;xjc:super></a>
+			<li><a href="#interface">&lt;xjc:interface></a>
+		</ol>
+	</ol>
+	
+	
+	
+	<a name="overview"></a>
+	<h2>Overview</h2>
+	<p>
+		The JAXB Reference Implementation (JAXB RI) ships with  
+		<em>experimental</em> 
+		<a href="http://www.oasis-open.org/committees/relax-ng/">RELAX NG</a> 
+		support, which allows users to generate Java source code from a 
+		RELAX NG schema. This document explains how to use this 
+		extension of the JAXB RI.
+	</p>
+	
+	
+	
+	
+	
+	<a name="synopsis"></a>
+	<h2>Synopsis</h2>
+	<p>
+		To compile <code>abc.rng</code>, a RELAX NG schema, run the XJC 
+		binding compiler as follows, just as if you were compiling an 
+		XML Schema:
+	</p>
+	<pre class="console">$ xjc.sh -relaxng abc.rng</pre>
+	<p>
+		This will compile the <code>abc.rng</code> schema and put the 
+		generated files into the current directory. All the other 
+		<tt>xjc</tt> command-line options can be applied, no matter 
+		regardless of the schema language you are using.
+		
+		Similarly, the <tt>XJC</tt> 
+		<a href="http://jakarta.apache.org/ant/">ant</a> task supports 
+		RELAX NG just like it supports XML Schema.
+	</p><p>
+		No matter what schema language you use, the generated code will 
+		be the same. You'll use the same JAXB API to access the 
+		generated code.
+	</p>
+	
+	
+	
+	<a name="custom"></a>
+	<h2>Supported Customization</h2>
+	<p>
+		JAXB customization declarations are tailored for W3C XML Schema 
+		and, as a result, some of them don't fit well with RELAX NG. 
+		In addition, we didn't have enough resource to support all the 
+		customization in this release. Therefore, although the 
+		customization syntax for RELAX NG is similar to that for W3C 
+		XML Schema, there are some differences.
+	</p><p>
+		This section describes the supported customization in RELAX NG. 
+		All the examples are written with inline annotation for 
+		terseness, but the external customization is also supported.
+	</p>
+	
+	
+	
+	<a name="schemaBindings"></a>
+	<h3>&lt;jaxb:schemaBindings></h3>
+	<p>
+		Only package name is supported in 
+		&lt;<tt>schemaBindings</tt>&gt;. That is, the following shows 
+		the only legal &lt;<tt>schemaBindings</tt>&gt; customization.
+<pre class="schema">
+&lt;schemaBindings>
+    &lt;package name="com.acme.foo" />
+&lt;/schemaBindings>
+</pre>
+	<p>
+		However, in RELAX NG, this customization can be applied 
+		anywhere. (In W3C XML Schema, this can be only applied to the 
+		&lt;<tt>xs:schema</tt>&gt; element.) This customization takes 
+		effect only on the descendants of the node to which this 
+		customization is attached.
+	</p><p>
+		The following example shows how to put everything into one 
+		package.
+	</p>
+<pre class="schema">
+&lt;grammar xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  <span class=customization>&lt;jaxb:schemaBindings>
+    &lt;jaxb:package name="com.acme.foo"/>
+  &lt;/jaxb:schemaBindings></span>
+  
+  ... all the other RELAX NG declarations ...
+&lt;/grammar>
+</pre>
+	<p>
+		The following example shows how to divide the generated code 
+		into two packages by using the RELAX NG &lt;<tt>div</tt>&gt; 
+		tag:
+	</p>
+<pre class="schema">
+&lt;grammar xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  &lt;div>
+    <span class=customization>&lt;jaxb:schemaBindings>
+      &lt;jaxb:package name="com.acme.foo"/>
+    &lt;/jaxb:schemaBindings></span>
+    
+    ... RELAX NG declarations ...
+  &lt;/div>
+  
+  
+  &lt;div>
+    <span class=customization>&lt;jaxb:schemaBindings>
+      &lt;jaxb:package name="com.acme.bar"/>
+    &lt;/jaxb:schemaBindings></span>
+    
+    ... RELAX NG declarations ...
+  &lt;/div>
+  
+&lt;/grammar>
+</pre>
+	<p>
+		If you have two schemas, <code>foo.rng</code> and 
+		<code>bar.rng</code>, one of which includes the other, you can 
+		put them into two separate packages just by writing a 
+		&lt;<tt>schemaBindings</tt>&gt; element for each schema file.
+	</p>
+	
+	
+	
+	<a name="class"></a>
+	<h3>&lt;jaxb:class></h3>
+	<p>
+		Only the optional name attribute is supported. Therefore the 
+		following two are the only legal forms of the 
+		&lt;<tt>class</tt>&gt; customization in RELAX NG.
+	</p>
+<pre class="schema">
+&lt;class name="JavaClassName" />
+&lt;class />
+</pre>
+	<p>
+		However, in RELAX NG, this customization can be applied to any 
+		RELAX NG pattern or &lt;<tt>define</tt>&gt;. (W3C XML 
+		Schema limits where this customization can be applied.)
+		
+		Applying this customization to a RELAX NG pattern will map 
+		that pattern into a class. If the name attribute is 
+		unspecified, the compiler will derive one.
+	</p><p>
+		The following example shows how a name of a class can be 
+		changed from its default to <code>PersonRecord</code> by using 
+		a customization.
+	</p>
+<pre class="schema">
+&lt;element name="Person">
+  <span class=customization>&lt;jaxb:class name="PersonRecord"/></span>
+  
+  &lt;element name="first">&lt;text/>&lt;/element>
+  &lt;element name="last">&lt;text/>&lt;/element>
+&lt;/element>
+</pre>
+	<p>
+		This customization can be used to map something to a class when 
+		its not mapped to a class by default. The following example 
+		illustrates how to map a part of a group to its own class.
+	</p>
+<pre class="schema">
+&lt;element name="Address">
+  &lt;group>
+    <span class=customization>&lt;jaxb:class name="Name"/></span>
+    &lt;element name="first">&lt;text/>&lt;/element>
+    &lt;element name="last">&lt;text/>&lt;/element>
+  &lt;/group>
+  &lt;element name="street">&lt;text/>&lt;/element>
+  &lt;element name="city">&lt;text/>&lt;/element>
+  &lt;element name="zip">&lt;text/>&lt;/element>
+&lt;/element>
+</pre>
+	<p>
+		This customization can be also attached to a 
+		&lt;<tt>define</tt>&gt; block to map a pattern block to a class.
+	</p>
+<pre class="schema">
+&lt;grammar xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  &lt;start>
+    &lt;element name="root">
+      &lt;ref name="sub"/>
+    &lt;/element>
+  &lt;/start>
+  
+  &lt;define name="sub">
+    <span class=customization>&lt;jaxb:class name="TSub"/></span>
+    ... RELAX NG pattern ...
+  &lt;/define>
+&lt;/grammar>
+</pre>
+	
+	
+	
+	
+	
+	
+	<a name="property"></a>
+	<h3>&lt;jaxb:property></h3>
+	<p>
+		Only the optional name attribute is supported. Therefore, the 
+		following two are the only legal &lt;<tt>property</tt>&gt; 
+		customizations allowed by RELAX NG.
+	</p>
+<pre class="schema">
+&lt;property name="PropertyName" />
+&lt;property />
+</pre>
+	<p>
+		However, in RELAX NG, this customization can be applied to any 
+		RELAX NG pattern or &lt;<tt>define</tt>&gt;. (W3C XML Schema 
+		limits where this customization can be applied.)
+		
+		Applying this customization to a RELAX NG pattern will map that 
+		pattern into a property from which objects from the descendants 
+		are assigned. If the name attribute is unspecified, the 
+		compiler will derive one. Note that you probably want to 
+		capitalize the first letter or you get method names like 
+		<code>getproperty</code> instead of <code>getProperty</code>.
+	</p><p>
+		The following simple example shows how a name of a property can 
+		be changed from its default by using a customization.
+	</p>
+<pre class="schema">
+&lt;element name="Person">
+  
+  &lt;element name="first">&lt;text/>&lt;/element>
+  &lt;element name="last">
+    <span class=customization>&lt;jaxb:property name="FamilyName"/></span>
+    &lt;text/>
+  &lt;/element>
+&lt;/element>
+</pre>
+	<p>
+		This customization can be used to mimic the "general content 
+		list" behavior of JAXB W3C XML Schema binding. Consider the 
+		following example:
+	</p>
+<pre class="schema">
+&lt;element name="Person"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  &lt;group>
+    <span class=customization>&lt;jaxb:property name="Data"/></span>
+    &lt;element name="first">&lt;text/>&lt;/element>
+    &lt;element name="last">&lt;text/>&lt;/element>
+  &lt;/group>
+&lt;/element>
+</pre>
+	<p>
+		Without a customization, two properties "First" and "Last" will 
+		be produced. But having a customization at the root of those 
+		two properties forces those two elements to be coerced into one 
+		list property, "Data".
+	</p><p>
+		This is useful when you want to access the content model as a 
+		simple list when the content model is too complicated. The 
+		following example shows how to map a complicated content model 
+		into just one list property.
+	</p>
+<pre class="schema">
+&lt;element name="Root"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  &lt;group>
+    <span class=customization>&lt;jaxb:property name="Content"/></span>
+    &lt;choice>
+      &lt;element name="A">&lt;text/>&lt;/element>
+      &lt;element name="B">&lt;text/>&lt;/element>
+    &lt;/choice>
+    &lt;zeroOrMore>
+      &lt;element name="C">&lt;text/>&lt;/element>
+    &lt;/zeroOrMore>
+    &lt;element name="D">&lt;text/>&lt;/element>
+  &lt;/group>
+&lt;/element>
+</pre>
+	
+	
+	
+	
+	
+	
+	<a name="javaType"></a>
+	<h3>&lt;jaxb:javaType></h3>
+	<p>
+		In RELAX NG, this customization can be applied to any RELAX NG pattern or &lt;define>,
+		where the pattern doesn't contain neither &lt;attribute> nor &lt;element>.
+		Applying this customization to a RELAX NG pattern will map that pattern to a Java object by using the specified conversion method.
+	</p><p>
+		The following example describes the simple use of this customization. This customization states that the body of the Root element shall be mapped to <code>String</code> (whereas the default is <code>java.util.BigDecimal</code>)
+	</p>
+<pre class="schema">
+&lt;element name="Root"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatype"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  
+  &lt;data type="decimal">
+    <span class=customization>&lt;jaxb:javaType name="java.lang.String"
+      parseMethod="new" printMethod="toString" /></span>
+  &lt;/data>
+&lt;/element>
+</pre>
+	<p>
+		The <code>parseMethod</code> and <code>printMethod</code> attributes are optional, and their default values are <code>new</code> and <code>toString</code> respectively (thus the above example could be simply written as <code>&lt;jaxb:javaType name="java.lang.String" /></code>). Those methods are used for the actual conversion. You can also specify the optional <code>hasNsContext</code> attribute. See the JAXB specification for details of those features.
+	</p><p>
+		The javaType customization is useful when you want to control the process of conversion between a string in XML and its Java representation. The following example shows how you could do this to map a list of enumeration to a bit mask.
+	</p>
+<pre class="schema">
+&lt;define name="accessRightEnum"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatype"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0">
+  &lt;!-- you could have any combination of RWX but no duplication is allowed -->
+  &lt;list>
+    <span class=customization>&lt;jaxb:javaType name="int"
+      parseMethod="AccessRightEnum.parse" printMethod="AccessRightEnum.print" /></span>
+    &lt;zeroOrMore>
+      &lt;choice>
+        &lt;value>read&lt;/value>
+        &lt;value>write&lt;/value>
+        &lt;value>execute&lt;/value>
+      &lt;/choice>
+    &lt;/zeroOrMore>
+  &lt;/list>
+&lt;/define>
+</pre>
+	<p>
+		This customization is applied to a &lt;list> pattern, so the parse method receives the entire string that matches to the whole list. The <code>AccessRightEnum</code> class would look like:
+	</p>
+<pre>
+class AccessRightEnum {
+    public static final int READ = 1;
+    public static final int WRITE = 2;
+    public static final int EXECUTE = 4;
+    public static int parse( String s ) {
+        return (contains(s,"READ")?READ:0)
+              +(contains(s,"WRITE")?WRITE:0)
+              +(contains(s,"EXECUTE")?EXECUTE:0);
+    }
+    private static boolean contains( String s, String t ) {
+        return s.indexOf(t)!=-1;
+    }
+    public static String print( int x ) {
+        return ((x&READ!=0)?"READ ":"")
+              +((x&WRITE!=0)?"WRITE ":"")
+              +((x&EXECUTE!=0)?"EXECUTE ":"");
+    }
+}
+</pre>
+
+	<a name="extension"></a>
+	<h2>Extension Customization</h2>
+	<p>
+		This section describes other customizations designed 
+		specifically for RELAX NG.
+	</p>
+	
+	<a name="super"></a>
+	<h3>&lt;xjc:super></h3>
+	<p>
+		By itself, RELAX NG has no notion of inheritance. 
+		&lt;<tt>xjc:super</tt>&gt; can be used to introduce the 
+		inheritance relationship between two generated interfaces.
+		Technically this customization can be also applied to any 
+		RELAX NG pattern, but it is usually applied to a 
+		&lt;<tt>ref /</tt>&gt; pattern where a child interface is 
+		referencing its base interface.
+	</p><p>
+		The following example mimics the complex type derivation of 
+		<code>BarType</code> from <code>FooType</code> of W3C XML 
+		Schema:
+	</p>
+<pre class="schema">
+&lt;grammar
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  <span class=customization>xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc"</span>
+  jaxb:version="1.0">
+  
+  &lt;start>
+    &lt;element name="Root">
+      &lt;ref name="BarType"/>
+    &lt;/element>
+  &lt;/start>
+  
+  &lt;define name="BarType">
+    &lt;ref name="FooType">
+      <span class=customization>&lt;xjc:super/></span>
+    &lt;/ref>
+    &lt;attribute name="abc"/>
+    &lt;optional>
+      &lt;attribute name="def"/>
+    &lt;/optional>
+  &lt;/start>
+  
+  &lt;define name="FooType">
+    &lt;element name="fooContent">
+      &lt;text/>
+    &lt;/element>
+  &lt;/define>
+&lt;/grammar>
+</pre>
+	<p>
+		In XML Schema, you can only append a new content model at the 
+		end of the base type. This restriction doesn't apply to RELAX 
+		NG. For example, you can prepend additional elements as 
+		follows:
+	</p>
+<pre class="schema">
+&lt;grammar
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  <span class=customization>xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc"</span>
+  jaxb:version="1.0">
+  
+  &lt;start>
+    &lt;element name="Root">
+      &lt;ref name="BarType"/>
+    &lt;/element>
+  &lt;/start>
+  
+  &lt;define name="BarType">
+    &lt;element name="header">&lt;text/>&lt;/element>
+    &lt;ref name="FooType">
+      <span class=customization>&lt;xjc:super/></span>
+    &lt;/ref>
+    &lt;element name="footer">&lt;text/>&lt;/element>
+  &lt;/start>
+  
+  &lt;define name="FooType">
+    &lt;element name="fooContent">
+      &lt;text/>
+    &lt;/element>
+  &lt;/define>
+&lt;/grammar>
+</pre>
+
+
+
+
+
+	<a name="interface"></a>
+	<h3>&lt;xjc:interface></h3>
+	<p>
+		&lt;<tt>xjc:interface</tt>&gt; customization is another way to 
+		introduce an inheritance hierarchy in a way similar to the 
+		substitution group of W3C XML Schema. This customization can 
+		take the optional name attribute.
+	</p><p>
+		In many XML vocabularies, it is common to write a schema such 
+		as the following to represent a concept of "list" group:
+	</p>
+<pre class=schema><xmp>
+<define name="listBlock">
+  <choice>
+    <ref name="orderedList"/>
+    <ref name="itemizedList"/>
+    <ref name="someOtherTypeOfList"/>
+  </choice>
+</define>
+</xmp></pre>
+	<p>
+		Therefore, it would be desirable if the XJC binding compiler 
+		could generate the <code>ListBlock</code> interface and have 
+		<code>OrderedList</code>, <code>ItemizedList</code>, and 
+		<code>SomeOtherTypeOfList</code> interfaces implement the 
+		<code>ListBlock</code> interface.
+		This can be done by specifying a &lt;<tt>xjc:interface</tt>&gt; 
+		customization as follows:
+	</p>
+<pre class=schema>
+&lt;define name="listBlock">
+  <span class=customization>&lt;xjc:interface /></span>
+  &lt;choice>
+    &lt;ref name="orderedList"/>
+    &lt;ref name="itemizedList"/>
+    &lt;ref name="someOtherTypeOfList"/>
+  &lt;/choice>
+&lt;/define>
+</pre>
+	<p>
+		This customization will generate an empty interface with the 
+		specified or derived name and have the subordinates implement 
+		this interface.
+	</p><p>
+		This customization can be also applied to 
+		&lt;<tt>choice</tt>&gt; itself, as shown:
+	</p>
+<pre class=schema>
+&lt;element name="package">
+  ...
+  &lt;element name="shipTo">
+    &lt;choice>
+      <span class=customization>&lt;xjc:interface name="Address" /></span>
+      &lt;ref name="DomesticAddress"/>
+      &lt;ref name="InternationalAddress"/>
+    &lt;/choice>
+  &lt;/element>
+  ...
+&lt;/element>
+</pre>
+	<p>
+		The effects of this customization are:
+		<ol>
+		<li>The <code>Address</code> interface is generated.</li>
+		<li><code>DomesitcAddress</code> and 
+		<code>InternaltionalAddress</code> will implement this 
+		interface.</li>
+		<li>The <code>Package</code> class will have 
+		<code>Address getShipTo()</code> and 
+		<code>void setShipTo(Address)</code> methods.</li>
+		</ol>
+	</p><p>
+		There is no need for this customization and its child 
+		definitions to be separated by a &lt;<tt>ref /</tt>&gt; 
+		element. Definitions of <code>DomesticAddress</code> and 
+		<code>InternationalAddress</code> can just be inlined.
+	</p>
+<pre class=schema>
+&lt;element name="package">
+  ...
+  &lt;element name="shipTo">
+    &lt;choice>
+      <span class=customization>&lt;xjc:interface name="Address" /></span>
+      &lt;element name="DomesticAddress">
+        ... definition of domestic address ...
+      &lt;/element>
+      &lt;element name="InternationalAddress">
+        ... definition of international address ...
+      &lt;/element>
+    &lt;/choice>
+  &lt;/element>
+  ...
+&lt;/element>
+</pre>
+
+	<hr/>
+	<font size="-1">
+	  $Revision: 1.1 $<br/>
+	  $Date: 2004-06-25 21:11:18 $
+	</font>
+</body></html>

@@ -1,0 +1,21 @@
+<sample>
+    <title>fix-collides (formerly part of SampleApp9)</title>
+    <description><![CDATA[
+        Another binding customization example that illustrates how to resolve 
+        name conflicts. Run "ant fail" first to see the compiler output and 
+        then look at binding.xjb to see how the errors were resolved. Running 
+        "ant" will use the binding customizations to resolve the name conflicts 
+        while compiling the schema.
+    ]]></description>
+        
+    <since>1.0</since>
+    
+    <project>
+        <xjc schema="example.xsd" binding="binding.xjb"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

@@ -1,0 +1,56 @@
+<?xml version = "1.0"?>
+<!-- Unit testcase for getter/setter generation -->
+<!-- Test for collection-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.collection">
+  <xs:element name = "dress">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="storenumber" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="shirt" maxOccurs="unbounded"/>       
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>  
+  
+  <xs:element name="shirt">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="size" type="xs:int" maxOccurs="unbounded"/>
+            <xs:element ref="color"/>            
+            <xs:element ref="style"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>     
+  
+  <xs:element name="color">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="blue" type="xs:string"/>
+                <xs:element name="white" type="xs:string"/>
+            </xs:choice>            
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>         
+  
+  <xs:element name="style">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element ref="designer" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="designer">
+    <xs:complexType>
+        <xs:sequence>            
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="place" type="xs:string"/>    
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>   
+</xs:schema>

@@ -1,0 +1,16 @@
+<!--
+	invalid document
+	
+	see if the exception gets propagated properly
+-->
+<bar:bar xmlns:foo="foo" xmlns:bar="bar" xmlns:baz="baz" xmlns:zoo="zoo">
+	<bar:bar>
+		<zoo:zoo>
+			<foo:foo>
+				<foo:foo>
+					<foo:dummy />
+				</foo:foo>
+			</foo:foo>
+		</zoo:zoo>
+	</bar:bar>
+</bar:bar>

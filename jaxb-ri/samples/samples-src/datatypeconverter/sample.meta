@@ -1,0 +1,19 @@
+<sample>
+    <title>datatypeconverter (formerly SampleApp7)</title>
+    <description><![CDATA[
+        This sample application is very similar to the inline-customize sample 
+        application (formerly SampleApp6), but illustrates an easier, but not 
+        as robust, <jaxb:javaType> customization.
+    ]]></description>
+        
+    <since>1.0</since>
+    
+    <project>
+        <xjc schema="po.xsd"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

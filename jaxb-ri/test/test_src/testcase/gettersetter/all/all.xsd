@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Created by vivekp on January 9, 2002, 3:48 PM -->
+<!-- Test how all is handled to generate getter/setter-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://www.sun.com/xml/tahiti/"
+    jaxb:package="test.gettersetter.all">
+  <xs:element name = "customer">
+    <xs:complexType>
+        <xs:all>
+            <xs:element ref="name"/>
+            <xs:element name="phone" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name">
+    <xs:complexType>
+        <xs:all>
+            <xs:element name="firstname" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="lastname" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

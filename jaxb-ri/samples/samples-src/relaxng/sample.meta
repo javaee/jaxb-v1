@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<sample>
+    <title>relaxng</title>
+    
+    <description><![CDATA[
+			This example shows how you can use experimental RELAX NG support.
+    ]]></description>
+    
+    <since>1.0.1</since>
+    
+    <readme/>
+    
+    <project>
+        <xjc schema="formula.rng">
+            <arg value="-relaxng" />
+        </xjc>
+        
+        <javadoc/>
+        
+        <java mainClass="RELAXNGExample">
+            <arg value="test.xml"/>
+        </java>
+    </project>
+</sample>

@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="runtime" basedir=".." default="deploy">
+
+	<description>
+		Runtime Sub-Project
+		===================
+		
+		The runtime project implements all of the interfaces from the 
+		javax.xml.bind.* packages necessary to support marshalling,
+		unmarshalling, and validation.
+	</description>
+	
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- convenience targets when building alone -->
+    <target name="compile" 
+            depends="compile-runtime"
+            description="compile all runtime src into jaxb-ri/runtime/build/classes"/>
+    <target name="clean"   
+            depends="clean-runtime"
+            description="clean jaxb-ri/runtime/build"/>
+    <target name="deploy"  
+            depends="deploy-runtime"
+            description="copy all runtime classes up to jaxb-ri/build/classes"/>
+
+   <!-- classpath -->
+   <path id="javac.classpath">
+        <pathelement path="${jaxb.classes}" />
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="*.jar"/>
+   </path>
+
+   <!-- compile Java source files -->
+    <target name="compile-runtime">
+        <mkdir dir="${runtime.classes}" />
+
+        <!-- always delete this prop file so that the latest build id can be set -->
+        <delete file="${runtime.classes}/com/sun/xml/bind/Messages.properties"/>
+
+        <javac srcdir="${runtime.src}" destdir="${runtime.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath refid="javac.classpath" />
+        </javac>
+        
+        <!-- copy i18n props into build dir -->
+        <copy toDir="${runtime.classes}">
+            <fileset dir="${runtime.src}" includes="**/*.properties" />
+        </copy>
+        
+        <!-- expose the build version to the DefaultJAXBContextImpl class so
+             that it is available to the generated ObjectFactory classes -->
+        <replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+        </replace>
+    </target>
+
+    <!-- deploy static files back up into the main project -->
+    <target name="deploy-static-runtime" 
+            depends="compile-runtime">         
+        <copy toDir="${jaxb.classes}">
+            <fileset dir="${runtime.classes}" includes="**/*.properties" />
+        </copy>
+    </target>
+
+    <!-- deploy the classes back up into the main project -->
+    <target name="deploy-runtime" 
+            depends="deploy-static-runtime">
+        <copy toDir="${jaxb.classes}">
+            <fileset dir="${runtime.classes}" includes="**/*.class" />
+        </copy>
+    </target>
+
+    <!-- generate javadoc -->
+    <!-- not sure if we need this for runtime
+    <target name="javadoc" depends="compile">
+        <mkdir dir="./doc/api" />
+        <javadoc packagenames="" 
+            sourcepath="./src"
+            classpath="./build/classes"
+            destdir="./doc/api"
+            use="true"
+            author="false"
+            version="false"
+            windowtitle=""
+            doctitle="" />
+    </target>
+    -->
+
+    <!-- remove all intermediate files -->
+    <target name="clean-runtime">
+        <delete dir="${runtime.root}/build" />
+        <delete file="${runtime.root}/manifest.rt" />
+        <delete dir="${runtime.test.classes}" />
+    </target>
+    
+    
+    <!-- run unit test -->
+    <target name="test-runtime" 
+          depends="compile-runtime"
+          description="execute client unit tests - requires junit.jar on system classpath">
+      
+      <mkdir dir="${runtime.test.classes}" />
+      <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
+        debug="true" optimize="true"
+        deprecation="${compile.deprecation}" >
+        
+        <classpath refid="javac.classpath" />
+        <classpath>
+	  <fileset dir="${runtime.classes}" />
+          <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+        </classpath>
+      </javac>
+      
+      <echo>running JUnit</echo>
+      <junit printsummary="yes" fork="yes"
+        haltonerror="no" haltonfailure="no">
+        
+        <formatter type="brief" usefile="false" />
+        
+        <classpath path="${runtime.classes}"/>
+        <classpath path="${runtime.test.classes}"/>
+        
+        <batchtest todir="${test.log}">
+          <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
+        </batchtest>
+      </junit>
+    </target>
+</project>

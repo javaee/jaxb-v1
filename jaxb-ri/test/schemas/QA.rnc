@@ -1,0 +1,25 @@
+#
+# Schema for script-based QA test.
+# 
+# This is used as a part of the unit test descriptor.
+# 
+# $Id: QA.rnc,v 1.1 2004-06-25 21:12:54 kohsuke Exp $
+# 
+# 
+
+
+# JavaScript that will run the test
+ssuiteTestCaseBody &= element script {
+  # With run="once", the script will run only once.
+  # if this option is not present, scripts will be run
+  # against each instance document.
+  attribute run {"once"}?,
+  
+  text   # actual script
+}*
+
+# test scripts written in JScript
+testspecMetaTestCaseBody &= element script {
+  attribute run {"once"}?,
+  attribute href {xsd:anyURI} # reference to script file
+}*

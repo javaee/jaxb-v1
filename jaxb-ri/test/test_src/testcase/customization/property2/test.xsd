@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="foo" targetNamespace="foo" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="1.0">
+
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:attribute name="foo" type="xs:int">
+        <xs:annotation><xs:appinfo>
+          <!-- force it to a list -->
+          <jaxb:property collectionType="java.util.ArrayList"/>
+        </xs:appinfo></xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+</xs:schema>
+

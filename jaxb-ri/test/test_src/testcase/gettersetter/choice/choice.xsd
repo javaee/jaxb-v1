@@ -1,0 +1,49 @@
+<?xml version = "1.0"?>
+<!-- Unit testcase for getter/setter generation -->
+<!-- Test for simple choice.-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.choice">
+  <xs:element name = "cart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="item" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+ <!--item-->
+  <xs:element name="item">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element name="quantity" type="xs:int"/>
+        <xs:choice>
+          <xs:element ref="id"/>
+          <xs:element ref="type"/>
+          <xs:element name="model" type="xs:string"/>
+          <xs:element name="serialnumber" type="xs:string"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!--item id-->
+  <xs:element name="id" type="xs:int"/>
+
+  <!--type-->
+  <xs:element name="type">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element name="book" type="xs:string"/>
+          <xs:element name="cd"   type="xs:string"/>
+          <xs:element name="dvd"  type="xs:string"/>
+          <xs:element name="toy"  type="xs:string"/>
+          <xs:element name="electronics" type="xs:string"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+   
+</xs:schema>

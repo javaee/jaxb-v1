@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta content=
+"HTML Tidy for Cygwin (vers 1st February 2003), see www.w3.org"
+name="generator">
+<title>JAXB RI @@IMPL_VERSION@@ -- Implications of Type
+Substitution for Subclassing</title>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=us-ascii">
+<link rel="stylesheet" href="style/default.css" type="text/css">
+</head>
+<body>
+<center><h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML
+Binding</h1>
+<h2>Implications of Type Substitution for Subclassing</h2>
+<b>Specification Version:</b> @@SPEC_VERSION@@<br>
+<b>Reference Implementation (RI) Version:</b>
+@@IMPL_VERSION@@<br/><JAXB-TOC/></center>
+<p>You can enable type substitution support in your bindings by
+adding a <a href="vendorCustomizations.html#typesub">customization</a>
+to your schema and using the <tt>-extension</tt> switch when you
+recompile. This may have implications for your application if, in
+addition, your bindings support application-specific subclasses
+incorporated by way of the <tt><a href=
+"http://java.sun.com/xml/jaxb/extendingJaxbGeneratedClasses.html">implClass</a></tt>
+customization.</p>
+<p>To support type substitution, a schema-derived element impl
+class no longer extends its type's impl class. Instead, the element
+impl class has a reference to an instance of that type or any type
+that extends the element's schema defined type.</p>
+<p>For example, given this schema,</p>
+<blockquote>
+<pre>
+&lt;element name="foo" type="Base"/&gt;
+&lt;complexType name="Base"&gt; ...
+&lt;complexType name="Derived"&gt;... &lt;xs:extension base="Base"&gt;
+</pre></blockquote>
+<p>The generated impl class for element foo used to be:</p>
+<blockquote>
+<pre>
+impl/Foo.java
+class Foo extends impl.Base {}
+</pre></blockquote>
+<p>To support type substitution that allows instances of "Derived"
+to be associated with element foo, the following code is generated
+by JAXB 1.0.2 xjc with extension mode on:</p>
+<blockquote>
+<pre>
+impl/Foo.java
+class Foo implements Base {
+   Base getValueObject();
+   /** val can be of type "Base" or "Derived"
+   void setValueObject(Base val);
+
+   // all methods on Base can be called.
+}
+</pre></blockquote>
+<p>If your subclass contains the method <tt>methodInSubclass</tt>,
+let's say, and you created your bindings without type substitution
+support, you can access <tt>methodInSubclass</tt> simply by casting
+the returned <tt>Element</tt> instance down to your subclass:</p>
+<blockquote>
+<pre>
+((subclass)FooElementInstance).methodInSubclass
+</pre></blockquote>
+<p>However, if you regenerate your bindings with type substitution
+support, this technique now results in a
+<tt>ClassCastException</tt> at runtime. The fix is to cast the
+object returned by the unmarshalled object's
+<tt>getValueObject()</tt> method down to your subclass.</p>
+<p>For example, let's say you have a <tt>MyUSAddress</tt> class
+that extends the schema-derived class
+<tt>primer.address.USAddress</tt>. That is, your schema
+contains:</p>
+<blockquote>
+<pre>
+&lt;xsd:annotation&gt;
+  &lt;xsd:appinfo&gt;
+    &lt;jxb:schemaBindings&gt;
+      &lt;jxb:package name="primer.address"/&gt;
+    &lt;/jxb:schemaBindings&gt;
+  &lt;/xsd:appinfo&gt;
+&lt;/xsd:annotation&gt;
+
+&lt;xsd:complexType name="USAddress"&gt;
+  &lt;xsd:annotation&gt;
+    &lt;xsd:appinfo&gt;
+      &lt;jxb:class implClass="primer.MyUSAddress"/&gt;
+    &lt;/xsd:appinfo&gt;
+  &lt;/xsd:annotation&gt;
+.
+.
+.
+</pre></blockquote>
+<p>If your schema's not customized for type substitution, then the
+following application code would work with the resulting
+bindings:</p>
+<blockquote>
+<pre>
+primer.MyUSAddress myAddr = 
+    (primer.MyUSAddress)u.unmarshal(new FileInputStream("address.xml"));
+</pre></blockquote>
+where <tt>address.xml</tt> contains: 
+<blockquote>
+<pre>
+&lt;Address country="US"&gt;
+    &lt;name&gt;Alice Smith&lt;/name&gt;
+    &lt;street&gt;123 Maple Street&lt;/street&gt;
+    &lt;city&gt;Cambridge&lt;/city&gt;
+    &lt;state&gt;MA&lt;/state&gt;
+    &lt;zip&gt;12345&lt;/zip&gt;
+&lt;/Address&gt;
+</pre></blockquote>
+That is, it would be okay to cast the unmarshalled object down to
+your <tt>primer.MyUSAddress</tt>. 
+<p>However if, for some reason, you were to add an
+<tt>typeSubstitution</tt> customization to your schema and
+recompile, your application would fail with a
+<tt>ClassCastException</tt>. The fix is to cast the object returned
+by the <tt>getValueObject()</tt> method that the schema-derived
+class now contains down to <tt>MyUSAddress</tt>:</p>
+<blockquote>
+<pre>
+Address addr = (Address)u.unmarshal(new FileInputStream("address.xml"));
+primer.MyUSAddress myAddr=(primer.MyUSAddress)addr.getValueObject();
+</pre></blockquote>
+<p>Type substitution support is experimental at present.
+   <a href="http://jcp.org/en/jsr/detail?id=222">JAXB 2.0</a> will
+   specify the standard binding for type substitution.</p>
+<hr>
+<font size="-1">$Revision: 1.1 $<br>
+$Date: 2004-06-25 21:11:19 $</font>
+</body>
+</html>

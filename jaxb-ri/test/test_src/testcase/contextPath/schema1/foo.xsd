@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="foo"
+        elementFormDefault="qualified">
+
+	<element name="foo">
+		<complexType>
+			<sequence>
+				<any namespace="##any" maxOccurs="unbounded" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="dummy">
+		<complexType>
+			<sequence>
+				<element name="child" type="string" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>
+
+

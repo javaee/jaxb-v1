@@ -1,0 +1,33 @@
+%define _topdir @build.dir@
+Summary: Java Architecture for XML Binding 
+Name: JAXB
+Version: @jaxb.version@ 
+Release: @jaxb.release@ 
+License: Sun Microsystems Binary Code License (BCL)
+Group: Development/Libraries
+Source: %{name}-%{version}.tar
+Distribution: @prod.name@ 
+Vendor: Sun Microsystems, Inc.
+Provides: %{name}-@jaxb.version@-@jaxb.release@
+Requires: JAXP, WS_COMMON
+BuildRoot: %{_topdir}/BUILD/%{name}-%{version}
+
+%description
+Java Architecture for XML Binding
+
+%prep
+
+%setup
+
+%build
+
+%install
+
+%clean
+
+%files
+%attr(755,root,root) @install.prefix@/bin/xjc
+%attr(-,root,root) @install.prefix@/share/lib/jaxb-api.jar
+%attr(-,root,root) @install.prefix@/share/lib/jaxb-impl.jar
+%attr(-,root,root) @install.prefix@/share/lib/jaxb-libs.jar
+%attr(-,root,root) @install.prefix@/share/lib/jaxb-xjc.jar

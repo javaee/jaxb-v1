@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<sample>
+    <title>pull parser based unmarshalling</title>
+    <description><![CDATA[
+      This sample app demonstrates how a pull-parser can
+      be used with JAXB to increase the flexibility of processing.
+    ]]></description>
+        
+    <since>1.0.2</since>
+    
+    <readme/>
+
+    <project>
+        <depends>
+          <jar name="kxml2.jar" from="http://www.google.com/search?q=kxml2"/>
+          <jar name="xmlpull.jar" from="http://www.xmlpull.org/"/>
+        </depends>
+        <xjc schema="contact.xsd" package="contact" />
+        <javadoc/>
+        <java mainClass="Main">
+            <arg value="Jane Smith" />
+        </java>
+    </project>
+    
+</sample>

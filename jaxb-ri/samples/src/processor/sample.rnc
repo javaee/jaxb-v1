@@ -1,0 +1,83 @@
+#
+# Schema for sample app metadata files (sample.meta)
+# 
+# $Id: sample.rnc,v 1.1 2004-06-25 21:12:51 kohsuke Exp $
+# 
+# 
+start = sample
+
+sample = 
+    element sample {
+        # does this sample require additional memory requirements
+        attribute hog { "true" }?,
+        
+        # name of the sample app   
+        element title { text }, 
+        
+        # short 1 or 2 sentence description
+        element description { text }, 
+        
+        # when the sample was added
+        element since { "1.0" | "1.0.1" | "1.0.2" | "1.0.3" | "1.0.4" |
+                        "2.0" | "2.0.1" }, 
+                        
+        # switch to process readme file (standard filename TBD)
+        element readme { empty }?, 
+        
+        # controls the creation of project files for Ant, etc
+        element project { 
+            # optional jar file dependencies
+            element depends { 
+                # one or more jar files
+                element jar { 
+                    # relative pathname to jar file
+                    attribute name { text }, 
+                    # optional URL where to download the jar from.
+                    # this is used for documentation purpose, and
+                    # it could be a web site or the actual jar location
+                    # (if the location is assumed to be stable)
+                    attribute from { text }? 
+                }+ 
+            }?, 
+            
+            # optional custom datatype converter source code that needs
+            # to be compiled before xjc is run.  syntax should follow 
+            # ant <fileset>
+            element datatypeConverterSrc {
+                anyElement+
+            }*,
+                
+            # optional xjc invocations - follows XJCTask syntax
+            # but @targetDir will be controlld by the directory structure.
+            # <produces> will be also controlled by the directory structure.
+            element xjc {
+              attribute * - targetDir { text }*,
+              element * - produces { anyContent }*
+            }*, 
+            
+            # switch to enable javadoc generation into docs/api subdirectory
+            element javadoc { empty }?, 
+            
+            # optional java command to launch the sample
+            element java {
+                # the name of the class containing the main method
+                attribute mainClass { text },
+                
+                # zero or more optional command line args
+                element arg {
+                    attribute value {text}|
+                    attribute path  {text}
+                }*
+            }? 
+        }, 
+        
+        # optional test automation 
+        element test { 
+            # the name of the file containing golden results
+            attribute goldenFile { text } 
+        }? 
+    }
+
+# define a wildcard type
+anyElement = element * { anyContent }
+anyContent = ( attribute * { text } | text | anyElement )*

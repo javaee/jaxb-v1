@@ -1,0 +1,38 @@
+Code that reads XML Schema and code that reads XSOM object graph and builds BGM.
+
+
+<a name="stref_cust">
+<h2>Simple Type Customization at the Point of Reference</h2>
+<p>
+	One crux of this package is how it handles simple type customization at the point of reference.
+</p><p>
+	Code in this package traverses XSOM object graph in a top-down manner. Thus when we hit a simple type component, we don't have any variables that reference the component that we were visiting before.
+	
+	This is usually not a problem, since most of the time the binding can by simply looking at the component itself or descendants. However, customization at the point of reference is one exception.
+</p><p>
+	A simple type can have "conversion" (&lt;javaType>) customization, which basically dictates how a string in XML will be transformed into a Java object. This customization is allowed where simple types are defined or where simple types are <i>used</i>.
+	
+	This means that we need to be able to access the component P that is using the simple type ST when we bind ST. Since we use the visitor pattern, I couldn't find any elegant way to implement this. Here is how I did it.
+</p>
+<ul>
+	<li>SimpleTypeBuilder, the component which builds an Expression for XSSimpleType, has the "referer" field.
+	<li>The caller of SimpleTypeBuilder makes sure that it will set the parent to this field. Note that sometimes the direct caller doesn't know the parent. Sometimes it is the caller of the caller that knows the parent component or it can be even the caller of the caller of the caller, etc.
+</ul>
+<p>
+	This requires that all the code that handles potential parents of simple types need to set this field properly. This is rather error prone. 
+</p><p>
+	Simple types can be used in the following places. Thus code that handles these components need to be careful.
+</p>
+<ol>
+	<li>As a content type of a complex type
+	<li>As a base type of a simple type
+	<li>As a base type of a complex type
+	<li>As a item type of a list simple type
+	<li>As a member type of an union simple type
+	<li>As a type of an attribute/element decl
+</ol>
+<p>
+	I discussed with Sekhar and case 1, 2, 4, and 5 cannot have a property customization. So just be careful when dealing with 3 and 6.
+</p><p>
+	The SimpleTypeBuilder is heavily guarded with assertions so that it will catch problems if you forget to update the referer field correctly. Hope this document and those assertions help.
+</p>

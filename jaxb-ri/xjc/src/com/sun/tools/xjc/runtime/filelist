@@ -1,0 +1,39 @@
+# list of the runtime source files that needs to be generated
+# 
+# 
+# +-------- necessary for unmarshaller (U)
+# | +------ necesasry for unmarshl-time validation (W)
+# | | +---- necessary for marshaller (M)
+# | | | +-- necessary for validator (V)
+# | | | | + always necessary
+# | | | | |
+# v v v v v class name
+  x x x x x DefaultJAXBContextImpl.java
+  x x x x x ErrorHandlerAdaptor.java
+  x x x x x Util.java
+  x x x x x GrammarInfo.java
+  x x x x x GrammarInfoFacade.java
+  x x x x x GrammarInfoImpl.java
+  x x - - - AbstractUnmarshallingEventHandlerImpl.java
+  x x - - - Discarder.java
+  x x - - - SAXUnmarshallerHandler.java
+  x x - - - SAXUnmarshallerHandlerImpl.java
+  x x - - - UnmarshallableObject.java
+  x x - - - UnmarshallerImpl.java
+  x x - - - InterningUnmarshallerHandler.java
+  x x - - - UnmarshallingContext.java
+  x x - - - UnmarshallingEventHandler.java
+  x x - - - UnmarshallingEventHandlerAdaptor.java
+  - x - - - ValidatingUnmarshaller.java
+  - - x - - MarshallerImpl.java
+  - - x x - SAXMarshaller.java
+  - - x x - XMLSerializer.java
+  - - x x - ContentHandlerAdaptor.java
+  - - x x - NamespaceContext2.java
+  - - x x - NamespaceContextImpl.java
+  - - x x - XMLSerializable.java
+  - - x x - PrefixCallback.java
+  - - - x - ValidationContext.java
+  - - - x - ValidatorImpl.java
+  - - - x - MSVValidator.java
+  - - - x - ValidatableObject.java

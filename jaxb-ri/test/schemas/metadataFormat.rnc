@@ -1,0 +1,68 @@
+#
+# Schema for test metadata file (testspec.meta)
+# 
+# $Id: metadataFormat.rnc,v 1.1 2004-06-25 21:12:54 kohsuke Exp $
+# 
+# 
+# FIXME: modularize properly
+start = testCase
+
+# list of defined extensions
+include "performance.rnc"
+include "QA.rnc"
+include "common.rnc"
+
+testCase =
+  element testCase {
+    # package name to which the schema file is expected to compile
+    element package {javaPackageName},
+    
+    # if the test doesn't apply to older versions of JAXB, use this
+    # to mark the fact
+    attribute since {version}?,
+    attribute until {version}?,
+    
+    # schema file
+    element schema {
+      attribute href {xsd:anyURI},
+      # schema language
+      attribute language {schemaLanguage},
+      # is this schema expected *not* to compile?
+      attribute fail {"true"}?,
+      # does the schema need to be compiled under the strict conformance mode?
+      attribute strict {"true"}?,
+      # additional XJC command line option that should be used
+      # when compiling schemas.
+      attribute xjcopts {text}?
+    },
+    
+    # external binding file
+    element bindings {
+      attribute href {xsd:anyURI}
+    }*,
+    
+    # instance documents
+    element instance {
+      attribute href {xsd:anyURI},
+      # metadata associated with this instance.
+      element property {
+        attribute name {text},  # name
+        text                    # value
+      }*
+    }*,
+    
+    # other data
+    testspecMetaTestCaseBody
+  }
+
+
+# extension point.
+# specialization of the batch test framework
+# will add their stuff here.
+testspecMetaTestCaseBody &= empty
+
+
+# schema language
+schemaLanguage = "xsd"|"rng"|"dtd"
+
+javaPackageName = text

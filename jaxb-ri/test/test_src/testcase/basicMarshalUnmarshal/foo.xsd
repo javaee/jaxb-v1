@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<x:schema xmlns:x="http://www.w3.org/2001/XMLSchema">
+
+	<x:element name="foofolder">
+		<x:complexType>
+			<x:sequence>
+				<x:element ref="foocard" minOccurs="0" maxOccurs="unbounded"/>
+			</x:sequence>
+		</x:complexType>
+	</x:element>
+
+	<x:element name="foocard">
+		<x:complexType>
+			<x:sequence>
+				<x:element name="fooname" type="x:string"/>
+				<x:element name="fooaddress" type="x:string"/>
+				<x:element name="size" type="x:positiveInteger"/>
+			</x:sequence>
+		</x:complexType>
+	</x:element>
+
+</x:schema>
+
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Use the following doctypedecl for DTD aware editing.  Comment out b/c
+     it presumably causes Ant problems for some users.
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../project.dtd">
+-->
+<!--
+    This build script splits test suite files
+    into individual test files.
+    
+    This target has to be run before any batch test.
+-->
+<project default="split" basedir="../..">
+  
+  <!-- import build properties -->
+  <property file="${basedir}/build.properties" />
+  
+  <!-- split test suites into smaller files -->
+  <target name="split" depends="prepare,validate,fast-split" />
+
+  <target name="prepare">
+    <!-- splitter needs pretty-printer -->
+    <ant dir="${jaxb.root}/tools/pretty-printer"/>
+  </target>  
+  
+  <target name="validate"
+    description="validate .ssuite files to make sure they look OK">
+    
+    <taskdef name="jing" classname="com.thaiopensource.relaxng.util.JingTask">
+      <classpath>
+        <fileset dir="${jaxb.libs}" includes="**/*.jar" />
+      </classpath>
+    </taskdef>
+    
+    <jing rngfile="${test.schemas}/ssuite.rnc" compactsyntax="true">
+      <fileset dir="${test.schemas}" includes="*.ssuite"/>
+    </jing>
+  </target>
+  
+  <target name="fast-split"
+    description="split .ssuite files into individual tests">
+    
+    <!--
+      This is necessary to use Xalan extensions from the script.
+    -->
+    <taskdef name="style2" classname="com.sun.ant.taskdefs.StyleTaskEx">
+      <classpath path="${test.classes}"/>
+    </taskdef>
+    
+    <style2
+      basedir="${test.schemas}"
+      destdir="${test.schemas}"
+      style="${test.schemas}/split.xsl"
+      extension=".deleteMeToSplitAgain">
+      
+      <include name="*.ssuite"/>
+      <classpath path="${test.classes}"/>
+      <classpath>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+      </classpath>
+    </style2>
+  </target>
+  
+  <target name="clean" description="remove generated test case files">
+    <!-- dumb solution -->
+    <delete dir="${jaxb.root}/test/schemas/BugRegressions" />
+    <delete dir="${jaxb.root}/test/schemas/BugZillaRegressions" />
+    <delete dir="${jaxb.root}/test/schemas/ClassCustomization" />
+    <delete dir="${jaxb.root}/test/schemas/Compiler" />
+    <delete dir="${jaxb.root}/test/schemas/Conversion" />
+    <delete dir="${jaxb.root}/test/schemas/Datatype" />
+    <delete dir="${jaxb.root}/test/schemas/DefaultValues" />
+    <delete dir="${jaxb.root}/test/schemas/Dom.dom4j" />
+    <delete dir="${jaxb.root}/test/schemas/Dom.w3c" />
+    <delete dir="${jaxb.root}/test/schemas/Enum" />
+    <delete dir="${jaxb.root}/test/schemas/Fixed" />
+    <delete dir="${jaxb.root}/test/schemas/ID" />
+    <delete dir="${jaxb.root}/test/schemas/JAXRPC" />
+    <delete dir="${jaxb.root}/test/schemas/InfosetMarshaller" />
+    <delete dir="${jaxb.root}/test/schemas/Marshaller" />
+    <delete dir="${jaxb.root}/test/schemas/ModelGroupBinding" />
+    <delete dir="${jaxb.root}/test/schemas/PartialGeneration" />
+    <delete dir="${jaxb.root}/test/schemas/PropertyCustomization" />
+    <delete dir="${jaxb.root}/test/schemas/RELAXNG" />
+    <delete dir="${jaxb.root}/test/schemas/Roundtrip" />
+    <delete dir="${jaxb.root}/test/schemas/Runtime" />
+    <delete dir="${jaxb.root}/test/schemas/RuntimeValidation" />
+    <delete dir="${jaxb.root}/test/schemas/StrictConformance" />
+    <delete dir="${jaxb.root}/test/schemas/TypeSubstitution" />
+    <delete dir="${jaxb.root}/test/schemas/Unmarshaller" />
+    <delete dir="${jaxb.root}/test/schemas/VendorExtension" />
+    <delete dir="${jaxb.root}/test/schemas/Whitespace" />
+    <delete>
+      <fileset dir="${jaxb.root}/test/schemas" includes="*.deleteMeToSplitAgain" />
+    </delete>
+  </target>
+</project>

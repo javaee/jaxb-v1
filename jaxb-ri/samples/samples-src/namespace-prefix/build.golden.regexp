@@ -1,0 +1,34 @@
+
+compile\:
+     \[echo\] Compiling the schema\.\.\.
+    \[mkdir\] Created dir\: .*
+      \[xjc\] .* is not found and thus excluded from the dependency check
+      \[xjc\] Compiling .*
+      \[xjc\] Writing output to .*
+      \[xjc\] .* is not found and thus excluded from the dependency check
+      \[xjc\] Compiling .*
+      \[xjc\] Writing output to .*
+     \[echo\] Compiling the java source files\.\.\.
+    \[mkdir\] Created dir\: .*
+    \[javac\] Compiling \d+ source files to .*
+     \[copy\] Copying 4 files to .*
+
+run\:
+     \[echo\] Running the sample application\.\.\.
+     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
+     \[java\] \<foo1 xmlns\:ns1\=\"urn\:abc\" xmlns\:ns2\=\"urn\:def\" xmlns\=\"http\:\/\/www\.example\.com\/foo\"\>
+     \[java\]     \<b\:bar1 xmlns\:b\=\"http\:\/\/www\.example\.com\/bar\"\/\>
+     \[java\]     \<b\:bar2 xmlns\:xyz\=\"someNamespace\" xmlns\:b\=\"http\:\/\/www\.example\.com\/bar\"\>xyz\:someQName\<\/b\:bar2\>
+     \[java\] \<\/foo1\>
+
+     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
+     \[java\] \<foo1 xmlns\:ns1\=\"urn\:abc\" xmlns\:ns2\=\"urn\:def\" xmlns\=\"http\:\/\/www\.example\.com\/foo\"\>
+     \[java\]     \<b\:bar2 xmlns\:b\=\"http\:\/\/www\.example\.com\/bar\" xmlns\=\"anotherNamespace\"\>someQName\<\/b\:bar2\>
+     \[java\] \<\/foo1\>
+
+     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
+     \[java\] \<ns3\:foo2 xmlns\:ns1\=\"urn\:abc\" xmlns\:ns3\=\"http\:\/\/www\.example\.com\/foo\" xmlns\:ns2\=\"urn\:def\"\>someQName\<\/ns3\:foo2\>
+
+
+BUILD SUCCESSFUL
+Total time\: .*

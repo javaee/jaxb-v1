@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+
+<toc>
+  <chapter name="Main">
+	  <document name="Release Notes" 
+	            url="ReleaseNotes.html"/>
+	  <document name="XJC" 
+	            url="xjc.html"/>
+	  <document name="Ant task" 
+	            url="ant.html"/>
+	  <document name="Sample Apps" 
+	            url="samples.html"/>
+	  <document name="Changelog" 
+	            url="changelog.html"/>
+  </chapter>
+  <chapter name="JAXB RI Extensions">
+	  <document name="Runtime Properties" 
+	            url="vendorProperties.html"/>
+	  <document name="XJC Customizations" 
+	            url="vendorCustomizations.html"/>
+  </chapter>
+  <chapter name="JAXB RI Schema Languages">
+	  <document name="W3C XML Schema" 
+	            url="vendorSchemaLangs.html#xschema"/>
+	  <document name="RELAX NG" 
+	            url="relaxng.html"/>
+	  <document name="DTD" 
+	            url="vendorSchemaLangs.html#dtd"/>
+  </chapter>
+  <chapter name="JAXB Community">
+      <document name="Java.net Homepage"
+                url="http://jaxb.dev.java.net"/>
+      <document name="Developer interest list"
+                url="https://jaxb.dev.java.net/servlets/ProjectMailingListList"/>
+      <document name="FAQ"
+                url="https://jaxb.dev.java.net/faq/index.html"/>
+  </chapter>
+</toc>

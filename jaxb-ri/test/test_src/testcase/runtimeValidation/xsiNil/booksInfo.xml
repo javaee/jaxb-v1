@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Collection>
+	<books>
+		<magazine>
+			<magazineName></magazineName>
+			<Price units="INR" currency="Indian rupees"/>
+		</magazine>
+	</books>
+</Collection>
+

@@ -1,0 +1,210 @@
+#
+# Schema for schema suite file (.ssuite)
+# 
+# $Id: ssuite.rnc,v 1.1 2004-06-25 21:12:55 kohsuke Exp $
+# 
+# 
+
+namespace local = ""
+
+# list of defined extensions
+include "performance.rnc"
+include "QA.rnc"
+include "common.rnc"
+
+start = testSuite
+
+# test suite is a container of testCase/testSuite.
+testSuite =
+  element testSuite {
+    since?,
+    until?,
+    excludeFrom?,
+    
+    title,
+    description,
+    # used as the prefix of all the package names.
+    element package {text}?,
+    
+    # metadata properties
+    properties,
+    
+    # tests
+    (testCase|testSuite)*
+  }
+
+testCase =
+  element testCase {
+    since?,
+    until?,
+    excludeFrom?,
+    
+    # title of this test. It is also used as
+    # Java package name of the generated code,
+    # so it should be things like "abc.def.ghi15"
+    title,
+    
+    description?,
+    
+    # metadata properties
+    properties,
+    
+    (
+      schema &        # schema to be compiled
+      bindings* &     # external binding files
+      resource* &     # other XML files to be produced
+      instance* &     # instance documents
+      
+      # other data
+      ssuiteTestCaseBody
+    )
+  }
+
+# extension point.
+# specialization of the batch test framework
+# will add their stuff here.
+ssuiteTestCaseBody &= empty
+
+
+title = element title { text }
+
+# if the test doesn't apply to older versions of JAXB, use this
+# to mark the fact
+since = attribute since { version }
+
+# if the test doesn't apply to newer versions of JAXB, use this
+# to mark the fact
+until = attribute until { version }
+
+
+
+# if the test needs to be excluded from certain versions, use
+# this to mark the fact. If 'all' is specified, it will be considered
+# to be excluded from all the versions.
+excludeFrom = attribute excludeFrom { list { version* } | "all" }
+
+
+
+
+
+
+##
+## human-readable description of a test
+##
+description = element description { text }
+
+
+##
+##
+## schema file
+##
+##
+schema =
+  element schema {
+    
+    # optional @fail can be used to mark negative test cases.
+    # negative schemas are expected to fail to compile.
+    attribute fail { "true" }?,
+    
+    # optional @strict can be used to compile the schema
+    # in the strict conformance mode.
+    attribute strict { "true" }?,
+    
+    # additional XJC command line option that should be used
+    # when compiling schemas.
+    attribute xjcopts {text}?,
+    
+    # optional parent class loader name. When testing
+    # partial code generation, this option can be used
+    # to verify that the code works without certain libraries.
+    #
+    # the value should be the name of a forehead class loader
+    attribute classLoader {text}?,
+    
+    ## @language is used to specify the schema language of this schema.
+    ## Currently, DTD, RELAX NG, and XML Schema are the supported languages.
+    (
+      (# XML Schema
+        attribute language {"http://www.w3.org/2001/XMLSchema"},
+        # put schema here
+        anyElement) |
+      (# RELAX NG
+        attribute language {"http://relaxng.org/ns/structure/1.0"},
+        anyElement ) |
+      (# DTD
+        attribute language {"DTD"},
+        text         # DTD is just a text. Usually you need CDATA section.
+      )
+    )
+  }
+
+
+##
+##
+## resource file
+##
+## resource files are XML files that will be produced into the output
+## directory. Usually resource files are used for schemas that are
+## included/imported from the primary schema.
+## 
+##
+resource =
+  element resource {
+    attribute name {text},  # name of the resource file.
+    anyElement              # XML
+  }
+
+
+##
+##
+## external binding file
+##
+##
+bindings =
+  element bindings {
+    attribute name {text}?, # optional binding file name. "test.jaxb" will be used if omitted
+    anyElement              # binding declarations
+  }
+
+
+##
+##
+## instance document to be used in a test
+##
+##
+instance =
+  element instance {
+    ## properties for this instance.
+    ## properties can be accessible from scripts by
+    ## instance.properties.getProperty("abc")
+    ##
+    ## the property name must be something other than "document"
+    element * - document { text }*,
+    element document {
+      ## actual instance document
+      anyElement
+    }
+  }
+
+
+
+
+
+
+##
+##
+## other metadata descriptions
+##
+##
+# properties are inherited from parents to children
+# and accesssible as properties of each test case.
+properties = element properties {
+  element local:* {text}*
+}?
+
+
+# any element in any namespace
+anyElement =
+  element * {
+    (anyElement|attribute * {text}|text)*
+  }

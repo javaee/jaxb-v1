@@ -1,0 +1,51 @@
+#
+# Schema for performance test.
+# 
+# This is used as a part of the unit test descriptor.
+# 
+# $Id: performance.rnc,v 1.1 2004-06-25 21:12:55 kohsuke Exp $
+# 
+# 
+
+
+# this extension contributues
+# <performance> elements into the body.
+ssuiteTestCaseBody &= performance*
+testspecMetaTestCaseBody &= performance*
+
+
+performance = grammar {
+
+  # each performance element describes one performance measurement
+  # configuration.
+  start = element performance {
+    # the program to be measured
+    scenario,
+    # how we measure it
+    profiler,
+    # and how the program is run
+    runMode
+  }
+  
+  # scenario can be either a custom Java class that implements Scenario
+  scenario |=
+    attribute scenario {text} # class name in the batch.performance.scenarios package
+  
+  # ... or it can be a bean-shell based script
+  scenario |=
+    element scenario {
+      # three scripts will be run in a sequence, and only the "run" portion
+      # will be measured. Variables assigned in the earlier stage is visible
+      # to later stages.
+      element prepare  {text}, # set up the necessary objects, etc.
+      element run      {text}, # this part will be measured
+      element teardown {text}  # clean up
+    }
+  
+  # profiler is either "memory" or "speed"
+  profiler = attribute profiler {"memory"|"speed"}
+  
+  # the scenario can be run against an instance (if @run is missing),
+  # or by having @run="once", it can be run against the whole test.
+  runMode = attribute run {"once"}?
+}

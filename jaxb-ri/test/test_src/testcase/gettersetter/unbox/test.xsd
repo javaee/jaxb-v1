@@ -1,0 +1,33 @@
+<?xml version = "1.0"?>
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.unbox">
+  
+  <!-- reference type, (1,1) -->
+  <xs:element name="ref-req">
+    <xs:complexType>
+      <xs:attribute name="att" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- reference type, (0,1) -->
+  <xs:element name="ref-opt">
+    <xs:complexType>
+      <xs:attribute name="att" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- boxed type, (1,1) -->
+  <xs:element name="box-req">
+    <xs:complexType>
+      <xs:attribute name="att" type="xs:int" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- boxed type, (0,1) -->
+  <xs:element name="box-opt">
+    <xs:complexType>
+      <xs:attribute name="att" type="xs:int"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

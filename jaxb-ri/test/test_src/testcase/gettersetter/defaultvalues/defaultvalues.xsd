@@ -1,0 +1,17 @@
+<?xml version = "1.0"?>
+<!-- Unit testcase for getter/setter generation -->
+<!-- Test for element declared with default and fixed values-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+  	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    jaxb:package="test.gettersetter.default">
+  <xs:element name = "item">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element name="quantity" default="1" type="xs:string"/>
+      </xs:sequence>
+      <xs:attribute name="type" default="book" type="xs:string"/>
+      <xs:attribute name="store" fixed="Mybookshop" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

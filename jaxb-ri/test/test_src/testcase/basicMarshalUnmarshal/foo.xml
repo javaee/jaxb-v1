@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<foofolder>
+
+	<foocard>
+		<fooname>Dracula</fooname>
+		<fooaddress>Transylvania</fooaddress>
+		<size>10</size>
+	</foocard>
+
+	<foocard>
+		<fooname>Godzilla</fooname>
+		<fooaddress>Tokyo</fooaddress>
+		<size>11</size>
+	</foocard>
+
+	<foocard>
+		<fooname>King Ghidora</fooname>
+		<fooaddress>Tokyo</fooaddress>
+		<size>12</size>
+	</foocard>
+
+</foofolder>

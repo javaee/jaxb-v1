@@ -1,0 +1,21 @@
+start = group
+
+# a group definition
+group = 
+  element group {
+    # used when test/@href is resolved
+    attribute xml:base {text}?,
+    
+    # name of this group
+    element name {text},
+    # what this group is about?
+    element description {text}?,
+    
+    # tests in this group
+    element test {
+      attribute href {text} # reference to the test directory
+    }*,
+    
+    # sub-groups
+    group*
+  }

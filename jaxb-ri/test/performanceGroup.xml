@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+   This file defines grouping of performance tests for visualization.
+-->
+<group xml:base="schemas/">
+  <name>JAXB RI Performance tests</name>
+  
+  <group xml:base="WarmUp/">
+    <name>Warm up</name>
+    <description>
+      tests that are used mostly just to load relevant classes into memory and JIT-compile them.
+    </description>
+    <test href="dtd" />
+    <test href="relaxng" />
+  </group>
+  
+</group>

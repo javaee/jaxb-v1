@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="screen-name" type="ScreenNameType"/>
+  <xs:complexType name="ScreenNameType">
+     <xs:sequence>
+        <xs:element name="userNames" type="name" maxOccurs="unbounded"/>
+        <xs:element name="userNo">
+           <xs:simpleType>
+             <xs:restriction base="xs:positiveInteger">
+                <xs:minInclusive value="5"/>
+                <xs:maxInclusive value="10"/>
+             </xs:restriction>
+           </xs:simpleType>
+        </xs:element>
+     </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:simpleType name="name">
+     <xs:list itemType="xs:string"/>
+  </xs:simpleType>
+
+</xs:schema>

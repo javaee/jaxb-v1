@@ -1,0 +1,25 @@
+start =
+  element runs {
+    element run {
+      # when this result was obtained
+      attribute date {text},
+      # what command line options were used
+      element parameter {text},
+      
+      element group {
+        # location of testspec.meta file
+        attribute name {text},
+        
+        element result {
+          # scenario to be measured
+          #  "compile" is a special scenario that measures the time/memory
+          #  it took to compile the schema.
+          attribute scenario {text},
+          # instance file that was used, if any
+          attribute instance {text}?,
+          # speed test / memory test
+          attribute mode {"speed"|"memory"}
+        }*
+      }*
+    }*
+  }

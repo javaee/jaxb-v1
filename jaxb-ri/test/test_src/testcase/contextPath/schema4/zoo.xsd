@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="zoo"
+        elementFormDefault="qualified">
+
+	<element name="zoo">
+		<complexType>
+			<sequence>
+				<any namespace="##any" maxOccurs="unbounded" minOccurs="0" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>
+
+

@@ -1,0 +1,9 @@
+<bar:bar xmlns:foo="foo" xmlns:bar="bar" xmlns:baz="baz" xmlns:zoo="zoo">
+	<bar:bar/>
+	<bar:bar>
+		<zoo:zoo />
+	</bar:bar>
+	<foo:foo>
+		<foo:foo />
+	</foo:foo>
+</bar:bar>

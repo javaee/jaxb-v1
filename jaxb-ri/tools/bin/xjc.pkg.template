@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
+# Use is subject to license terms.
+#
+
+# Script to run XJC
+#
+
+WEBSERVICES_LIB=%WEBSERVICES_LIB%
+
+# Set CLASSPATH
+CLASSPATH=`tr '\n' ':' <<EOF
+$WEBSERVICES_LIB/jax-qname.jar
+$WEBSERVICES_LIB/jaxb-api.jar
+$WEBSERVICES_LIB/jaxb-impl.jar
+$WEBSERVICES_LIB/jaxb-xjc.jar
+$WEBSERVICES_LIB/namespace.jar
+$WEBSERVICES_LIB/relaxngDatatype.jar
+$WEBSERVICES_LIB/xsdlib.jar
+EOF`
+
+if [ -n "$JAVA_HOME" ]
+then
+    JAVA=$JAVA_HOME/bin/java
+else
+    JAVA=java
+fi
+ 
+$JAVA $XJC_OPTS -cp "$CLASSPATH" com.sun.tools.xjc.Driver "$@"

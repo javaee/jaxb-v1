@@ -1,0 +1,31 @@
+<?xml version = "1.0"?>
+<!-- Unit testcase for getter/setter generation -->
+<!-- age element multiplicity is 1,1-->
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:package="test.gettersetter.optional2">
+  <xs:element name = "employee">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element ref="address"/>
+        <xs:element name="age" type="xs:int" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="employeeID" type="xs:int"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="address">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="street1" type="xs:string"/>
+        <xs:element name="city" type="xs:string"/>
+        <xs:element name="state" type="xs:string"/>
+        <xs:element name="country" type="xs:string"/>
+        <xs:element name="zip" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+  

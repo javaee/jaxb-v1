@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:b="http://bar.org"
+        targetNamespace="http://bar.org"
+        elementFormDefault="qualified">
+
+	<element name="barfolder">
+		<complexType>
+			<sequence>
+				<element ref="b:barcard" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="barcard">
+		<complexType>
+			<sequence>
+				<element name="barname" type="string"/>
+				<element name="baraddress" type="string"/>
+				<element name="barsize" type="int"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="barbletch" type="string"/>
+
+</schema>
+
+

@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<!-- Use the following doctypedecl for DTD aware editing.  Comment out b/c
+     it presumably causes Ant problems for some users.
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "project.dtd">
+-->
+
+<project name="jaxb" basedir="." default="deploy">
+
+    <description>
+        JAXB-RI Master Project
+        ======================
+ 
+        This project is organized into multiple sub-projects.  Each sub-project is
+        responsible for building itself and then deploying itself back up into the
+        main project.  The build files are setup such that you can build the sub-
+        projects independently or all together.
+
+        For example, building the codemodel sub-project causes all of codemodel sources 
+        in jaxb-ri/codemodel/src to be compiled into jaxb-ri/codemodel/build/classes.
+        When the codemodel sub-project is deployed, all of the class files from
+        jaxb-ri/codemodel/build/classes are copied into jaxb-ri/build/classes.
+
+        To build the entire project, simply run 'ant deploy' in the jaxb-ri directory.
+        To build a sub-project, simply cd into the directory and run 'ant compile'
+        or 'ant deploy'.
+
+        To create a distribution of the entire project, simply run 'ant dist' in
+        the jaxb-ri directory.
+  
+        Note: running 'ant dist' from the root project will not cause the spec
+        sub-project to be built.  Please run 'ant -projecthelp' in the spec project
+        for more detail.
+
+       $Id: build.xml,v 1.1 2004-06-25 21:11:00 kohsuke Exp $
+    </description>
+
+    <!-- initialize build properties -->
+
+    <property file="${basedir}/build.properties" />
+
+    <target name="init">
+        <!-- this property is used by "xjc -version" and is also set in each of the
+             generated ObjectFactory classes.  It should be set via the RE build
+             scripts via 'ant -Dbuild.id="b08"' otherwise the current date and time
+             will be used -->
+        <tstamp>
+            <format property="now" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+        </tstamp>
+        <property name="build.id" value="${now}(${user.name})" />
+        <property name="build.version" value="${release.impl.version}-${build.id}-${release.impl.version.suffix}" />
+        <echo message="The build id is: ${build.version}" />
+    </target>
+
+    <!-- compile all of the sources into <project>/build/classes-->
+    <target name="compile"
+            depends="init"
+            description="compile codemodel, runtime, and xjc sub-projects">
+        <ant dir="codemodel"          target="compile-codemodel" />
+        <ant dir="runtime"            target="compile-runtime" />
+        <ant dir="runtime-deprecated" target="compile-runtime-deprecated" />
+        <ant dir="xjc"                target="compile-xjc" />
+    </target>
+    
+    
+    <!-- run unit tests -->
+    <target name="unit-test"
+            description="run all the unit tests">
+        <ant dir="xjc"                target="run-xjc-test" />
+        <ant dir="test"               target="test-all" />
+        <ant dir="runtime"            target="test-runtime" />
+        <ant dir="samples"            target="test-samples" />
+    </target>
+
+
+    <!-- deploy classes into <root>/build/classes -->
+    <target name="deploy" 
+            depends="compile"
+            description="copy codemodel, runtime, and xjc classes to jaxb-ri/build/classes">
+        <mkdir dir="${jaxb.classes}" />
+        <ant dir="codemodel"          target="deploy-codemodel" />
+        <ant dir="runtime"            target="deploy-runtime" />
+        <ant dir="runtime-deprecated" target="deploy-runtime-deprecated" />
+        <ant dir="xjc"                target="deploy-xjc" />
+        <ant antfile="tools/build.xml" target="deploy" />
+    </target>
+
+    <!-- process sample app meta data -->
+    <target name="process-samples"
+            description="process sample.meta data">
+        <ant dir="samples" target="process-samples"/>
+    </target>
+
+    <!-- generate a distribution -->
+    <target name="dist" 
+            depends="deploy"
+            description="create a distribution in jaxb-ri/dist">
+        <mkdir dir="${jaxb.dist}" />
+        <mkdir dir="${jaxb.dist}/bin" />
+        <mkdir dir="${jaxb.dist}/lib" />
+        <mkdir dir="${jaxb.dist}/docs/api" />
+        
+        <!-- copy docs -->
+        <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip" 
+               dest="${jaxb.dist}/docs/api" />
+        <copy todir="${jaxb.dist}/docs" overwrite="true">
+            <fileset dir="${jaxb.docs}">
+                <include name="**/*.html"/>
+                <include name="**/*.css"/>
+                <include name="**/*.txt"/>
+                <include name="**/*.gif"/>
+                <include name="**/toc.xml"/>
+            </fileset>
+        </copy>
+        <replace dir="${jaxb.dist}/docs">
+            <include name="**/*.html"/>
+            <replacefilter token="@@SPEC_VERSION@@" 
+                           value="${release.spec.version}" />
+            <replacefilter token="@@IMPL_VERSION@@" 
+                           value="${release.impl.version}"/>
+            <replacefilter token="@@JWSDP_VERSION@@" 
+                           value="${jwsdp.impl.version}"/>
+            <replacefilter token="@@JWSDP_ROOTDIR@@" 
+                           value="${jwsdp.root.directory}"/>
+        </replace>
+        <java classname="com.sun.tools.tocproc.TocProcessor" fork="true">
+            <classpath>
+                <!-- make sure JAXP xalan comes before Apache xalan -->
+                <fileset dir="${jaxb.libs.redist}" includes="**/*.jar"/>
+                <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
+                <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+            </classpath>
+            <arg value="${jaxb.dist}/docs"/>
+            <!-- if you need to attach debugger ... -->
+            <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/-->
+        </java>
+        <delete> 
+            <fileset dir="${jaxb.dist}/docs" includes="toc.xml"/>
+        </delete>
+
+        <!-- copy redist jars -->
+        <copy todir="${jaxb.dist}/lib">
+            <fileset dir="${jaxb.libs.redist}">
+                 <include name="**/*.jar"/>
+                 <include name="**/*.zip"/>
+            </fileset>
+        </copy>
+
+        <!-- generate jaxb-impl.jar: runtime subproject-->
+        <copy tofile="${runtime.root}/manifest.rt" 
+              file="${manifest.root}/manifest.mf"
+              overwrite="yes"/>
+        <replace file="${runtime.root}/manifest.rt">
+            <replacefilter token="@@SPEC_VERSION@@" 
+                           value="${release.spec.version}" />
+            <replacefilter token="@@IMPL_VERSION@@" 
+                           value="${release.impl.version}"/>
+            <replacefilter token="@@VENDOR_ID@@" 
+                           value="com.sun"/>
+            <replacefilter token="@@EXTENSION_NAME@@" 
+                           value="com.sun.xml.bind"/>
+        </replace>
+
+        <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
+             manifest="${runtime.root}/manifest.rt"
+             duplicate="fail">
+            <fileset dir="${runtime.classes}"/>
+            <fileset dir="${runtime-deprecated.classes}"/>
+        </jar>
+
+        <!-- generate jaxb-xjc.jar: xjc and codemodel subprojects -->
+        <copy tofile="${xjc.root}/manifest.xjc" 
+              file="${manifest.root}/manifest.mf"
+              overwrite="yes"/>
+        <replace file="${xjc.root}/manifest.xjc">
+            <replacefilter token="@@SPEC_VERSION@@" 
+                           value="${release.spec.version}" />
+            <replacefilter token="@@IMPL_VERSION@@" 
+                           value="${release.impl.version}"/>
+            <replacefilter token="@@VENDOR_ID@@" 
+                           value="com.sun"/>
+            <replacefilter token="@@EXTENSION_NAME@@" 
+                           value="com.sun.tools.xjc"/>
+        </replace>
+
+        <!-- unjar xsom.jar,relaxng.javadt.jar, and resolver.jar and rejar it into xjc.jar -->
+        <mkdir dir="${jaxb.libs.rebundle}/tmp"/>
+        <unjar src="${jaxb.libs.rebundle}/xsom.jar" dest="${jaxb.libs.rebundle}/tmp"/>
+        <unjar src="${jaxb.libs.rebundle}/resolver.jar" dest="${jaxb.libs.rebundle}/tmp"/>
+        <delete dir="${jaxb.libs.rebundle}/tmp/META-INF"/>
+        <unjar src="${jaxb.libs.rebundle}/relaxng.javadt.jar" dest="${jaxb.libs.rebundle}/tmp"/>
+        <delete> 
+            <fileset dir="${jaxb.libs.rebundle}/tmp/META-INF" excludes="**/services/*" />
+        </delete>
+        <!-- files in the services directory needs to be protected. -->
+        
+        <!-- the manifest classpath isn't quite like any of the path structures
+             supported by Ant, so build the list the old fashioned way -->
+        <!--
+          even though we don't distribute dom4j, we need to be able to find them
+          if they are in the classpath.
+        -->
+        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb-libs.jar sax.jar dom.jar jaxp-api.jar xercesImpl.jar xalan.jar jax-qname.jar namespace.jar xsdlib.jar relaxngDatatype.jar dom4j.jar" />
+        <echo file="${xjc.root}/manifest.xjc" append="true"
+>Main-Class: com.sun.tools.xjc.Driver
+Class-Path: ${manifest.classpath}
+
+</echo>
+        <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
+             manifest="${xjc.root}/manifest.xjc"
+         duplicate="fail">
+            <fileset dir="${xjc.classes}"/>
+            <fileset dir="${codemodel.classes}"/>
+            <fileset dir="${jaxb.libs.rebundle}/tmp"/>
+        </jar>
+        <!-- clean up tmp dir -->
+        <delete dir="${jaxb.libs.rebundle}/tmp"/>
+
+       <!-- unjar everything except xsom.jar and relaxng.javadt.jar in
+            the rebundle dir and rejar them as a single jar file -->
+        <mkdir dir="${jaxb.libs.rebundle}/tmp"/>
+        <unjar dest="${jaxb.libs.rebundle}/tmp">
+            <fileset dir="${jaxb.libs.rebundle}">
+                <include name="**/*.jar"/>
+                <exclude name="xsom.jar"/>
+                <exclude name="relaxng.javadt.jar"/>
+                <exclude name="resolver.jar"/>
+            </fileset>
+        </unjar>
+        
+        <!-- delete the manifest.mf, but be careful to preserve the services dir -->
+        <delete file="${jaxb.libs.rebundle}/tmp/META-INF/MANIFEST.MF"/>
+        <copy tofile="${jaxb.libs.rebundle}/tmp/META-INF/MANIFEST.MF" 
+              file="${manifest.root}/manifest.mf"
+              overwrite="yes"/>
+        <replace file="${jaxb.libs.rebundle}/tmp/META-INF/MANIFEST.MF">
+            <replacefilter token="@@SPEC_VERSION@@" 
+                           value="${release.spec.version}" />
+            <replacefilter token="@@IMPL_VERSION@@" 
+                           value="${release.impl.version}"/>
+            <replacefilter token="@@VENDOR_ID@@" 
+                           value="com.sun"/>
+            <replacefilter token="@@EXTENSION_NAME@@" 
+                           value="com.sun.msv"/>
+        </replace>
+        <jar jarfile="${jaxb.dist}/lib/jaxb-libs.jar"
+             duplicate="fail"
+             manifest="${jaxb.libs.rebundle}/tmp/META-INF/MANIFEST.MF">
+            <fileset dir="${jaxb.libs.rebundle}/tmp"/>
+        </jar>
+        <delete dir="${jaxb.libs.rebundle}/tmp"/>
+
+        <!-- copy bin scripts -->
+        <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
+        <copy file="${jaxb.root}/tools/bin/xjc.sh"  todir="${jaxb.dist}/bin"/>
+        <copy file="${jaxb.root}/tools/bin/ant.bat" todir="${jaxb.dist}/bin"/>
+        <copy file="${jaxb.root}/tools/bin/lcp.bat" todir="${jaxb.dist}/bin"/>
+        <copy file="${jaxb.root}/tools/bin/ant" todir="${jaxb.dist}/bin"/>
+        <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
+        <chmod file="${jaxb.dist}/bin/ant" perm="ugo+rx"/>
+
+        <!-- process samples -->
+        <!-- if wspack.home is set, then process samples as 'JWSDP',
+             otherwise process samples as 'RI' -->
+        <condition property="in.wspack">
+            <isset property="wspack.home"/>
+        </condition>
+        <antcall target="process-sample.inwspack"/>
+        <antcall target="process-sample.notinwspack"/>
+        
+        <!-- copy sample apps -->
+        <mkdir dir="${jaxb.dist}/samples"/>
+        <copy todir="${jaxb.dist}/samples">
+            <fileset dir="${jaxb.root}/samples/samples-src"
+                     defaultexcludes="yes">
+                <exclude name="CHANGELOG.txt"/>
+                <exclude name="**/build.golden.regexp" />
+                <!-- .cvsignore is a control file used for CVS -->
+                <exclude name="**/.cvsignore" />
+                <exclude name="**/sample.meta" />
+                <exclude name="**/gen-src/**/*" />
+                <exclude name="**/classes/**/*" />
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- this target will be run when the jwsdp build is driving.  It will
+         cause the sample apps to have a jwsdp appropriate classpath -->
+    <target name="process-sample.inwspack" if="in.wspack">
+        <ant dir="samples" target="process-samples">
+            <property name="samples.target" value="JWSDP"/>
+        </ant>
+        <!--replace dir="${jaxb.dist}/samples">
+            <include name="**/build.xml"/>
+            <replacefilter token="@@JAXB-RI_BUILD_PATH@@" />
+        </replace-->
+    </target>
+    
+    <!-- this target will be run when building a standalone RI dist.  It
+         will cause the sample apps to have an RI appropriate classpath -->
+    <target name="process-sample.notinwspack" unless="in.wspack">
+        <ant dir="samples" target="process-samples">
+            <property name="samples.target" value="RI"/>
+        </ant>
+        <!--replace dir="${jaxb.dist}/samples">
+            <include name="**/build.xml"/>
+            <replacefilter token="@@JAXB-RI_BUILD_PATH@@" 
+                           value="&lt;fileset dir=&quot;../..&quot; includes=&quot;lib/*.jar&quot; />" />
+        </replace-->
+    </target>
+    
+    <!-- generate source code zip files for JAXB RI jar files -->
+    <target name="src-zip"
+            description="source zip files for JAXB RI jar files.">
+      
+      <zip zipfile="jaxb-impl.src.zip">
+        <fileset dir="${runtime.src}"/>
+      </zip>
+      
+      
+      <delete dir="tmp" />
+      <mkdir dir="tmp" />
+      
+      <unjar src="${jaxb.libs}/src/xsom-src.zip" dest="tmp"/>
+      <unjar src="${jaxb.libs}/src/resolver-src.zip" dest="tmp/src"/>
+      <unjar src="${jaxb.libs}/src/relaxng.javadt.src.zip" dest="tmp"/>
+      
+      <zip zipfile="jaxb-xjc.src.zip">
+        <fileset dir="${xjc.src}"/>
+        <fileset dir="${codemodel.src}"/>
+        <fileset dir="tmp/src"/>
+      </zip>
+      
+      
+      <delete dir="tmp" />
+      <mkdir dir="tmp" />
+      
+      <unjar src="${jaxb.libs}/src/iso-relax-src.zip" dest="tmp"/>
+      <unjar src="${jaxb.libs}/src/msv-src.zip" dest="tmp"/>
+      
+      <zip zipfile="jaxb-libs.src.zip">
+        <fileset dir="tmp/src"/>
+      </zip>
+      
+      <delete dir="tmp" />
+    </target>
+    
+    
+    
+    
+    
+    <target name="bin-installer"
+            description="generate the binary distribution installer with the license click-through"
+            depends="dist">
+        
+        <tstamp />
+        
+        <property name="bin.installer.stage" value="${jaxb.root}/build/bin-installer" />
+        <property name="bin.installer.className" value="JAXB_RI_${DSTAMP}" />
+        <property name="bin.installer.class" value="${jaxb.root}/build/${bin.installer.className}.class" />
+        
+        <mkdir dir="${bin.installer.stage}"/>
+        <zip destfile="${bin.installer.stage}/package.zip">
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${DSTAMP}" />
+        </zip>
+        
+        <!-- build installer -->
+        <ant dir="tools/installer" />
+        
+        <jar destfile="${jaxb.root}/build/bin-installer.jar">
+            <manifest>
+                <attribute name="Main-class" value="com.sun.tools.xjc.installer.Main"/>
+            </manifest>
+            <fileset dir="${bin.installer.stage}" />
+            <fileset dir="${jaxb.root}/tools/installer/build/classes"
+                includes="**/*" excludes="*" /><!-- exclude things in the root package -->
+            <zipfileset dir="${jaxb.root}" includes="PRE-RELEASE-LICENSE.txt" fullpath="license.txt"/>
+        </jar>
+        
+        <!-- pack it into a class -->
+        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC.jar" fork="true">
+            <arg path ="${jaxb.root}/build/bin-installer.jar"/>
+            <arg value="${bin.installer.className}" />
+            <arg path ="${bin.installer.class}"/>
+        </java>
+        
+        <echo>binary installer produced at ${bin.installer.class}</echo>
+    </target>
+    
+    
+    
+    <patternset id="src-includes" 
+                description="This pattern set defines which files will be in/excluded in the src bundle">
+        <include name="**/*.java"/>
+        <include name="**/*.properties"/>
+    </patternset>
+    
+    <target name="src-installer"
+            description="generate the source code distribution installer with the license click-through"
+            depends="dist">
+        
+        <tstamp />
+        
+        <property name="src.installer.stage" value="${jaxb.root}/build/src-installer" />
+        <property name="src.installer.className" value="JAXB_RI_src_${DSTAMP}" />
+        <property name="src.installer.class" value="${jaxb.root}/build/${src.installer.className}.class" />
+        <property name="src.installer.tmp" value="${jaxb.root}/build/src-tmp" />
+        <property name="src.installer.tmpsrc" value="${src.installer.tmp}/jaxb-ri-${DSTAMP}" />
+
+        <delete dir="${src.installer.tmp}" failonerror="false" />
+
+        <!-- create jaxb-src.zip -->        
+        <mkdir dir="${src.installer.tmpsrc}/src" />
+
+        <!-- would be nice if zipgroupset supported @prefix - instead, we
+             have to unpack these src zips and rezip them -->        
+        <unzip dest="${src.installer.tmpsrc}/src" overwrite="no">
+            <fileset dir="${jaxb.libs}/src">
+                <!-- don't grab spec src from jaxb-ri/spec/src -->
+                <include name="${jaxb.libs.redist}/jaxb-api-src.zip" />
+                <!-- grab the rest of the src bundles -->
+                <include name="relaxng.javadt.src.zip"/>
+            </fileset>
+        </unzip>
+        
+        <zip destfile="${src.installer.tmp}/jaxb-src.zip" duplicate="fail" whenempty="fail">
+            <zipfileset dir="${xjc.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+                <patternset refid="src-includes"/>
+            </zipfileset>
+            <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+                <patternset refid="src-includes"/>
+            </zipfileset>
+            <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+                <patternset refid="src-includes"/>
+            </zipfileset>
+            <zipfileset dir="${spec.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+                <patternset refid="src-includes"/>
+            </zipfileset>
+            <zipfileset dir="${src.installer.tmp}" defaultexcludes="true">
+                <patternset refid="src-includes" />
+            </zipfileset>
+            <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
+                fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
+            <!-- additional jar files -->
+            <zipfileset dir="${jaxb.libs}/rebundle" prefix="jaxb-ri-${DSTAMP}/lib">
+                <include name="isorelax.jar"/>
+                <include name="msv.jar"/>
+                <include name="resolver.jar"/>
+                <include name="xsom.jar"/>
+            </zipfileset>
+            <zipfileset dir="${jaxb.libs}/redist" prefix="jaxb-ri-${DSTAMP}/lib">
+                <include name="xsdlib.jar"/>
+                <include name="xercesImpl.jar"/>
+                <include name="xalan.jar"/>
+                <include name="relaxngDatatype.jar"/>
+            </zipfileset>
+            <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${DSTAMP}/lib">
+                <include name="xsom-src.zip"/>
+            </zipfileset>
+        </zip>
+        
+        <mkdir dir="${src.installer.stage}"/>
+        <!-- TODO: how are we going to pack things up? -->
+        <zip destfile="${src.installer.stage}/package.zip" whenempty="fail">
+            <zipfileset dir="${src.installer.tmp}" includes="*.zip"/>
+        </zip>
+        
+        <!-- test the generated source bundle -->
+        <unzip dest="${src.installer.tmp}/test" src="${src.installer.tmp}/jaxb-src.zip"/>
+        <copy tofile="${src.installer.tmp}/test/jaxb-ri-${DSTAMP}/lib/dom4j.jar" file="${jaxb.libs.util}/dom4j.jar"/>
+        <ant dir="${src.installer.tmp}/test/jaxb-ri-${DSTAMP}" inheritAll="false" inheritRefs="false"/>
+
+        <!-- delete the srctmp dir -->
+        <delete dir="${src.installer.tmp}"/>
+        
+        <!-- build installer -->
+        <ant dir="tools/installer" />
+        
+        <jar destfile="${jaxb.root}/build/src-installer.jar">
+            <manifest>
+                <attribute name="Main-class" value="com.sun.tools.xjc.installer.Main"/>
+            </manifest>
+            <zipfileset dir="${src.installer.stage}" />
+            <zipfileset dir="${jaxb.root}/tools/installer/build/classes" includes="**/*" excludes="license.txt" />
+            <zipfileset dir="${jaxb.root}" includes="JRL.txt" fullpath="license.txt"/>
+        </jar>
+        
+        <!-- pack it into a class -->
+        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC.jar" fork="true">
+            <arg path ="${jaxb.root}/build/src-installer.jar"/>
+            <arg value="${src.installer.className}" />
+            <arg path ="${src.installer.class}"/>
+        </java>
+        
+        <echo>source installer produced at ${src.installer.class}</echo>
+    </target>
+    
+    <target name="installers"
+            depends="bin-installer,src-installer"
+            description="build both the binary and the source installer" />
+    
+    
+    
+    <!-- generate api docs -->
+    <target name="javadoc"
+            description="generate javadocs for spec and codemodel then copy to jaxb-ri/docs">
+        <ant dir="codemodel" target="javadoc-codemodel" />
+        <ant dir="spec"      target="javadoc-spec" />
+        <mkdir dir="${jaxb.docs}/api/codemodel" />
+        <mkdir dir="${jaxb.docs}/api/spec" />
+        <copy todir="${jaxb.docs}/api/codemodel">
+            <fileset dir="${codemodel.docs}/api"/>
+        </copy>
+        <copy todir="${jaxb.docs}/api/spec">
+            <fileset dir="${spec.docs}/api"/>
+        </copy>
+    </target>
+
+
+    <!-- clean all of the builds -->
+    <target name="clean"
+            description="clean dist, build, docs, and each sub-project">
+        <!-- clean dist, and srcbundle -->
+        <delete dir="${jaxb.dist}" />
+        <delete dir="${srcbundle.dist}" />
+
+        <!-- clean deployed classes -->
+        <delete dir="${jaxb.root}/build" />
+
+        <!-- clean up docs and dists -->
+        <!-- don't delete the top level docs directory -->
+        <delete dir="${jaxb.docs}/api" />
+        <!-- <delete dir="${jaxb.root}/dist" /> -->
+
+        <!-- clean sub-projects -->
+        <ant dir="codemodel"          target="clean-codemodel" />
+        <ant dir="test"               target="clean-test" />
+        <ant dir="spec"               target="clean-spec" />
+        <ant dir="runtime"            target="clean-runtime" />
+        <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />
+        <ant dir="xjc"                target="clean-xjc" />
+        <ant dir="pkg"                target="clean-pkg" />
+        <ant dir="samples"            target="clean-samples"/>
+        
+        <!-- clean tools -->
+        <ant dir="tools"              target="clean-tools"/>
+    </target>
+
+
+    <!-- wspack targets -->
+    <target name="wspack"
+            description="Create a jaxb distribution for the JWSDP">
+        <echo message=" build.home is set to ${build.home}"/>
+        <echo message="  dist.home is set to ${dist.home}"/>
+        <echo message="wspack.home is set to ${wspack.home}"/>
+        
+        <!-- replicate the build dirs from our build in ${build.home} -->
+        <mkdir dir="${build.home}/build/classes"/>
+        <mkdir dir="${build.home}/codemodel/build/classes"/>
+        <mkdir dir="${build.home}/runtime/build/classes"/>
+        <mkdir dir="${build.home}/xjc/build/classes"/>
+        
+        <!-- we need to redefine some of the jaxb properties when being built
+             by wspack, so we will use <antcall> instead of listing an @depends 
+             on the wspack target.  -->
+             
+        <!-- compile each of the jaxb sub-projects into ${build.home} -->
+        <antcall target="dist">
+            <param name="jaxb.classes"      value="${build.home}/build/classes"/>
+            <param name="codemodel.classes" value="${build.home}/codemodel/build/classes"/>
+            <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
+            <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
+            <param name="jaxb.dist"         value="${dist.home}"/>
+        </antcall>
+        
+        <!-- replace the manifest file in jaxb-xjc.jar -->
+        <copy tofile="${xjc.root}/manifest.xjc.jwsdp" 
+              file="${manifest.root}/manifest.mf"
+              overwrite="yes"/>
+        <replace file="${xjc.root}/manifest.xjc.jwsdp">
+            <replacefilter token="@@SPEC_VERSION@@" 
+                           value="${release.spec.version}" />
+            <replacefilter token="@@IMPL_VERSION@@" 
+                           value="${release.impl.version}"/>
+            <replacefilter token="@@VENDOR_ID@@" 
+                           value="com.sun"/>
+            <replacefilter token="@@EXTENSION_NAME@@" 
+                           value="com.sun.tools.xjc"/>
+        </replace>
+
+        <property name="jaxp.jars"          value="../../jaxp/lib"/>
+        <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
+        <!--
+          even though we don't distribute dom4j, we need to be able to find them
+          if they are in the classpath.
+        -->
+        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb-libs.jar ${jaxp.jars}/endorsed/sax.jar ${jaxp.jars}/endorsed/dom.jar ${jaxp.jars}/jaxp-api.jar ${jaxp.jars}/endorsed/xercesImpl.jar ${jaxp.jars}/endorsed/xalan.jar ${jwsdp.shared}/jax-qname.jar ${jwsdp.shared}/namespace.jar ${jwsdp.shared}/xsdlib.jar ${jwsdp.shared}/relaxngDatatype.jar dom4j.jar ${jwsdp.shared}/dom4j.jar" />
+        <echo file="${xjc.root}/manifest.xjc.jwsdp" 
+              append="true"
+              message="Main-Class: com.sun.tools.xjc.Driver${line.separator}Class-Path: ${manifest.classpath}"/>
+        <mkdir dir="${dist.home}/lib/tmp"/>
+        <unjar src="${dist.home}/lib/jaxb-xjc.jar" dest="${dist.home}/lib/tmp"/>
+        <move file="${dist.home}/lib/jaxb-xjc.jar" tofile="${dist.home}/lib/jaxb-xjc.jar.orig"/>
+        <delete file="${dist.home}/lib/tmp/META-INF/MANIFEST.MF"/>
+        <jar jarfile="${dist.home}/lib/jaxb-xjc.jar"
+             manifest="${xjc.root}/manifest.xjc.jwsdp">
+             <!-- unfortunately, we have to unjar and rejar the files to preserve the
+                  other META-INF files -->
+             <fileset dir="${dist.home}/lib/tmp"/>
+        </jar>
+        <delete dir="${dist.home}/lib/tmp"/>
+        <delete file="${dist.home}/lib/jaxb-xjc.jar.orig"/>
+        
+        
+        <!-- make the wspack dist, excluding unnecessary jaxb files -->
+        <copy todir="${wspack.home}">
+            <fileset dir="${dist.home}">
+                <exclude name="lib/ant.jar"/>
+                <exclude name="lib/dom.jar"/>
+                <exclude name="lib/jaxb-api-src.zip"/>   
+                <exclude name="lib/jaxp-api.jar"/>
+                <exclude name="lib/sax.jar"/>
+                <exclude name="lib/xalan.jar"/>
+                <exclude name="lib/jax-qname.jar"/>
+                <exclude name="lib/xsdlib.jar"/>
+                <exclude name="lib/relaxngDatatype.jar"/>
+                <exclude name="lib/jaxb-api-doc.zip"/>
+                <exclude name="lib/xercesImpl.jar"/>
+                <exclude name="bin/ant"/>
+                <exclude name="bin/ant.bat"/>
+                <exclude name="bin/lcp.bat"/>
+                <exclude name="**/api/"/>
+            </fileset>
+        </copy>
+        
+    </target>
+
+    <target name="srcbundle"
+            description="Create a src bundle for licensees">
+             
+        <!-- mkdir and copy entire tree minus private stuff -->
+        <mkdir dir="${srcbundle.dist}"/>
+        <copy todir="${srcbundle.dist}" includeemptydirs="true">
+            <fileset dir="${jaxb.root}" >
+                <exclude name="**/.cvsignore"/>
+                <exclude name="**/.classpath"/>
+                <exclude name="**/.project"/>
+                <exclude name="**/CHANGELOG.txt"/>
+                <exclude name="relaxng/"/>
+                <exclude name="**/wspack/"/>
+                <exclude name="**/srcbundle/"/>
+                <exclude name="**/CVS/"/>
+                <exclude name="**/test/"/>
+                <exclude name="**/spec/tools/"/>
+                <exclude name="**/xjc/HOWTO*"/>
+                <exclude name="**/tools/bin/*nxjc*"/>
+                <exclude name="**/tools/etc/"/>
+                <exclude name="**/tools/serialbox/"/>
+                <exclude name="**/tools/servlet/"/>
+                <exclude name="**/tools/locator-support/"/>
+                <exclude name="**/tools/ls/"/>
+                <exclude name="**/tools/synchronized-methods/"/>
+                <exclude name="**/tools/webapp-commons/"/>
+                <exclude name="**/tools/prelim-build/"/>
+                <exclude name="**/tools/lib/redist/ant.jar"/>
+                <exclude name="**/tools/lib/util/commons-logging.jar"/>
+                <exclude name="**/tools/lib/util/jaxm*"/>
+                <exclude name="**/tools/lib/util/jdom.jar"/>
+                <exclude name="**/tools/lib/util/js.jar"/>
+                <exclude name="**/tools/lib/util/junit.jar"/>
+                <exclude name="**/tools/lib/util/mailapi.jar"/>
+                <exclude name="**/tools/lib/util/saaj*"/>
+                <exclude name="**/tools/lib/util/servlet.jar"/>
+                <exclude name="**/tools/lib/util/vmtools-0.4.jar"/>
+                <exclude name="**/tools/lib/util/activation.jar"/>
+                <exclude name="**/tools/lib/util/bsh-core.jar"/>
+                <exclude name="**/tools/lib/util/smtp.jar"/>
+                <exclude name="**/tools/lib/util/antlr.jar"/>
+                <exclude name="**/tools/lib/util/bsh.jar"/>
+                <exclude name="**/tools/lib/util/gsc.jar"/>
+                <exclude name="**/tools/lib/util/jing.jar"/>
+                <exclude name="**/tools/lib/src/ant-src.zip"/>
+                <exclude name="**/tools/lib/src/antlr.src.zip"/>
+                <exclude name="**/tools/lib/src/bsh-src.zip"/>
+                <exclude name="**/tools/lib/src/dom4j-src.zip"/>
+                <exclude name="**/tools/lib/src/gsc.src.zip"/>
+                <exclude name="**/tools/lib/src/junit-src.zip"/>
+                <exclude name="**/tools/lib/src/servlet-src.zip"/>
+                <exclude name="**/tools/lib/src/Xerces-J-src.2.2.1.zip"/>
+                <exclude name="**/tools/lib/src/xalan-j_2_4_0-src.zip"/>
+                <exclude name="**/tools/lib/src/xmlpull_1_1_4_src.zip"/>
+                <exclude name="**/pkg/"/>
+                <exclude name="**/samples/*-workaround-*/"/>
+                <exclude name="**/samples/pull-parser/lib/*.jar"/>
+                <!-- these are the only two jars that we require people to get from
+                     the web.  Comment these lines out for testing purposes  -->
+                <exclude name="**/tools/lib/util/dom4j.jar"/>
+            </fileset>
+        </copy>
+
+        <!-- clobber the real build files with the src build files -->
+        <move file="${srcbundle.dist}/src-build.xml"
+              tofile="${srcbundle.dist}/build.xml"
+              overwrite="true"/>
+        <move file="${srcbundle.dist}/src-build.properties" 
+              tofile="${srcbundle.dist}/build.properties"
+              overwrite="true"/>
+        <move file="${srcbundle.dist}/src-build.readme" 
+              tofile="${srcbundle.dist}/HOWTO-buildingJAXB.txt"
+              overwrite="true"/>
+
+    </target>
+
+    <target name="check.os">
+      <condition property="is.unix">
+    <os family="unix"/>
+      </condition>
+    </target>
+
+    <!-- assumes dist target has been run -->
+    <target name="create.pkg" depends="check.os" if="is.unix">
+      <ant dir="pkg" target="deploy-pkg"/>
+    </target>
+
+    <!-- assumes dist target has been run -->
+    <target name="create.rpm" depends="check.os" if="is.unix">
+      <ant dir="rpm" target="deploy-rpm"/>
+    </target>
+
+    <!-- assumes dist target has been run -->
+    <target name="create.zip" description="Create JAXB zip file distribution">
+      <!-- The zip build directory -->
+      <property name="zip.build.dir"    value="${basedir}/build/zip"/>
+
+      <!-- The zip distribution directory -->
+      <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
+ 
+      <!-- make build and output directories -->
+      <mkdir dir="${zip.build.dir}"/>
+      <mkdir dir="${zip.release.dir}"/>
+
+      <!-- copy bin files into the right directory structure -->
+      <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat" overwrite="yes">
+        <fileset dir="${basedir}/tools/bin">
+          <include name="xjc.zip.bat"/>
+        </fileset>
+      </copy>
+
+      <copy tofile="${zip.build.dir}/jaxb/bin/xjc.sh" overwrite="yes">
+        <fileset dir="${basedir}/tools/bin">
+          <include name="xjc.zip.sh"/>
+        </fileset>
+      </copy>
+
+      <!-- copy jaxb jar files into the right directory structure -->
+      <copy todir="${zip.build.dir}/jaxb/lib" overwrite="yes">
+        <fileset dir="${jaxb.dist}/lib">
+          <exclude name="ant.jar"/>
+          <exclude name="dom.jar"/>
+          <exclude name="jaxb-api-src.zip"/>   
+          <exclude name="jaxp-api.jar"/>
+          <exclude name="sax.jar"/>
+          <exclude name="xalan.jar"/>
+          <exclude name="namespace.jar"/>
+          <exclude name="xsdlib.jar"/>
+          <exclude name="jax-qname.jar"/>
+          <exclude name="relaxngDatatype.jar"/>
+          <exclude name="jaxb-api-doc.zip"/>
+          <exclude name="xercesImpl.jar"/>
+        </fileset>
+      </copy>
+
+      <!-- make zip file -->
+      <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" basedir="${zip.build.dir}" whenempty="fail"/>
+
+    </target>
+
+
+    <target name="project.dtd" description="create DTD for DTD-aware editing">
+      <antstructure output="project.dtd"/>
+    </target>
+
+</project>

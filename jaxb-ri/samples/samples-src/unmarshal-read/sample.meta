@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<sample>
+    <title>Using unmarshaller (formerly SampleApp1)</title>
+    <description><![CDATA[
+      This sample application demonstrates how to unmarshal an instance document
+      into a Java content tree and access data contained within it.
+    ]]></description>
+        
+    <since>1.0</since>
+    
+    <project>
+        <xjc schema="po.xsd" package="primer.po"/>
+        <javadoc/>
+        <java mainClass="Main" />
+    </project>
+    
+</sample>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<folder name="MyDocuments">
+  <file name="contact.doc"/>
+  <file name="report.txt"/>
+  <folder name="photos">
+    <file name="axis.jpg"/>
+    <file name="allies.jpg"/>
+  </folder>
+</folder>

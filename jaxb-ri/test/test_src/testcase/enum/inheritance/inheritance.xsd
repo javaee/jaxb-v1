@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- for now, just see if the schema compiles. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="core1" type="sizeAlias"/>
+
+  <!-- derive another type -->
+  <xs:simpleType name="sizeAlias">
+    <xs:restriction base="size"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="size">
+  	<xs:restriction base="xs:NCName">
+  		<xs:enumeration value="small"/>
+  		<xs:enumeration value="medium"/>
+  		<xs:enumeration value="large"/>
+  	</xs:restriction>
+  </xs:simpleType>
+</xs:schema>

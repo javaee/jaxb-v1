@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<!-- $Id: build.xml,v 1.1 2004-06-25 21:14:08 kohsuke Exp $ -->
+<project name="xjc" basedir=".." default="deploy">
+
+  <description>
+    XJC Sub-Project
+    ===============
+    
+    The xjc project contains all of the source code necessary to process
+    schemas and binding customization files into java sources.
+  </description>
+  
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- libraries that are referenced when compiling Java source files -->
+    <path id="javac.classpath">
+      <pathelement path="${codemodel.classes}" />
+      <pathelement path="${runtime.classes}" />
+      <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+      <fileset dir="${jaxb.libs.rebundle}" includes="*.jar"/>
+      <!-- XJCTask depends on Ant. -->
+      <fileset dir="${jaxb.libs.util}" includes="ant.jar"/>
+      <!-- dependency on dom4j ??? -->  
+      <pathelement path="${jaxb.libs.util}/dom4j.jar" />
+    </path>
+
+    <target name="init">
+        <!-- this property is used by "xjc -version" and is also set in each of the
+             generated ObjectFactory classes.  It should be set via the RE build
+             scripts via 'ant -Dbuild.id="b08"' otherwise the current date and time
+             will be used -->
+        <tstamp>
+            <format property="now" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+        </tstamp>
+        <property name="build.id" value="${now}(${user.name})" />
+        <property name="build.version" value="${release.impl.version}-${build.id}-${release.impl.version.suffix}" />
+        <echo message="The build id is: ${build.version}" />
+        <ant dir="${jaxb.root}/tools/source-tidy" target="compile" />
+    </target>
+
+
+    <!-- convenience targets when building alone -->
+    <target name="compile" 
+            depends="compile-xjc"
+            description="compile all xjc src into jaxb-ri/xjc/build/classes" />
+    <target name="clean"   
+            depends="clean-xjc"
+            description="clean jaxb-ri/xjc/build"/>
+    <target name="deploy"  
+            depends="deploy-xjc"
+            description="copy all xjc classes up to jaxb-ri/build/classes"/>
+    <target name="javadoc" 
+            depends="javadoc-xjc" 
+            description="generate javadoc for xjc into jaxb-ri/xjc/docs/api" />
+
+    <!-- check if RelaxNGCC needs to be run -->
+    <target name="ngcc-check">
+      <!-- generate a schema for validation -->
+      <style
+          in ="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.rng"
+          out="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.purified.rng"
+          style="${xjc.src}/purify.xsl" />
+      
+      <uptodate property="ngcc.notrequired"
+           targetfile="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser/Root.java">
+        <srcfiles dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo" includes="binding.rng"/>
+      </uptodate>
+    </target>
+    
+    <!-- run RELAXNGCC -->
+    <target name="ngcc" 
+            unless="ngcc.notrequired" 
+            depends="ngcc-check">
+      <mkdir dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/automata"/>
+      <delete>
+        <fileset dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo">
+          <include name="automata/*.gif"/>
+          <include name="parser/*.java"/>
+        </fileset>
+      </delete>
+      <java classname="relaxngcc.RelaxNGCC" fork="true">
+        <classpath refid="javac.classpath" />
+        <classpath path="${jaxb.libs.util}/relaxngcc.jar"/>
+        
+        <!-- enable debug statements -->
+        <!--arg value="-d"/-->
+        
+        <!-- dump automata -->
+        <!--arg value="- -print-automata"/>
+        <arg path="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/automata"/-->
+        
+        <!-- specify output directory -->
+        <arg value="--target"/>
+        <arg path="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser" />
+        
+        <!-- source file -->
+        <arg path="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.rng"/>
+      </java>
+    </target>
+
+
+   <!-- compile Java source files -->
+    <target name="compile-xjc" 
+            depends="init, ngcc">
+        <!-- no way to 'depend' on codemodel and runtime targets, so just -->
+        <!-- call the targets to make sure they are up to date            -->
+        <ant target="compile" antfile="${codemodel.root}/build.xml" />
+        <ant target="compile" antfile="${runtime.root}/build.xml" />
+
+        <mkdir dir="${xjc.classes}" />
+
+        <!-- always delete these prop files so that the latest build id can be set -->
+        <delete file="${xjc.classes}/com/sun/tools/xjc/Messages.properties"/>
+
+        <javac srcdir="${xjc.src}" destdir="${xjc.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath refid="javac.classpath" />
+        </javac>
+
+        <copy toDir="${xjc.classes}">
+            <fileset dir="${xjc.src}" includes="**/*.properties" />
+            <fileset dir="${xjc.src}" includes="**/*.purified.rng" />
+            <fileset dir="${xjc.src}" includes="**/dtd/bindinfo/bindingfile.rng" />
+            <fileset dir="${xjc.src}" includes="com/sun/tools/xjc/runtime/**/*" />
+        </copy>
+        
+        <!-- pick up the service info for the XJC addon modules -->
+        <copy todir="${xjc.classes}/META-INF">
+            <fileset dir="${xjc.src}/META-INF" />
+        </copy>
+
+        <!-- insert the RI version number into the file prolog message that
+             is placed at the head of every generated file and the output
+             message for "xjc -version" -->
+        <replace file="${xjc.classes}/com/sun/tools/xjc/Messages.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+        </replace>
+        
+        <!-- clean up the xjc runtime java source code -->
+        <java classname="SourceTidy">
+          <classpath>
+            <pathelement location="${jaxb.root}/tools/source-tidy"/>
+          </classpath>
+          <arg path="${xjc.classes}/com/sun/tools/xjc/runtime" />
+        </java>
+        
+        <!-- version string used by the VersionGenerator -->
+        <replace file="${xjc.classes}/com/sun/tools/xjc/generator/Messages.properties">
+            <replacefilter token="@@JAXB_VERSION@@" value="${release.impl.version}"/>
+        </replace>
+    </target>
+
+    <!-- deploy static files back up into the main project -->
+    <target name="deploy-static-xjc" 
+            depends="compile-xjc">
+        <copy toDir="${jaxb.classes}">
+            <fileset dir="${xjc.classes}" includes="**/*.properties" />
+            <fileset dir="${xjc.classes}" includes="**/*.purified.rng" />
+            <fileset dir="${xjc.classes}" includes="**/dtd/bindinfo/bindingfile.rng" />
+        </copy>
+    </target>
+
+    <!-- deploy the classes back up into the main project -->
+    <target name="deploy-xjc" 
+            depends="deploy-static-xjc">
+        <copy toDir="${jaxb.classes}">
+            <fileset dir="${xjc.classes}" includes="**/*.class" />
+        </copy>
+    </target>
+    
+    
+    <target name="compile-xjc-test" 
+            depends="compile-xjc">
+        <!-- compile xjc/test -->
+        <ant dir="${test.root}" target="compile-test"/>
+        <javac srcdir="${xjc.test}" destdir="${xjc.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}">
+            <classpath refid="javac.classpath" />
+            <classpath path="${xjc.classes}" />
+            <classpath path="${runtime.classes}"/>
+            <classpath path="${spec.classes}"/>
+            <classpath>
+              <fileset dir="${jaxb.libs.util}" includes="*.jar" />
+            </classpath>
+        </javac>
+    </target>
+    
+    
+    
+    <target name="run-xjc-test" depends="xjc-junit"
+            description="execute xjc unit tests - requires junit.jar on system classpath"/>
+    
+    <!--
+      run JUnit-based individual tests.
+    -->
+    <target name="xjc-junit"
+            depends="compile-xjc-test"
+            description="runs XJC JUnit tests">
+      <junit printsummary="yes" fork="yes"
+        haltonerror="no" haltonfailure="no">
+        
+        <formatter type="plain" />
+        
+        <classpath path="${java.class.path}" />
+        <classpath refid="javac.classpath"/>
+        <classpath path="${xjc.classes}"/>
+        
+        <batchtest todir="test/log">
+          <fileset dir="${xjc.classes}" includes="**/*JUTest.class"/>
+        </batchtest>
+      </junit>
+    </target>
+    
+    
+    
+    
+    
+    <path id="javadoc.classpath">
+        <pathelement path="${xjc.classes}" />
+        <pathelement path="${codemodel.classes}" />
+        <pathelement path="${runtime.classes}" />
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+    </path>
+
+    
+    <target name="javadoc-xjc" 
+            depends="compile-xjc">
+      <mkdir dir="${xjc.docs}/" />
+      <javadoc packagenames=".,com.sun.tools.xjc.generator.marshaller" 
+            sourcepath="${xjc.src}"
+            destdir="${xjc.docs}"
+            use="true"
+            author="false"
+           
+excludepackagenames="com.sun.tools.xjc.generator.marshaller.PassBaseImpl"
+            version="false"
+            windowtitle="XJC"
+            doctitle="XJC">
+        <classpath refid="javadoc.classpath" />
+      </javadoc>
+    </target>
+    
+
+    <!-- remove all intermediate files -->
+    <target name="clean-xjc">
+      <!-- delete all RelaxNGCC-generated files -->
+      <delete>
+        <fileset dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo">
+          <include name="automata/*.gif"/>
+          <include name="parser/*.java"/>
+        </fileset>
+      </delete>
+      
+      <delete dir="${xjc.root}/build" />
+
+      <delete file="${xjc.root}/manifest.xjc" />
+    </target>
+
+</project>

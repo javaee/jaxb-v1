@@ -1,0 +1,256 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ -- Release Notes
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css"/>
+  </head>
+
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      Release Notes
+    </h1>
+
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@<br />
+      <JAXB-TOC/>
+    </center>
+
+    <p>This document contains information that should help you use this 
+       software library more effectively.  See the 
+       <a href="http://java.sun.com/xml/jaxb/faq.html">JAXB FAQ</a>
+       for additional information.
+    </p>
+    
+    <p>The most up-to-date version of this document can be found 
+       <a href="http://java.sun.com/webservices/docs/1.4/jaxb/ReleaseNotes.html">
+       on-line</a>.</p>
+
+
+    <h2>Java<sup><font size="-2">TM</font></sup> WSDP Directory Structure</h2>
+       
+    <p>After installing the Java WSDP @@JWSDP_VERSION@@, you will find JAXB and its 
+       dependent JAR files in the following directories:</p>
+    <pre>
+         @@JWSDP_ROOTDIR@@
+             jaxb
+                 bin            &lt;-- contains scripts to run the binding compiler
+                 docs           &lt;-- contains release notes and useful information
+                 samples        &lt;-- contains sample applications
+                 lib            &lt;-- contains all of the JAXB specific jar files
+             jaxp
+                 lib            &lt;-- jaxp-api.jar
+                    endorsed    &lt;-- sax.jar, dom.jar, xercesImpl.jar, xalan.jar
+             jwsdp-shared
+                 lib            &lt;-- jax-qname.jar, namespace.jar, xsdlib.jar, relaxngDatatype.jar
+             apache-ant
+                 lib            &lt;-- ant.jar
+    </pre>
+    
+    
+    
+	<h2>Java<sup><font size="-2">TM</font></sup> 2 Platform, Standard Edition 
+	    (J2SE<sup><font size="-2">TM</font></sup>) Requirements</h2>
+	<p>This release of the JAXB Reference Implementation requires J2SE SDK, 
+	   version 1.3.1 or higher.</p>
+	
+	
+	<a name="jars"></a>
+    <h2>Identifying the JAR Files</h2>
+    <p>This release of JAXB is contained in several JAR files:</p>
+    <blockquote>
+      <dl>
+        <dt><b>JAXB jar files</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jaxb/lib</tt>)</dt>
+        <dd>
+          <dl>
+            <dt><b>jaxb-api.jar</b></dt>
+            <dd>The <tt>javax.xml.bind</tt> interfaces and helper classes</dd>
+            <dt><b>jaxb-xjc.jar</b></dt>
+            <dd>The JAXB RI binding compiler classes</dd>
+            <dt><b>jaxb-impl.jar</b> (formerly named <tt>jaxb-ri.jar</tt>)</dt>
+            <dd>The JAXB RI binding runtime framework classes</dd>
+            <dt><b>jaxb-libs.jar</b></dt>
+            <dd>Supporting classes for the binding compiler and the binding 
+                runtime framework</dd>
+          </dl>
+        </dd>
+        <dt><b>JAXP jar files</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jaxp/lib and
+            @@JWSDP_ROOTDIR@@/jaxp/lib/endorsed)</tt></dt>
+        <dd>
+          <dl>
+            <dt><b>jaxp-api.jar</b></dt>
+            <dd>The <code>javax.xml.parsers</code> and 
+            <code>javax.xml.transform</code> components of JAXP</dd>
+            <dt><b>sax.jar</b></dt>
+            <dd>The APIs and helper classes for the Simple API for XML (SAX)</dd>
+            <dt><b>dom.jar</b></dt>
+            <dd>The APIs and helper classes for the Document Object Model (DOM)</dd>
+            <dt><b>xercesImpl.jar</b> (v2.3.0)</dt>
+            <dd>The implementation classes for the SAX and DOM parsers, as well as 
+                Xerces-specific implementations of the JAXP APIs</dd>
+            <dt><b>xalan.jar</b></dt>
+            <dd>Xalan is an XSLT processor for transforming XML documents into other document 
+                types</dd>
+          </dl>
+        </dd>
+        <dt><b>Other JAR files</b></dt>
+        <dd>
+          <dl>
+            <dt><b>jax-qname.jar</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dd>A class for handling QNames shared by several JAX* technologies</dd>
+            <dt><b>namespace.jar</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dd>Classes for handling XML namespace contexts shared by several JAX* technologies</dd>
+            <dt><b>xsdlib.jar</b> (contained in 
+                <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dd>XML Schema type library shared by several JAX* technologies (formerly contained
+                in <tt>jaxb-libs.jar</tt>)</dd>
+            <dt><b>relaxngDatatype.jar</b> (contained in 
+                <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dd>RELAX NG datatype library shared by several JAX* technologies (formerly contained
+                in <tt>jaxb-libs.jar</tt>)</dd>
+            <dt><b>ant.jar</b> (contained in <tt>apache-ant/lib</tt>)</dt>
+            <dd>Ant 1.5.4</dd>
+          </dl>
+        </dd>
+      </dl>
+    </blockquote>
+
+
+	<h2>Using the Binding Compiler (XJC)</h2>
+	<p>See the <a href="xjc.html">Binding Compiler documentation</a> for full details
+	   on using the XJC binding compiler.</p>
+
+    <h2>Using the Runtime Binding Framework</h2>
+    <p>To use the JAXB Runtime Binding Framework, you should follow these
+       general steps:</p>
+       
+    <ol>
+      <li>Develop your schema.</li>
+      <li>Annotate the schema with binding customizations if necessary (or place them
+          in an external bindings file).</li>
+      <li>Compile the schema with the XJC binding compiler.</li>
+      <li>Develop your JAXB client application using the Java content classes
+          generated by the XJC binding compiler along with the 
+          <tt>javax.xml.bind</tt> JAXB interfaces</li>
+      <li>Set your CLASSPATH to include all of the <a href="#jars">JAR files</a> 
+          except for the <tt>ant.jar</tt> file.</li>
+      <li>Compile all of your Java sources with the <tt>javac</tt> Java compiler.</li>
+      <li>Run it!</li>
+    </ol>
+    
+    
+    <p>For more information about this process, see the the 
+       <a href="http://java.sun.com/webservices/tutorial.html">Java WSDP Tutorial</a> 
+       and the extensive <a href="samples.html">sample application</a> documentation.</p>
+
+    <h2>Locating the Normative Binding Schema</h2>
+    <p>You may find information about the normative binding schema defined in 
+       the JAXBSpecification at <a href="http://java.sun.com/xml/ns/jaxb">
+       http://java.sun.com/xml/ns/jaxb</a>.
+
+    <a name="changes"></a>
+	<h2>Changelog</h2>
+	<p>See the <a href="changelog.html">changelog</a> document for a 
+	   comprehensive list of changes between JAXB version 1.0.2 and version 
+	   1.0.3.</p>
+
+	<h2>Known Limitations of this Release</h2>
+	<p>The following list summarizes the known limitations of this release 
+	   of the JAXB Reference Implementation.
+	</p>
+	<p>Think you've found a new bug?  
+	   <a href="https://jaxb.dev.java.net/servlets/ProjectIssues">File an 
+	   issue</a> on java.net!</p>
+	
+	<table border="0" width="75%"><tr><td>
+	<!-- throw this in a 1 cell table -->
+	<ul>
+	    <li>The JAXB Specification does not require full W3C XML Schema support in version 
+	        1.0.  Please refer to Appendix E.2 for full details.</li>
+		<li>Specifying large values for <tt>maxOccurs</tt> attributes can cause
+		    <tt>java.lang.OutOfMemoryError</tt></li>
+		<li>The <tt>@enableFailFastCheck</tt> optional customization of 
+		    <tt>&lt;jaxb:globalBindings&gt;</tt> is not implemented yet. </li>
+		<li>Specifying HTML markup tags within <tt>&lt;jaxb:javadoc&gt;</tt> customizations
+		    requires you to enclose the data within a CDATA section or escape all
+		    left angle brackets using "<tt>&amp;lt;</tt>".  See 
+		    <a href="http://www.w3.org/TR/2000/REC-xml-20001006#sec-cdata-sect">XML 1.0 2nd
+		    Edition</a> for more detail.  In addition, you must include &lt;<tt>body</tt>&gt; tags
+		    when specifying javadoc under the <tt>&lt;jaxb:package&gt;</tt> customization.</li>
+		<li>The RI has some difficulty handling fixed attributes.  For example, the validator
+		    does not detect errors when the XML data has a value different from the fixed
+		    value defined for the attribute in the schema.</li>
+			<!-- 4770182 -->
+            <li>Compilations of sufficiently large and/or complex schemas may fail with
+		    <tt>java.lang.StackOverflowError</tt>. Try working around this problem by
+		    increasing the native stack size. For example, to increase the stack size to 2 megabytes:
+                    <blockquote><tt>java -Xss2m</tt></blockquote>
+		    If you run out of memory, try increasing the maximum memory
+		    size. For example, to increase the maximum memory to 128 megabytes:
+                    <blockquote><tt>java -Xmx128m</tt></blockquote>
+		<!-- 4775382 -->
+		<li>The JAXB Specification currently does not address the thread safety of any of 
+		    the runtime classes.  In the case of the Sun JAXB RI, the <tt>JAXBContext</tt>
+		    class <b>is</b> thread safe, but the <tt>Marshaller</tt>, <tt>Unmarshaller</tt>,
+		    and <tt>Validator</tt> classes <b>are not</b> thread safe.</li>
+		<!-- 4799621 -->
+		<li>In rare cases, you may see: &quot;<tt>java.lang.Error: unable to load schema-for-schema 
+		for W3C XML Schema</tt>&quot; while attempting to compile your schemas.  
+		If you see this error, try updating your version of J2SE SDK.</li>
+		<li>If you are getting error messages like:<br>
+<pre>
+[ERROR] Unable to load "CustomString" Is this class available in the classpath?
+  line 15 of test.xsd
+</pre>
+            Make sure that the classes you are referencing in your <tt>&lt;jxb:javaType&gt;</tt> and 
+            <tt>&lt;xjc:superClass&gt;</tt> customizations are compiled and added to the classpath
+            via the &quot;<tt>-classpath</tt>&quot; command-line option for the 
+            <tt>xjc</tt> command.
+        <li>A new list of <a href="xjc.html#restrictions">compiler 
+            restrictions</a> has been added to the binding compiler documentation.</li>
+        <li>Under certain conditions, xjc may give this warning:
+            <blockquote>
+              <p>Unable to validate your schema. Most likely,
+              the JVM has loaded an incompatible XML parser
+              implementation. You should fix this before
+              relying on the generated code.</p>
+              <p>Please see the release notes for details.</p>
+            </blockquote>
+
+            <p>The usual condition is that a version of xercesImpl.jar (as might be bundled 
+            with ant, an IDE, or an AppServer e.g.) is in your CLASSPATH before the one 
+            shipped with the Java WSDP. This deters xjc from resolving dependencies it has 
+            on internal Xerces APIs.  In previous releases of JAXB, this error condition
+            would manifest itself as an <tt>IllegalAccessError</tt>.</p>
+
+            <p>To fix this, make sure @@JWSDP_ROOTDIR@@/jaxp/lib/endorsed/xercesImpl.jar 
+            precedes any other version of Xerces in your CLASSPATH. Otherwise, xjc can't 
+            validate your schema and you shouldn't rely on the generated code.</p></li>
+        <li>The fact that <tt>javax.xml.bind.util.JAXBSource</tt> derives 
+            from <tt>javax.xml.transform.sax.SAXSource</tt> is an implementation detail. Thus in 
+            general applications are strongly discouraged from accessing methods defined on 
+            <tt>SAXSource</tt>. In particular, the <tt>setXMLReader</tt> and <tt>setInputSource</tt> 
+            methods shall never be called.  The <tt>XMLReader</tt> object obtained by the 
+            <tt>getXMLReader</tt> method shall be used only for parsing the <tt>InputSource</tt> 
+            object returned by the <tt>getInputSource</tt> method. Similarly the <tt>InputSource</tt> 
+            object obtained by the <tt>getInputSource</tt> method shall be used only for being 
+            parsed by the <tt>XMLReader</tt> object returned by the <tt>getXMLReader</tt>.</p>
+            
+            <p>For <tt>javax.xml.bind.util.JAXBResult</tt>, applications are strongly discouraged 
+            from accessing methods defined on <tt>javax.xml.transform.sax.SAXResult</tt>.  In 
+            particular it shall never attempt to call the <tt>setHandler</tt>, 
+            <tt>setLexicalHandler</tt>, and <tt>setSystemId</tt> methods.</p>
+            
+            <p>These limitations will be incorporated into the next version of the javadocs</p>
+	</ul>
+	</td></tr></table>
+
+	<hr/>
+	<font size="-1">
+	  $Revision: 1.1 $<br/>
+	  $Date: 2004-06-25 21:11:17 $
+	</font>
+  </body>
+</html>
