@@ -3,7 +3,7 @@
   A stylesheet to split schema suite files into individual test files
   plus a metadata file.
   
-  $Id: split.xsl,v 1.1 2004-06-25 21:12:55 kohsuke Exp $
+  $Id: split.xsl,v 1.2 2004-07-26 18:10:57 kohsuke Exp $
 -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -12,6 +12,7 @@
   exclude-result-prefixes="redirect">
 
 <xsl:output method="xml"/>
+<xsl:param name="destdir"/>
 
 <xsl:template match="/">
   <xsl:apply-templates select="//testCase"/>
@@ -19,7 +20,9 @@
 
 <xsl:template match="testCase">
   <!-- base directory of the .ssuite file -->
-  <xsl:param name="dir" select="u:getBaseDir()"
+  <!--xsl:param name="dir" select="u:getBaseDir()"
+    xmlns:u="xalan://splitter.SplitterUtil" /-->
+  <xsl:param name="dir" select="concat($destdir,'/',u:getBaseDir())"
     xmlns:u="xalan://splitter.SplitterUtil" />
 
   <!-- determines the directory to place files of this test case -->

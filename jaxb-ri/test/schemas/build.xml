@@ -14,6 +14,9 @@
   <!-- import build properties -->
   <property file="${basedir}/build.properties" />
   
+  <!-- this property must points to the test data directory. -->
+  <property name="test.data" value="undefined" />
+  
   <!-- split test suites into smaller files -->
   <target name="split" depends="prepare,validate,fast-split" />
 
@@ -32,7 +35,7 @@
     </taskdef>
     
     <jing rngfile="${test.schemas}/ssuite.rnc" compactsyntax="true">
-      <fileset dir="${test.schemas}" includes="*.ssuite"/>
+      <fileset dir="${test.data}" includes="*.ssuite"/>
     </jing>
   </target>
   
@@ -46,13 +49,15 @@
       <classpath path="${test.classes}"/>
     </taskdef>
     
+    <mkdir dir="${test.data}/build"/>
     <style2
-      basedir="${test.schemas}"
-      destdir="${test.schemas}"
+      basedir="${test.data}"
+      destdir="${test.data}/build"
       style="${test.schemas}/split.xsl"
       extension=".deleteMeToSplitAgain">
       
       <include name="*.ssuite"/>
+      <param name="destdir" expression="${test.data}/build"/>
       <classpath path="${test.classes}"/>
       <classpath>
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -61,36 +66,6 @@
   </target>
   
   <target name="clean" description="remove generated test case files">
-    <!-- dumb solution -->
-    <delete dir="${jaxb.root}/test/schemas/BugRegressions" />
-    <delete dir="${jaxb.root}/test/schemas/BugZillaRegressions" />
-    <delete dir="${jaxb.root}/test/schemas/ClassCustomization" />
-    <delete dir="${jaxb.root}/test/schemas/Compiler" />
-    <delete dir="${jaxb.root}/test/schemas/Conversion" />
-    <delete dir="${jaxb.root}/test/schemas/Datatype" />
-    <delete dir="${jaxb.root}/test/schemas/DefaultValues" />
-    <delete dir="${jaxb.root}/test/schemas/Dom.dom4j" />
-    <delete dir="${jaxb.root}/test/schemas/Dom.w3c" />
-    <delete dir="${jaxb.root}/test/schemas/Enum" />
-    <delete dir="${jaxb.root}/test/schemas/Fixed" />
-    <delete dir="${jaxb.root}/test/schemas/ID" />
-    <delete dir="${jaxb.root}/test/schemas/JAXRPC" />
-    <delete dir="${jaxb.root}/test/schemas/InfosetMarshaller" />
-    <delete dir="${jaxb.root}/test/schemas/Marshaller" />
-    <delete dir="${jaxb.root}/test/schemas/ModelGroupBinding" />
-    <delete dir="${jaxb.root}/test/schemas/PartialGeneration" />
-    <delete dir="${jaxb.root}/test/schemas/PropertyCustomization" />
-    <delete dir="${jaxb.root}/test/schemas/RELAXNG" />
-    <delete dir="${jaxb.root}/test/schemas/Roundtrip" />
-    <delete dir="${jaxb.root}/test/schemas/Runtime" />
-    <delete dir="${jaxb.root}/test/schemas/RuntimeValidation" />
-    <delete dir="${jaxb.root}/test/schemas/StrictConformance" />
-    <delete dir="${jaxb.root}/test/schemas/TypeSubstitution" />
-    <delete dir="${jaxb.root}/test/schemas/Unmarshaller" />
-    <delete dir="${jaxb.root}/test/schemas/VendorExtension" />
-    <delete dir="${jaxb.root}/test/schemas/Whitespace" />
-    <delete>
-      <fileset dir="${jaxb.root}/test/schemas" includes="*.deleteMeToSplitAgain" />
-    </delete>
+    <delete dir="${test.data}/build" />
   </target>
 </project>
