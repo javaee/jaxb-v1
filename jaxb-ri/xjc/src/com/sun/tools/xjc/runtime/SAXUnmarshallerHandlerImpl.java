@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.2 2004-10-07 20:20:47 ryan_shoemaker Exp $
+ * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.3 2004-11-24 17:45:04 kohsuke Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -337,10 +337,10 @@ public class SAXUnmarshallerHandlerImpl
     }
 
      public String getNamespaceURI(String prefix) {
-         if( prefix.equals(XMLConstants.XMLNS_ATTRIBUTE) )
-             return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
          if( prefix==null )
              throw new IllegalArgumentException();
+         if( prefix.equals(XMLConstants.XMLNS_ATTRIBUTE) )
+             return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
         
          return resolveNamespacePrefix(prefix);
      }
