@@ -20,7 +20,6 @@ import com.sun.tools.xjc.generator.util.BlockReference;
 import com.sun.tools.xjc.grammar.DefaultValue;
 import com.sun.tools.xjc.grammar.FieldUse;
 import com.sun.tools.xjc.reader.NameConverter;
-import com.sun.tools.xjc.util.NameUtil;
 
 /**
  * Realizes a property through one getter and one setter.
