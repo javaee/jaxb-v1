@@ -48,6 +48,9 @@
         <get src="http://www.ibiblio.org/maven/junit/jars/junit-3.8.jar" 
              dest="${jaxb.libs.util}/junit-3.8.jar" 
              usetimestamp="true"/>
+        <get src="http://www.ibiblio.org/maven/forehead/jars/forehead-1.0-beta-5.jar" 
+             dest="${jaxb.libs.util}/forehead.jar" 
+             usetimestamp="true"/>
         <get src="http://www.ibiblio.org/maven/jfreechart/jars/jfreechart-0.9.16.jar" 
              dest="${jaxb.libs.util}/jfreechart-0.9.16.jar" 
              usetimestamp="true"/>
