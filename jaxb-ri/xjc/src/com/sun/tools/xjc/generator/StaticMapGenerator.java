@@ -67,11 +67,12 @@ public abstract class StaticMapGenerator
             .arg( key )
             .arg( value );        
             
-        if( ++cnt == THRESHOLD ) {
+        if( ++cnt >= THRESHOLD ) {
             // generate a next method
             JMethod m = createNewMethod(ticketMaster++);
             block.invoke(m);
             block = m.body();
+            cnt = 0;
         }
     }
     
