@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: DefaultJAXBContextImpl.java,v 1.1 2004-06-25 21:15:21 kohsuke Exp $
+ * @(#)$Id: DefaultJAXBContextImpl.java,v 1.2 2004-11-10 21:26:17 kohsuke Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -24,7 +24,7 @@ import com.sun.xml.bind.DatatypeConverterImpl;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DefaultJAXBContextImpl extends JAXBContext {
     
@@ -74,14 +74,13 @@ public class DefaultJAXBContextImpl extends JAXBContext {
     
     /**
      * Loads a grammar object for the unmarshal-time validation.
+     * 
+     * <p>
+     * getGrammar is normally very expensive, so it's worth
+     * synchronizing to avoid unnecessary invocation.
      */
-    public com.sun.msv.grammar.Grammar getGrammar() throws JAXBException {
+    public synchronized com.sun.msv.grammar.Grammar getGrammar() throws JAXBException {
         if( grammar==null )
-            // since JAXBContext needs to be thread-safe,
-            // this check might allow more than one thread to
-            // load a grammar, but that's fine; it's just a loss of
-            // time, but by itself it doesn't cause any problem.
-            // by not synchronizing method, we can avoid its overhead.
             grammar = gi.getGrammar();
         return grammar;
     }
