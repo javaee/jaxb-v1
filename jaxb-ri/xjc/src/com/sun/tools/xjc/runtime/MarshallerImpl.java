@@ -165,7 +165,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
             // set a DocumentLocator that doesn't provide any information
             writer.setDocumentLocator( new LocatorImpl() );
             writer.startDocument();
-            obj.serializeBody(serializer);
+            serializer.childAsBody(obj,null);
             writer.endDocument();
             
             serializer.reconcileID();   // extra check

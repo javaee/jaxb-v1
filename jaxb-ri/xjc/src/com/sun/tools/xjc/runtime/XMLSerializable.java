@@ -5,6 +5,7 @@
 package com.sun.tools.xjc.runtime;
 
 import org.xml.sax.SAXException;
+import com.sun.xml.bind.JAXBObject;
 
 /**
  * For a generated class to be serializable, it has to
@@ -12,7 +13,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Kohsuke Kawaguchi
  */
-public interface XMLSerializable
+public interface XMLSerializable extends JAXBObject
 {
     /**
      * Serializes child elements and texts into the specified target.
