@@ -81,6 +81,8 @@ class Messages
     public static final String ERR_DELEGATION_MUST_BE_INTERFACE = // arg:1
         "Normalizer.DelegationMustBeInterface";
 
+    public static final String ERR_EMPTY_PROPERTY = // arg:1
+        "Normalizer.EmptyProperty";
 
     static final String ERR_PROPERTYNAME_COLLISION =
         "FieldCollisionChecker.PropertyNameCollision"; // arg:1

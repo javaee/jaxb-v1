@@ -11,6 +11,7 @@ import org.xml.sax.Locator;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.ConcurExp;
@@ -39,9 +40,11 @@ import com.sun.tools.xjc.grammar.JavaItem;
 import com.sun.tools.xjc.grammar.PrimitiveItem;
 import com.sun.tools.xjc.grammar.SuperClassItem;
 import com.sun.tools.xjc.grammar.TypeItem;
+import com.sun.tools.xjc.grammar.FieldItem.BadTypeException;
 import com.sun.tools.xjc.grammar.util.AnnotationRemover;
 import com.sun.tools.xjc.grammar.util.FieldMultiplicityCounter;
 import com.sun.tools.xjc.grammar.util.Multiplicity;
+import com.sun.tools.xjc.grammar.xducer.IdentityTransducer;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.xml.bind.JAXBAssertionError;
 
@@ -476,6 +479,23 @@ public final class RelationNormalizer {
                     // this assertion fails, but it seems like
                     // this is really a bad sign.
                     _assert( fi.multiplicity.includes(multiplicity) );
+                }
+                
+                // it is an error if the field contains no type object
+                if(!fi.hasTypes()) {
+                    controller.reportError(new Locator[]{fi.locator},
+                        Messages.format(Messages.ERR_EMPTY_PROPERTY,
+                            new Object[]{fi.name}));
+                    try {
+                        // recover by adding a new type object
+                        fi.addType(grammar.createPrimitiveItem(
+                                new IdentityTransducer(grammar.codeModel),
+                                StringType.theInstance,
+                                pool.createData(StringType.theInstance),
+                                fi.locator) );
+                    } catch (BadTypeException e) {
+                        ; // just ignore
+                    }
                 }
             }
             

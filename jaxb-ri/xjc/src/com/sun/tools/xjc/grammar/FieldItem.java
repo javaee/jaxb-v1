@@ -168,6 +168,13 @@ public final class FieldItem extends JavaItem {
         return (TypeItem[]) types.toArray(new TypeItem[types.size()]);
     }
     
+    /**
+     * Returns true if there is at least one type.
+     */
+    public final boolean hasTypes() {
+        return !types.isEmpty();
+    }
+    
     public static class BadTypeException extends Exception {
         private BadTypeException( JType _type ) {
             this.type = _type;
