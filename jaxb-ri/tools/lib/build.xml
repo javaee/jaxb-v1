@@ -23,7 +23,6 @@
         unzip.ant-contrib,
         unzip.args4j,
         unzip.gsc,
-        unzip.jing,
         unzip.relaxngcc"
         description="Download all the 3rd party jar files." />
 
@@ -82,8 +81,8 @@
         <get src="http://www.beanshell.org/bsh-reflect-2.0b1.jar" 
              dest="${jaxb.libs.util}/bsh-reflect-2.0b1.jar" 
              usetimestamp="true"/>
-        <get src="http://www.thaiopensource.com/download/jing-20030619.zip" 
-             dest="${jaxb.libs.util}/jing-20030619.zip" 
+        <get src="http://iso-relax.sf.net/jing-20030619-patched.jar" 
+             dest="${jaxb.libs.util}/jing.jar" 
              usetimestamp="true"/>
         <get src="http://sfx4j.dev.java.net/files/documents/1061/1600/sfx4j-1.0-RC.jar" 
              dest="${jaxb.libs.util}/sfx4j-1.0-RC.jar" 
@@ -168,22 +167,6 @@
         <move  file="${jaxb.libs.util}/gsc.20031120/gsc.jar"
              tofile="${jaxb.libs.util}/gsc.jar" />
         <delete dir="${jaxb.libs.util}/gsc.20031120/"/>
-    </target>
-    
-    
-    <target name="-unzip.jing.check">
-        <available file="${jaxb.libs.util}/jing.jar"
-                   property="jing.available"/>
-    </target>
-    <target name="unzip.jing" depends="-unzip.jing.check" unless="jing.available">
-        <!-- unzip the jars -->
-        <unzip src="${jaxb.libs.util}/jing-20030619.zip"
-               dest="${jaxb.libs.util}">
-            <patternset includes="jing-20030619/bin/jing.jar"/>
-        </unzip>
-        <move  file="${jaxb.libs.util}/jing-20030619/bin/jing.jar"
-             tofile="${jaxb.libs.util}/jing.jar" />
-        <delete dir="${jaxb.libs.util}/jing-20030619"/>
     </target>
     
     
