@@ -12,7 +12,9 @@
         may need to set a proxy via ANT_OPTS if you're behind 
         a firewall.  Something like:
 
-         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080"
+         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080 -Dhttps.proxyHost=foo.org -Dhttps.proxyPort=8080"
+        
+        Be sure to set both http and https.
     </description>
 	
     <!-- import build properties -->
@@ -87,8 +89,8 @@
         <get src="http://iso-relax.sf.net/jing-20030619-patched.jar" 
              dest="${jaxb.libs.util}/jing.jar" 
              usetimestamp="true"/>
-        <get src="https://sfx4j.dev.java.net/nonav/releases/sfx4j-1.0-RC2.jar" 
-             dest="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" 
+        <get src="http://sfx4j.dev.java.net/files/documents/1061/1600/sfx4j-1.0-RC.jar" 
+             dest="${jaxb.libs.util}/sfx4j-1.0-RC.jar" 
              usetimestamp="true"/>
         <get src="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" 
              dest="${jaxb.libs.util}/args4j-1.0.zip" 
@@ -187,8 +189,5 @@
              tofile="${jaxb.libs.util}/relaxngcc.jar" />
         <delete dir="${jaxb.libs.util}/relaxngcc-20031218"/>
     </target>
-   
-    <target name="clean">
-       <delete file="${jaxb.libs.util}/download.complete" />
-    </target> 
+    
 </project>
