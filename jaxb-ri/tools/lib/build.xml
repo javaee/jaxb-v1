@@ -8,8 +8,12 @@
 <project name="libs" basedir="../.." default="prepare-libs">
 
     <description>
+    <description>
         Download all the necessary libs from the web.  You 
-        may need to set a proxy if you're behind a firewall.
+        may need to set a proxy via ANT_OPTS if you're behind 
+        a firewall.  Something like:
+
+         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080"
     </description>
 	
     <!-- import build properties -->
