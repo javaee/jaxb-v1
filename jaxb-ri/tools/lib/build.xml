@@ -8,7 +8,6 @@
 <project name="libs" basedir="../.." default="prepare-libs">
 
     <description>
-    <description>
         Download all the necessary libs from the web.  You 
         may need to set a proxy via ANT_OPTS if you're behind 
         a firewall.  Something like:
@@ -60,7 +59,7 @@
              dest="${jaxb.libs.util}/jcommon-0.9.1.jar" 
              usetimestamp="true"/>
         <get src="http://www.ibiblio.org/maven/dom4j/jars/dom4j-1.4.jar" 
-             dest="${jaxb.libs.util}/dom4j-1.4.jar" 
+             dest="${jaxb.libs.util}/dom4j.jar" 
              usetimestamp="true"/>
         <get src="http://www.ibiblio.org/maven/commons-logging/jars/commons-logging-1.0.4.jar" 
              dest="${jaxb.libs.util}/commons-logging-1.0.4.jar" 
@@ -82,9 +81,6 @@
              usetimestamp="true"/>
         <get src="http://www.beanshell.org/bsh-reflect-2.0b1.jar" 
              dest="${jaxb.libs.util}/bsh-reflect-2.0b1.jar" 
-             usetimestamp="true"/>
-        <get src="http://cvs.sourceforge.net/viewcvs.py/*checkout*/ebxmlrr/maven/repository/activation/jars/activation-1.0.2.jar" 
-             dest="${jaxb.libs.util}/activation-1.0.2.jar" 
              usetimestamp="true"/>
         <get src="http://www.thaiopensource.com/download/jing-20030619.zip" 
              dest="${jaxb.libs.util}/jing-20030619.zip" 
