@@ -33,11 +33,12 @@
         To create a distribution of the entire project, simply run 'ant dist' in
         the jaxb-ri directory.
   
-        Note: running 'ant dist' from the root project will not cause the spec
-        sub-project to be built.  Please run 'ant -projecthelp' in the spec project
-        for more detail.
+        PLEASE NOTE: In order to download all the necessary libs from the web.  You 
+        may need to set a proxy via ANT_OPTS if you're behind a firewall.  Something 
+        like:
 
-       $Id: build.xml,v 1.6 2004-08-16 22:58:20 ryan_shoemaker Exp $
+         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080"
+       $Id: build.xml,v 1.7 2004-08-16 23:07:20 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
