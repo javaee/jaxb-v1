@@ -1,5 +1,9 @@
 
 compile\:
+     \[echo\] Compiling the schema\.\.\.
+    \[mkdir\] Created dir\: .*
+      \[xjc\] Compiling .*
+      \[xjc\] Writing output to .*
      \[echo\] Compiling the java source files\.\.\.
     \[mkdir\] Created dir\: .*
     \[javac\] Compiling .*
