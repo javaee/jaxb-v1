@@ -80,12 +80,6 @@
         <get src="http://voxel.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" 
              dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
              usetimestamp="true"/>
-        <get src="http://www.beanshell.org/bsh-classgen-2.0b1.jar" 
-             dest="${jaxb.libs.util}/bsh-classgen-2.0b1.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.beanshell.org/bsh-reflect-2.0b1.jar" 
-             dest="${jaxb.libs.util}/bsh-reflect-2.0b1.jar" 
-             usetimestamp="true"/>
         <get src="http://iso-relax.sf.net/jing-20030619-patched.jar" 
              dest="${jaxb.libs.util}/jing.jar" 
              usetimestamp="true"/>
