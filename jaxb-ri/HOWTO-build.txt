@@ -1,1 +1,7 @@
-Two words. "ant dist"
+If you are behind a firewall, you will need to setup a
+proxy so that the build process can download the necessary
+3rd party libraries.
+
+   % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080"
+
+Then run "ant dist" from the top level directory.
