@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.xml.resolver.CatalogManager;
+import org.apache.xml.resolver.helpers.Debug;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -255,6 +256,12 @@ public class Options
         }
         if (args[i].equals("-debug")) {
             debugMode = true;
+            // try to set the verbose flag of catalog resolver
+            try {
+                Debug.setDebug(10);
+            } catch(Throwable _) {
+                ;   // ignore, in case catalog resolver isn't in the classpath
+            }
             return 1;
         }
         if (args[i].equals("-trace-unmarshaller")) {
