@@ -1,16 +1,17 @@
 %define _topdir @build.dir@
 Summary: Java Architecture for XML Binding 
-Name: JAXB
+Name: sun-jaxb
 Version: @jaxb.version@ 
 Release: @jaxb.release@ 
-License: Sun Microsystems Binary Code License (BCL)
+License: Copyright 2004 Sun Microsystems, Inc.  All rights reserved.  Use is subject to license terms.
 Group: Development/Libraries
 Source: %{name}-%{version}.tar
 Distribution: @prod.name@ 
 Vendor: Sun Microsystems, Inc.
 Provides: %{name}-@jaxb.version@-@jaxb.release@
-Requires: JAXP, WS_COMMON
+Requires: sun-jaxp, sun-wscl
 BuildRoot: %{_topdir}/BUILD/%{name}-%{version}
+URL: http://www.sun.com
 
 %description
 Java Architecture for XML Binding

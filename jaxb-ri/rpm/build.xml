@@ -17,10 +17,10 @@
   <property name="dist.home"    value="../dist"/>
 
   <!-- The product name -->
-  <property name="rpm.prod.name"    value=""/>
+  <property name="rpm.prod.name"    value="Sun Java(TM) Enterprise System"/>
 
   <!-- The RPM release number -->
-  <property name="rpm.release" value="1"/>
+  <property name="rpm.release" value="3"/>
 
   <!-- The rpm build directory -->
   <property name="rpm.build.dir"    value="${basedir}/../build/rpm/JAXB"/>
@@ -36,7 +36,7 @@
   <target name="deploy-rpm" description="Create JAXB rpm">
 
     <!-- assign prefix of where files will be installed on system -->
-    <property name="rpm.install.base"    value="/usr"/>
+    <property name="rpm.install.base"    value="/opt/sun"/>
 
     <!-- make sure this directory is initially clean -->
     <delete dir="${rpm.build.dir}/SOURCES"/>
@@ -84,19 +84,22 @@
 
 
     <!-- copy script files into the right directory structure -->
-    <copy tofile="${rpm.build.dir}/SOURCES/JAXB-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
+    <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
         <include name="xjc.pkg.template"/>
       </fileset>
     </copy>
 
     <!-- replace basedir of library locations in template files -->
-    <replace dir="${rpm.build.dir}/SOURCES/JAXB-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/share/lib">
+    <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/share/lib">
       <replacetoken>%WEBSERVICES_LIB%</replacetoken>
+    </replace>
+    <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/private/share/lib">
+      <replacetoken>%WEBSERVICES_PRIVATE_LIB%</replacetoken>
     </replace>
 
     <!-- copy jaxb jar files into the right directory structure -->
-    <copy todir="${rpm.build.dir}/SOURCES/JAXB-${release.impl.version}${rpm.install.base}/share/lib" overwrite="yes">
+    <copy todir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/share/lib" overwrite="yes">
       <fileset dir="${dist.home}/lib">
  	<exclude name="ant.jar"/>
 	<exclude name="dom.jar"/>
@@ -114,7 +117,7 @@
     </copy>
 
     <!-- compress jaxb files -->
-    <tar destfile="${rpm.build.dir}/SOURCES/JAXB-${release.impl.version}.tar" basedir="${rpm.build.dir}/SOURCES"/>
+    <tar destfile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}.tar" basedir="${rpm.build.dir}/SOURCES"/>
 
     <!-- build rpm -->
     <exec executable="rpmbuild" failonerror="true"

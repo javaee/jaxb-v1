@@ -37,7 +37,7 @@
         sub-project to be built.  Please run 'ant -projecthelp' in the spec project
         for more detail.
 
-       $Id: build.xml,v 1.5 2004-08-16 17:18:06 kk122374 Exp $
+       $Id: build.xml,v 1.6 2004-08-16 22:58:20 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -590,11 +590,16 @@ Class-Path: ${manifest.classpath}
 
         <property name="jaxp.jars"          value="../../jaxp/lib"/>
         <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
+        <property name="jes.rpm"            value="/opt/sun/share/lib"/>
+        <property name="jes.rpm.private"    value="/opt/sun/private/share/lib"/>
+        <property name="jes.svr4"           value="/usr/share/lib"/>
+        <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
+
         <!--
           even though we don't distribute dom4j, we need to be able to find them
           if they are in the classpath.
         -->
-        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb-libs.jar ${jaxp.jars}/endorsed/sax.jar ${jaxp.jars}/endorsed/dom.jar ${jaxp.jars}/jaxp-api.jar ${jaxp.jars}/endorsed/xercesImpl.jar ${jaxp.jars}/endorsed/xalan.jar ${jwsdp.shared}/jax-qname.jar ${jwsdp.shared}/namespace.jar ${jwsdp.shared}/xsdlib.jar ${jwsdp.shared}/relaxngDatatype.jar dom4j.jar ${jwsdp.shared}/dom4j.jar" />
+        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb-libs.jar xsdlib.jar ${jwsdp.shared}/xsdlib.jar ${jes.rpm.private}/xsdlib.jar ${jes.svr4}/xsdlib.jar ${jes.zip}/xsdlib.jar relaxngDatatype.jar ${jwsdp.shared}/relaxngDatatype.jar ${jes.rpm.private}/relaxngDatatype.jar ${jes.svr4}/relaxngDatatype.jar ${jes.zip}/relaxngDatatype.jar jax-qname.jar ${jwsdp.shared}/jax-qname.jar ${jes.rpm}/jax-qname.jar ${jes.svr4}/jax-qname.jar ${jes.zip}/jax-qname.jar namespace.jar ${jwsdp.shared}/namespace.jar ${jes.rpm}/namespace.jar ${jes.svr4}/namespace.jar ${jes.zip}/namespace.jar jaxp-api.jar ${jaxp.jars}/jaxp-api.jar sax.jar ${jaxp.jars}/endorsed/sax.jar dom.jar ${jaxp.jars}/endorsed/dom.jar xercesImpl.jar ${jaxp.jars}/endorsed/xercesImpl.jar ${jes.rpm}/xercesImpl.jar ${jes.svr4}/xercesImpl.jar ${jes.zip}/xercesImpl.jar xalan.jar ${jaxp.jars}/endorsed/xalan.jar ${jes.rpm}/xalan.jar ${jes.svr4}/xalan.jar ${jes.zip}/xalan.jar dom4j.jar ${jwsdp.shared}/dom4j.jar" />
         <echo file="${xjc.root}/manifest.xjc.jwsdp" 
               append="true"
               message="Main-Class: com.sun.tools.xjc.Driver${line.separator}Class-Path: ${manifest.classpath}"/>

@@ -31,6 +31,7 @@ $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar
 $WEBSERVICES_LIB/jwsdp-shared/lib/namespace.jar
 $WEBSERVICES_LIB/jwsdp-shared/lib/relaxngDatatype.jar
 $WEBSERVICES_LIB/jwsdp-shared/lib/xsdlib.jar
+$WEBSERVICES_LIB/dom.jar
 EOF`
 
 if [ -n "$JAVA_HOME" ]

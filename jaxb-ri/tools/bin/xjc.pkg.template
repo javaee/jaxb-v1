@@ -8,16 +8,26 @@
 #
 
 WEBSERVICES_LIB=%WEBSERVICES_LIB%
+WEBSERVICES_PRIVATE_LIB=%WEBSERVICES_PRIVATE_LIB%
 
 # Set CLASSPATH
+#
+# Note: the jaxb-xjc.jar manifest Class-Path contains all of
+# theses jars.  Consider removing this classpath setting and
+# using "java -jar jaxb-xjc.jar" in a future build...
+#
 CLASSPATH=`tr '\n' ':' <<EOF
+$WEBSERVICES_LIB/dom.jar
 $WEBSERVICES_LIB/jax-qname.jar
 $WEBSERVICES_LIB/jaxb-api.jar
 $WEBSERVICES_LIB/jaxb-impl.jar
+$WEBSERVICES_LIB/jaxb-libs.jar
 $WEBSERVICES_LIB/jaxb-xjc.jar
 $WEBSERVICES_LIB/namespace.jar
-$WEBSERVICES_LIB/relaxngDatatype.jar
-$WEBSERVICES_LIB/xsdlib.jar
+$WEBSERVICES_PRIVATE_LIB/relaxngDatatype.jar
+$WEBSERVICES_LIB/xalan.jar
+$WEBSERVICES_LIB/xercesImpl.jar
+$WEBSERVICES_PRIVATE_LIB/xsdlib.jar
 EOF`
 
 if [ -n "$JAVA_HOME" ]

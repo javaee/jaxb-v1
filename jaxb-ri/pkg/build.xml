@@ -20,10 +20,10 @@
   <property name="pkg.jaxb"    value="SUNWjaxb"/>
 
   <!-- The package product name -->
-  <property name="pkg.prod.name"    value=""/>
+  <property name="pkg.prod.name"    value="Sun Java(TM) Enterprise System"/>
 
   <!-- The package product version -->
-  <property name="pkg.prod.version"    value=""/>
+  <property name="pkg.prod.version"    value="3.0"/>
 
   <!-- The package build directory -->
   <property name="pkg.build.dir"    value="../build/pkg"/>
@@ -41,9 +41,7 @@
       overwrite="yes"/>
 
     <!-- replace architecture value -->
-    <exec executable="mach" failonerror="true" outputproperty="arch"/>
-
-    <replace file="${pkg.build.dir}/${pkg.jaxb}/pkginfo" value="${arch}">
+    <replace file="${pkg.build.dir}/${pkg.jaxb}/pkginfo" value="all">
       <replacetoken>@arch@</replacetoken>
     </replace>
 
