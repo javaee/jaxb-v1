@@ -26,13 +26,10 @@ public class SplitterUtil {
         path = path.substring(0,idx);
         
         if (File.separatorChar == '\\') {
-            path = path.replace('/', '\\');
-            while(path.charAt(0)=='\\')
-                path = path.substring(1);
-        } else {
-            while(path.startsWith("//"))
-                path = path.substring(1);
+            path = path.replace('\\', '/');
         }
-        return path;
+        
+        idx = path.lastIndexOf('/');
+        return path.substring(idx+1);
     }
 }
