@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.1 2004-06-25 21:15:24 kohsuke Exp $
+ * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.2 2004-10-07 20:20:47 ryan_shoemaker Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -92,7 +92,7 @@ public class SAXUnmarshallerHandlerImpl
             throws SAXException {
         
         // work gracefully with misconfigured parsers that don't support namespaces
-        if( uri==null || uri.length()==0 )
+        if( uri==null )
             uri="";
         if( local==null || local.length()==0 )
             local=qname;
@@ -130,7 +130,7 @@ public class SAXUnmarshallerHandlerImpl
             throws SAXException {
         
         // work gracefully with misconfigured parsers that don't support namespaces
-        if( uri==null || uri.length()==0 )
+        if( uri==null )
             uri="";
         if( local==null || local.length()==0 )
             local=qname;
@@ -405,7 +405,16 @@ public class SAXUnmarshallerHandlerImpl
             String auri = atts.getURI(i);
             String alocal = atts.getLocalName(i);
             String avalue = atts.getValue(i);
+            String aqname = atts.getQName(i);
             
+            // work gracefully with misconfigured parsers that don't support namespaces
+            if( auri==null )
+                auri="";
+            if( alocal==null || alocal.length()==0 )
+                alocal=aqname;
+            if( aqname==null || aqname.length()==0 )
+                aqname=alocal;
+
             // <foo xsi:nil="false">some value</foo> is a valid fragment, however
             // we need a look ahead to correctly handle this case.
             // (because when we process @xsi:nil, we don't know what the value is,
@@ -422,7 +431,7 @@ public class SAXUnmarshallerHandlerImpl
             a.addAttribute(
                     auri,
                     alocal,
-                    atts.getQName(i),
+                    aqname,
                     atts.getType(i),
                     avalue );
         }
