@@ -37,7 +37,7 @@
         sub-project to be built.  Please run 'ant -projecthelp' in the spec project
         for more detail.
 
-       $Id: build.xml,v 1.4 2004-07-29 18:45:07 kk122374 Exp $
+       $Id: build.xml,v 1.5 2004-08-16 17:18:06 kk122374 Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -387,9 +387,8 @@ Class-Path: ${manifest.classpath}
         </jar>
         
         <!-- pack it into a class -->
-        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC.jar" fork="true">
+        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" fork="true" failonerror="true">
             <arg path ="${jaxb.root}/build/bin-installer.jar"/>
-            <arg value="${bin.installer.className}" />
             <arg path ="${bin.installer.class}"/>
         </java>
         
@@ -489,9 +488,8 @@ Class-Path: ${manifest.classpath}
         </jar>
         
         <!-- pack it into a class -->
-        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC.jar" fork="true">
+        <java jar="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" fork="true" failonerror="true">
             <arg path ="${jaxb.root}/build/src-installer.jar"/>
-            <arg value="${src.installer.className}" />
             <arg path ="${src.installer.class}"/>
         </java>
         
