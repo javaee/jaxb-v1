@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ElementWrapper.java,v 1.1 2004-06-25 21:15:21 kohsuke Exp $
+ * @(#)$Id: ElementWrapper.java,v 1.2 2004-09-16 23:16:35 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -62,6 +62,10 @@ import com.sun.xml.bind.JAXBObject;
  * </xmp></pre>
  * 
  * <p>
+ * Note that this can be only used with a class generated from the JAXB RI.
+ * You cannot set objects such as {@link Integer} or {@link String}.
+ * 
+ * <p>
  * This is a JAXB RI specific extension.
  * 
  * @author
@@ -71,7 +75,7 @@ public class ElementWrapper implements Element, JAXBObject, XMLSerializable {
     
     // always non-unll
     private QName tagName;
-    private XMLSerializable body;
+    private Object body;
     
     /**
      * Creates a new {@link ElementWrapper} object by using the given
@@ -82,12 +86,10 @@ public class ElementWrapper implements Element, JAXBObject, XMLSerializable {
      * @param body
      *      The object that can be only marshalled as a fragment.
      */
-    public ElementWrapper( QName tagName, XMLSerializable body ) {
+    public ElementWrapper( QName tagName, Object body ) {
         if(tagName==null)   throw new IllegalArgumentException("tag name is null");
-        if(body==null)      throw new IllegalArgumentException("body is null");
-        
+        setBody(body);
         this.tagName = tagName;
-        this.body = body;
     }
     
     
@@ -118,7 +120,7 @@ public class ElementWrapper implements Element, JAXBObject, XMLSerializable {
      * 
      * @return What you set via {@link #setBody(XMLSerializable)} or the constructor.
      */
-    public XMLSerializable getBody() {
+    public Object getBody() {
         return body;
     }
     
@@ -128,16 +130,20 @@ public class ElementWrapper implements Element, JAXBObject, XMLSerializable {
      * @param body
      *      must be non-null.
      */
-    public void setBody(XMLSerializable body) {
+    public void setBody(Object body) {
         if(body==null)      throw new IllegalArgumentException("body is null");
+        if(!(body instanceof JAXBObject))
+            throw new IllegalArgumentException(body.getClass().getName()+" is not a JAXB-generated class");
         this.body = body;
     }
     
     public void serializeBody(XMLSerializer target) throws SAXException {
         target.startElement(tagName.getNamespaceURI(),tagName.getLocalPart());
-        
+        target.childAsURIs((JAXBObject)body,"body");
         target.endNamespaceDecls();
+        target.childAsAttributes((JAXBObject)body,"body");
         target.endAttributes();
+        target.childAsBody((JAXBObject)body,"body");
         target.endElement();
     }
 
