@@ -201,4 +201,11 @@ public abstract class ProxyListImpl implements List, java.io.Serializable {
         return core.toArray(a);
     }
 
+    public boolean equals( Object o ) {
+        return core.equals(o);
+    }
+
+    public int hashCode() {
+        return core.hashCode();
+    }
 }
