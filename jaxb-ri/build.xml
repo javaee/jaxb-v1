@@ -37,8 +37,11 @@
         may need to set a proxy via ANT_OPTS if you're behind a firewall.  Something 
         like:
 
-         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080"
-       $Id: build.xml,v 1.7 2004-08-16 23:07:20 ryan_shoemaker Exp $
+         % export ANT_OPTS="-Dhttp.proxyHost=foo.org -Dhttp.proxyPort=8080 -Dhttps.proxyHost=foo.org -Dhttps.proxyPort=8080"
+
+        Be sure to set both http and https proxies.
+
+        $Id: build.xml,v 1.8 2004-08-17 14:45:57 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
