@@ -42,7 +42,7 @@ public class XJCTask extends Task {
 
     public XJCTask() {
         super();
-        classpath = new Path(project);
+        classpath = new Path(null);
         options.setSchemaLanguage(Options.SCHEMA_XMLSCHEMA);  // disable auto-guessing
     }
 
@@ -240,6 +240,8 @@ public class XJCTask extends Task {
 
         log( "build id of XJC is " + Driver.getBuildID(), Project.MSG_VERBOSE );
 
+        classpath.setProject(getProject());
+        
         try {
             if( stackSize==-1 )
                 doXJC();   // just invoke XJC
