@@ -35,5 +35,6 @@
   - - x x - PrefixCallback.java
   - - - x - ValidationContext.java
   - - - x - ValidatorImpl.java
+  - - - x - IdentityHashSet.java
   - - - x - MSVValidator.java
   - - - x - ValidatableObject.java

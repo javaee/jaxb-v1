@@ -60,7 +60,7 @@ class ValidationContext
 //
     
     /** Set of all validated objects. Used to detect a cycle. */
-    private final HashSet validatedObjects = new HashSet();
+    private final IdentityHashSet validatedObjects = new IdentityHashSet();
     
     /**
      * Validates the sub-tree rooted at <code>vo</code> and reports
