@@ -354,6 +354,14 @@ public class Options
             addCatalog(new File(args[++i]));
             return 2;
         }
+        if( args[i].equals("-source")) {
+            // silently ignore the -source option.
+            // this is used by the XJC 2.0 to activate the 1.0 compiler. 
+            if (i == args.length - 1)
+                return 1;
+            else
+                return 2;
+        }
 // Leonid has a concern with these options regarding compatibilities.
 // people should use customization to control those four switches.
 //        if( args[i].equals("-no-validation-code") ) {
