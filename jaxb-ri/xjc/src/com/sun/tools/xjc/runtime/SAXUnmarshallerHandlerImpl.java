@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.3 2004-11-24 17:45:04 kohsuke Exp $
+ * @(#)$Id: SAXUnmarshallerHandlerImpl.java,v 1.4 2005-02-16 21:23:06 kohsuke Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -24,6 +24,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.LocatorImpl;
 
 import com.sun.xml.bind.JAXBAssertionError;
 import com.sun.xml.bind.unmarshaller.Messages;
@@ -550,7 +551,9 @@ public class SAXUnmarshallerHandlerImpl
     }
     public Locator getLocator() { return locator; }
     
-    private Locator locator;
+    private Locator locator = DUMMY_LOCATOR;
+
+    private static final Locator DUMMY_LOCATOR = new LocatorImpl();
 
 
 //
