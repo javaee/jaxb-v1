@@ -47,83 +47,139 @@
             <isset property="wspack.home"/>
         </condition>
         
-        <fsget dest="${jaxb.libs.util}/xercesImpl-2.6.2.jar" 
-               usetimestamp="true">
-          <source           url="http://jse.east/JAXB/jaxb-libs/xercesImpl-2.6.2.jar" if="in.wspack" />
-          <source url="http://www.ibiblio.org/maven/xerces/jars/xercesImpl-2.6.2.jar" />
-        </fsget>
+        <property name="internal.repository" value="http://jse.east/JAXB/jaxb-libs"/>
         
-        <fsget dest="${samples.samples}/pull-parser/lib/kxml2.jar" 
-               usetimestamp="true">
-          <source          url="http://jse.east/JAXB/jaxb-libs/kxml2-2.1.8.jar" if="in.wspack" />
-          <source url="http://www.ibiblio.org/maven/kxml2/jars/kxml2-2.1.8.jar" />
-        </fsget>
-        
-        <fsget dest="${samples.samples}/pull-parser/lib/xmlpull.jar" 
-               usetimestamp="true">
-          <source            url="http://jse.east/JAXB/jaxb-libs/xmlpull-1.1.3.4a.jar" if="in.wspack" />
-          <source url="http://www.ibiblio.org/maven/xmlpull/jars/xmlpull-1.1.3.4a.jar" />
-        </fsget>
-        
-        <fsget dest="${jaxb.libs.util}/xalan-2.5.1.jar" 
-               usetimestamp="true">
-          <source url="http://www.ibiblio.org/maven/xalan/jars/xalan-2.5.1.jar" />
-        </fsget>
-        
-        <get src="http://www.ibiblio.org/maven/ant/jars/optional-1.5.4.jar" 
-             dest="${jaxb.libs.util}/optional-1.5.4.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/nekohtml/jars/nekohtml-0.8.1.jar" 
-             dest="${jaxb.libs.util}/nekohtml-0.8.1.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/junit/jars/junit-3.8.jar" 
-             dest="${jaxb.libs.util}/junit-3.8.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/forehead/jars/forehead-1.0-beta-5.jar" 
-             dest="${jaxb.libs.util}/forehead.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/jfreechart/jars/jfreechart-0.9.16.jar" 
-             dest="${jaxb.libs.util}/jfreechart-0.9.16.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/jdom/jars/jdom-b9.jar" 
-             dest="${jaxb.libs.util}/jdom-b9.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/jcommon/jars/jcommon-0.9.1.jar" 
-             dest="${jaxb.libs.util}/jcommon-0.9.1.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/dom4j/jars/dom4j-1.4.jar" 
-             dest="${jaxb.libs.util}/dom4j.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/commons-logging/jars/commons-logging-1.0.4.jar" 
-             dest="${jaxb.libs.util}/commons-logging-1.0.4.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/bsh/jars/bsh-2.0b1.jar" 
-             dest="${jaxb.libs.util}/bsh-2.0b1.jar" 
-             usetimestamp="true"/>
-        <get src="http://www.ibiblio.org/maven/antlr/jars/antlr-2.7.2.jar" 
-             dest="${jaxb.libs.util}/antlr-2.7.2.jar" 
-             usetimestamp="true"/>
-        <get src="http://voxel.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" 
-             dest="${jaxb.libs.util}/relaxngcc-20031218.zip" 
-             usetimestamp="true"/>
-        <get src="http://voxel.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" 
-             dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
-             usetimestamp="true"/>
-        <get src="http://iso-relax.sf.net/jing-20030619-patched.jar" 
-             dest="${jaxb.libs.util}/jing.jar" 
-             usetimestamp="true"/>
-        <get src="https://sfx4j.dev.java.net/nonav/releases/sfx4j-1.0-RC2.jar" 
-             dest="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" 
-             usetimestamp="true"/>
-        <get src="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" 
-             dest="${jaxb.libs.util}/args4j-1.0.zip" 
-             usetimestamp="true"/>
-        <get src="http://www.kohsuke.org/gsc/gsc.20031120.zip" 
-             dest="${jaxb.libs.util}/gsc.20031120.zip" 
-             usetimestamp="true"/>
-        <get src="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&amp;content-type=application/x-java-archive" 
-             dest="${jaxb.libs.util}/vmtools-0.5.jar" 
-             usetimestamp="true"/>
+	        <fsget dest="${jaxb.libs.util}/xercesImpl-2.6.2.jar" 
+	               usetimestamp="true">
+	          <source                   url="${internal.repository}/xercesImpl-2.6.2.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/xerces/jars/xercesImpl-2.6.2.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${samples.samples-src}/pull-parser/lib/kxml2.jar" 
+	               usetimestamp="true">
+	          <source                  url="${internal.repository}/kxml2-2.1.8.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/kxml2/jars/kxml2-2.1.8.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${samples.samples-src}/pull-parser/lib/xmlpull.jar" 
+	               usetimestamp="true">
+	          <source                    url="${internal.repository}/xmlpull-1.1.3.4a.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/xmlpull/jars/xmlpull-1.1.3.4a.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/xalan-2.5.1.jar" 
+	               usetimestamp="true">
+	          <source                  url="${internal.repository}/xalan-2.5.1.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/xalan/jars/xalan-2.5.1.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/optional-1.5.4.jar" 
+	               usetimestamp="true">
+	          <source                url="${internal.repository}/optional-1.5.4.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/ant/jars/optional-1.5.4.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/nekohtml-0.8.1.jar" 
+	               usetimestamp="true">
+	          <source                     url="${internal.repository}/nekohtml-0.8.1.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/nekohtml/jars/nekohtml-0.8.1.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/junit-3.8.jar" 
+	               usetimestamp="true">
+	          <source                  url="${internal.repository}/junit-3.8.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/junit/jars/junit-3.8.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/forehead.jar" 
+	               usetimestamp="true">
+	          <source                     url="${internal.repository}/forehead-1.0-beta-5.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/forehead/jars/forehead-1.0-beta-5.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/jfreechart-0.9.16.jar" 
+	               usetimestamp="true">
+	          <source                       url="${internal.repository}/jfreechart-0.9.16.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/jfreechart/jars/jfreechart-0.9.16.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/jdom-b9.jar" 
+	               usetimestamp="true">
+	          <source                 url="${internal.repository}/jdom-b9.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/jdom/jars/jdom-b9.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/jcommon-0.9.1.jar" 
+	               usetimestamp="true">
+	          <source                    url="${internal.repository}/jcommon-0.9.1.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/jcommon/jars/jcommon-0.9.1.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/dom4j.jar" 
+	               usetimestamp="true">
+	          <source                  url="${internal.repository}/dom4j-1.4.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/dom4j/jars/dom4j-1.4.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/commons-logging-1.0.4.jar" 
+	               usetimestamp="true">
+	          <source                            url="${internal.repository}/commons-logging-1.0.4.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/commons-logging/jars/commons-logging-1.0.4.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/bsh-2.0b1.jar" 
+	               usetimestamp="true">
+	          <source                url="${internal.repository}/bsh-2.0b1.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/bsh/jars/bsh-2.0b1.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/antlr-2.7.2.jar" 
+	               usetimestamp="true">
+	          <source                  url="${internal.repository}/antlr-2.7.2.jar" if="in.wspack" />
+	          <source url="http://www.ibiblio.org/maven/antlr/jars/antlr-2.7.2.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/relaxngcc-20031218.zip" 
+	               usetimestamp="true">
+	          <source                                url="${internal.repository}/relaxngcc-20031218.zip" if="in.wspack" />
+	          <source url="http://voxel.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
+	               usetimestamp="true">
+	          <source                                  url="${internal.repository}/ant-contrib-0.6-bin.zip" if="in.wspack" />
+	          <source url="http://voxel.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/jing.jar" 
+	               usetimestamp="true">
+	          <source  url="${internal.repository}/jing-20030619-patched.jar" if="in.wspack" />
+	          <source url="http://iso-relax.sf.net/jing-20030619-patched.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" 
+	               usetimestamp="true">
+	          <source                    url="${internal.repository}/sfx4j-1.0-RC2.jar" if="in.wspack" />
+	          <source url="https://sfx4j.dev.java.net/nonav/releases/sfx4j-1.0-RC2.jar" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/args4j-1.0.zip" 
+	               usetimestamp="true">
+	          <source                             url="${internal.repository}/args4j-1.0.zip" if="in.wspack" />
+	          <source url="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/gsc.20031120.zip" 
+	               usetimestamp="true">
+	          <source     url="${internal.repository}/gsc.20031120.zip" if="in.wspack" />
+	          <source url="http://www.kohsuke.org/gsc/gsc.20031120.zip" />
+	        </fsget>
+	        
+	        <fsget dest="${jaxb.libs.util}/vmtools-0.5.jar" 
+	               usetimestamp="true">
+	          <source url="${internal.repository}/vmtools-0.5.jar" if="in.wspack" />
+	          <source url="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&amp;content-type=application/x-java-archive" />
+	        </fsget>
         
         <!--
           we obsereved a problem with the get task where it fails to connect to the server
@@ -142,6 +198,10 @@
     
     
     
+    
+    <target name="clean">
+      <delete file="${jaxb.libs.util}/download.complete"/>
+    </target>
     
     
     
