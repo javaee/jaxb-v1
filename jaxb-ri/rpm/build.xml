@@ -20,7 +20,7 @@
   <property name="rpm.prod.name"    value="Sun Java(TM) Enterprise System"/>
 
   <!-- The RPM release number -->
-  <property name="rpm.release" value="5"/>
+  <property name="rpm.release" value="6"/>
 
   <!-- The rpm build directory -->
   <property name="rpm.build.dir"    value="${basedir}/../build/rpm/JAXB"/>
