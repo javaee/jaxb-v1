@@ -36,25 +36,14 @@ then
     cd $saveddir
 fi
 
+JAXP_HOME=$JAXB_HOME/../jaxp
+ENDORSED_DIRS=$JAXP_HOME/lib:$JAXP_HOME/lib/endorsed
 
-
-if [ -n "$CLASSPATH" ] ; then
-  LOCALCLASSPATH="$CLASSPATH"
-fi
-
-# add the jar files
-for i in "${JAXB_HOME}"/lib/*.jar
-do
-    if [ -z "$LOCALCLASSPATH" ] ; then
-        LOCALCLASSPATH=$i
-    else
-        LOCALCLASSPATH="$i":"$LOCALCLASSPATH"
-    fi
-done
 
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
 {
-    LOCALCLASSPATH=`cygpath -w -p ${LOCALCLASSPATH}`
+    JAXB_HOME=`cygpath -w ${JAXB_HOME}`
+    ENDORSED_DIRS="'cygpath -w -p "$ENDORSED_DIRS"`"
 }
 
 if [ -n "$JAVA_HOME" ]
@@ -64,11 +53,4 @@ else
     JAVA=java
 fi
 
-if [ -n "$XJC_OPTS" ]
-then
-    $JAVA $XJC_OPTS -classpath "$LOCALCLASSPATH" com.sun.tools.xjc.Driver $*
-else
-    $JAVA -classpath "$LOCALCLASSPATH" com.sun.tools.xjc.Driver $*
-fi
-
-
+$JAVA $XJC_OPTS "-Djava.endorsed.dirs=$ENDORSED_DIRS" -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"

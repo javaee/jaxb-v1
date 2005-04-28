@@ -37,13 +37,8 @@ set JAVA=%JAVA_HOME%\bin\java
 goto LAUNCHXJC
 
 :LAUNCHXJC
-if not "%XJC_OPTS%" == "" goto LAUNCHXJCWITHOPTS
-%JAVA% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
-goto END
-
-:LAUNCHXJCWITHOPTS
-%JAVA% %XJC_OPTS% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
-goto END
+set JAXP_HOME=%JAXB_HOME%\..\jaxp
+%JAVA% %XJC_OPTS% -Djava.endorsed.dirs=%JAXP_HOME%\lib;%JAXP_HOME%\lib\endorsed -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
 
 
 :END
