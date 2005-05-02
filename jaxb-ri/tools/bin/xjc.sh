@@ -43,7 +43,7 @@ ENDORSED_DIRS=$JAXP_HOME/lib:$JAXP_HOME/lib/endorsed
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
 {
     JAXB_HOME=`cygpath -w ${JAXB_HOME}`
-    ENDORSED_DIRS="'cygpath -w -p "$ENDORSED_DIRS"`"
+    ENDORSED_DIRS="`cygpath -w -p "$ENDORSED_DIRS"`"
 }
 
 if [ -n "$JAVA_HOME" ]
