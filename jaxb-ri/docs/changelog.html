@@ -17,16 +17,43 @@
       <JAXB-TOC/>
     </center>
 
-    <a name="diffs-to-1.0.4"></a>
-    <h2>Changes between 1.0.3 FCS and 1.0.4 FCS </h2>
-      <p>The following list summarizes significant changes made to the JAXB Reference Implementation 
-         since the JAXB version 1.0.3 FCS release.
+    <a name="diffs-to-1.0.5"></a>
+    <h2>Changes between 1.0.4 FCS and 1.0.5 FCS </h2>
+      <p>The following list summarizes significant changes made to the JAXB Reference Implementation
+         since the JAXB version 1.0.4 FCS release.
       </p>
-      
+
       <ul>
         <li>Bug Fixes
           <ul>
-            <li>IssueTracker: 
+            <li>IssueTracker:
+              <ul>
+                <li><a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=36">36 - com.sun.xml.bind.util.ListImpl does not implement equals method correctly</a></li>
+                <li><a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=44">44 - Defect in DTD binding information file (bindingfile.nrg)</a></li>
+                <li><a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=50">50 - Generated time in the header of java files created by xjc does not indicate afternoon times</a></li>
+              </ul>
+            </li>
+            <li>fixed bug 6209582: The method _$$init$$1() of ObjectFactory is too big for VM ( > 65535bytes)</li>
+            <li>fixed bug 6261158: XJC displays @@BUILD_VERSION@@ instead of version string</li>
+            <li>fixed a <a href="https://jaxb.dev.java.net/servlets/ReadMsg?list=users&msgNo=3818">comparison problem</a> reported by Aleksei</li>
+            <li>added code to handle broken DOM's and SAX parser implementations more gracefully</li>
+            <li>fixed an NPE in the XJC Ant task</li>
+            <li>implemented Anand Vallamshettla's suggestion of doing the state transition before processing the value for more graceful error recovery</li>
+            <li>modified the xjc shell scripts to set the java.endorsed.dirs so that it runs on JRE 1.4.
+          </ul>
+        </li>
+      </ul>
+
+    <a name="diffs-to-1.0.4"></a>
+    <h2>Changes between 1.0.3 FCS and 1.0.4 FCS </h2>
+      <p>The following list summarizes significant changes made to the JAXB Reference Implementation
+         since the JAXB version 1.0.3 FCS release.
+      </p>
+
+      <ul>
+        <li>Bug Fixes
+          <ul>
+            <li>IssueTracker:
               <ul>
                 <li><a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=15">15 - can't parse W3 SOAP 2003-05 envelope XML schema: "xml:lang"</a></li>
                 <li><a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=18">18 - Performance Improvement in NamespaceContextImpl.java</a></li>
@@ -41,8 +68,8 @@
             <li>found and removed some dependencies on jdk1.4</li>
             <li>fixed a bug in the entity resolver handling</li>
           </ul>
-        </li>  
-      
+        </li>
+
         <li>Other
           <ul>
             <li>updated UBL sample app to UBL 1.0 schema (Visit the <a href="https://jwsdp.dev.java.net/ubl/index.html">UBL interest</a> page for more information).</li>
@@ -411,8 +438,8 @@ interface AClass {
 
     <hr/>
     <font size="-1">
-      $Revision: 1.2 $<br/>
-      $Date: 2004-09-20 15:20:36 $
+      $Revision: 1.3 $<br/>
+      $Date: 2005-05-19 18:29:15 $
     </font>
   </body>
 </html>
