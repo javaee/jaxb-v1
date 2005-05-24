@@ -57,7 +57,7 @@
         
         <!-- expose the build version to the DefaultJAXBContextImpl class so
              that it is available to the generated ObjectFactory classes -->
-        <replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
+        <replace dir="${runtime.classes}/com/sun/xml/bind" includes="Messages*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
         </replace>
     </target>
