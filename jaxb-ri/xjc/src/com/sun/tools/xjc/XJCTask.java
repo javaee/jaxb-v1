@@ -328,7 +328,7 @@ public class XJCTask extends Task {
         // up to date check
         long srcTime = computeTimestampFor(dependsSet,true);
         long dstTime = computeTimestampFor(producesSet,false);
-        log("the last modified time of ths inputs is  "+srcTime, Project.MSG_VERBOSE);
+        log("the last modified time of the inputs is  "+srcTime, Project.MSG_VERBOSE);
         log("the last modified time of the outputs is "+dstTime, Project.MSG_VERBOSE);
         
         if( srcTime < dstTime ) {
