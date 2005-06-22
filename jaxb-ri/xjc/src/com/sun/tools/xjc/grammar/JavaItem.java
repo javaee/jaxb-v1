@@ -4,6 +4,9 @@
  */
 package com.sun.tools.xjc.grammar;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.xml.sax.Locator;
 
 import com.sun.msv.grammar.OtherExp;
@@ -34,4 +37,6 @@ public abstract class JavaItem extends OtherExp {
      * for some reason.
      */
     public final Locator locator;
+
+    public final List declarations = new ArrayList();
 }

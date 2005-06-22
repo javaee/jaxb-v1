@@ -10,9 +10,12 @@ import com.sun.tools.xjc.grammar.ClassItem;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.xml.bind.JAXBAssertionError;
+import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSSchema;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDeclaration;
 
 /**
  * A set of helper methods to make it easy to implement
@@ -35,7 +38,20 @@ abstract class AbstractBinderImpl implements ClassBinder {
     
     /** Wraps a CodeModel class into a ClassItem object. */
     protected final ClassItem wrapByClassItem( XSComponent sc, JDefinedClass cls ) {
-        return owner.builder.grammar.createClassItem(cls,Expression.epsilon,sc.getLocator());
+
+        final ClassItem ci = owner.builder.grammar.createClassItem(cls,Expression.epsilon,sc.getLocator());
+
+        final XSAnnotation annon = sc.getAnnotation();
+        if(annon!=null) {
+            final BindInfo bi = (BindInfo)annon.getAnnotation();
+            if(bi!=null) {
+                final BIDeclaration[] decls = bi.getDecls();
+                for (int index = 0; index < decls.length; index++) {
+                    ci.declarations.add(decls[index]);
+                }
+            }
+        }
+        return ci;
     }
 
     /**

@@ -5,8 +5,10 @@
 package com.sun.tools.xjc.grammar.xducer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -157,8 +159,16 @@ public class EnumerationXducer extends TransducerImpl
                 JExpr._new(codeModel.ref(HashMap.class)));
         }
         
-        
-        
+        // [RESULT]
+        // private static final List values = new ArrayList(<values.length>);
+        JVar $values;
+        {
+            $values = type.field(
+                JMod.PRIVATE|JMod.FINAL|JMod.STATIC,
+                List.class,
+                "values",
+                JExpr._new(codeModel.ref(ArrayList.class)).arg(JExpr.lit(values.length)));
+        }
         
         items = new JFieldVar[values.length];
         JVar[] valueObjs = new JVar[values.length];
@@ -242,6 +252,7 @@ public class EnumerationXducer extends TransducerImpl
         //     this.value=v;
         //     this.lexicalValue=<serialize>(v);
         //     valueMap.put( v, this );
+        //     values.add( v );
         // }
         {
             JMethod m = type.constructor(JMod.PROTECTED);
@@ -250,6 +261,7 @@ public class EnumerationXducer extends TransducerImpl
             m.body().assign( $lexical, xducer.generateSerializer($v,null) );
             
             m.body().invoke($valueMap,"put").arg( wrapToObject($v) ).arg(JExpr._this());
+            m.body().invoke($values,"add").arg( wrapToObject($v) );
         }
         
         // [RESULT]
@@ -323,6 +335,20 @@ public class EnumerationXducer extends TransducerImpl
                 );
 
         }
+
+        // [RESULT]
+        // public static <Type>[] values() {
+        //     ....
+        // }
+        JMethod values = type.method(JMod.PUBLIC|JMod.STATIC, type.array(), "values" );
+        values.body()._return(JExpr.cast(type.array(), $values.invoke("toArray").arg(JExpr.newArray(type, 0))));
+
+        // [RESULT]
+        // public static Map<String,<Type>> getEnumMap() {
+        //     ....
+        // }
+        JMethod getEnumMap = type.method(JMod.PUBLIC|JMod.STATIC, Map.class, "getEnumMap" );
+        getEnumMap.body()._return($valueMap);
     }
     
     private JExpression wrapToObject(JExpression var) {

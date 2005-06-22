@@ -17,6 +17,7 @@ import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.AbstractXSFunctionImpl;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.JAXBAssertionError;
+import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSAttributeUse;
@@ -239,6 +240,19 @@ public final class BIProperty extends AbstractDeclarationImpl {
                                             // we need to wrap it by a IsSetFieldRenderer
         if( needIsSetMethod() )
             fi.realization = IsSetFieldRenderer.createFactory( fi.realization );
+
+
+        final XSAnnotation annon = source.getAnnotation();
+        if(annon!=null) {
+            final BindInfo bi = (BindInfo)annon.getAnnotation();
+            if(bi!=null) {
+                final BIDeclaration[] decls = bi.getDecls();
+                for (int index = 0; index < decls.length; index++) {
+                    fi.declarations.add(decls[index]);
+                }
+            }
+        }
+
         
         return fi;
     }

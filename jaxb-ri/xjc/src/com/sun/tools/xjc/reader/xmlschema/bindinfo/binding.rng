@@ -24,10 +24,13 @@
     import com.sun.tools.xjc.reader.NameConverter;
     import com.sun.tools.xjc.reader.xmlschema.bindinfo.*;
     import com.sun.tools.xjc.reader.Const;
+    import com.sun.xml.bind.marshaller.SAX2DOMEx;
+    import org.w3c.dom.Document;
     import org.xml.sax.*;
     import org.xml.sax.helpers.DefaultHandler;
     import java.util.*;
     import javax.xml.namespace.QName;
+    import javax.xml.parsers.ParserConfigurationException;
   </cc:java-import>
   
   <start cc:class="Root">
@@ -54,6 +57,8 @@
       public BindInfo bi;
       
       private StringWriter w;
+
+      private SAX2DOMEx sax2dom;
     </cc:java-body>
     
     <element name="xs:annotation">
@@ -75,13 +80,28 @@
                   <anyName><except>
                     <nsName ns="&XJCURI;"/>
                     <nsName />  <!-- except XML Schema elements -->
+                    <nsName ns="http://www.w3.org/2001/XMLSchema"/>
                   </except></anyName>
-                  <!-- TODO: check if this namespace is allowed -->
-                  <!-- for now, ignore the entire sub-tree -->
-                  $runtime.redirectSubtree(
-                    new DefaultHandler(),$uri,$localName,$qname);
+
+//                  if($runtime.isExtensionURI($uri)) {
+                  if(true) {
+                    // parse this sub-tree as an extension
+                    try {
+                      sax2dom = new SAX2DOMEx();
+                    } catch( ParserConfigurationException e ) {
+                      throw new Error(e); // impossible
+                    }
+                    $runtime.redirectSubtree(sax2dom,$uri,$localName,$qname);
+                  } else {
+                    // ignore this sub-tree
+                    sax2dom = null;
+                    $runtime.redirectSubtree(new DefaultHandler(),$uri,$localName,$qname);
+                  }
                   <empty/>
                   <p:ignore><ref name="anyContents"/></p:ignore>
+                  if(sax2dom!=null) {
+                    bi.addDecl(new BIXPluginCustomization(((Document)sax2dom.getDOM()).getDocumentElement(),$runtime.copyLocator()));
+                  }
                 </element>
                 <text/>
               </choice>
