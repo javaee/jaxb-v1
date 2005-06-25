@@ -261,7 +261,7 @@ public class EnumerationXducer extends TransducerImpl
             m.body().assign( $lexical, xducer.generateSerializer($v,null) );
             
             m.body().invoke($valueMap,"put").arg( wrapToObject($v) ).arg(JExpr._this());
-            m.body().invoke($values,"add").arg( wrapToObject($v) );
+            m.body().invoke($values,"add").arg(JExpr._this());
         }
         
         // [RESULT]
