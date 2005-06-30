@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry output="codemodel/build/classes" kind="src" path="codemodel/src"/>
+	<classpathentry output="runtime/build/classes" kind="src" path="runtime/src"/>
+	<classpathentry output="xjc/build/classes" kind="src" path="xjc/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/isorelax.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/ant.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/msv.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/relaxng.javadt.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/resolver.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/xsom.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/jax-qname.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/namespace.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/relaxngDatatype.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/xsdlib.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/dom4j.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/relaxngcc.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
