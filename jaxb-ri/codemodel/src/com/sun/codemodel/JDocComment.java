@@ -4,8 +4,10 @@
  */
 package com.sun.codemodel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +31,9 @@ public class JDocComment implements JGenerable {
     
     /** The @deprecated tag */
     private String atDeprecated = null;
+
+    /** list of xdoclets */
+    private final List xdoclets = new ArrayList();
     
     /** Gets the body of the comment. */
     public String getComment() {
@@ -107,6 +112,15 @@ public class JDocComment implements JGenerable {
         atDeprecated = comment;
     }
 
+    /**
+     * add an xdoclet tag to the javadoc
+     */
+    public JXDoclet addXDoclet( String name ) {
+        final JXDoclet xdoclet = new JXDoclet(name);
+        xdoclets.add(xdoclet);
+        return xdoclet;
+    }
+
     public void generate(JFormatter f) {
         // I realized that we can't use StringTokenizer because
         // this will recognize multiple \n as one token.
@@ -133,6 +147,10 @@ public class JDocComment implements JGenerable {
         }
         if( atDeprecated != null )
             format( f, "@deprecated", atDeprecated );
+        for( final Iterator i = xdoclets.iterator(); i.hasNext(); ) {
+            final JXDoclet x = (JXDoclet)i.next();
+            x.generate(f);
+        }
         f.p(" */").nl();
     }
     
@@ -157,4 +175,3 @@ public class JDocComment implements JGenerable {
             f.p(" * "+s).nl();
     }
 }
-
