@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractFieldRendererWithVar.java,v 1.1 2004-06-25 21:14:18 kohsuke Exp $
+ * @(#)$Id: AbstractFieldRendererWithVar.java,v 1.2 2005-08-02 18:11:46 kohsuke Exp $
  */
 
 /*
@@ -19,7 +19,7 @@ import com.sun.tools.xjc.grammar.FieldUse;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-abstract class AbstractFieldRendererWithVar extends AbstractFieldRenderer {
+public abstract class AbstractFieldRendererWithVar extends AbstractFieldRenderer {
     
     /**
      * Field declaration of the actual list object that we use
