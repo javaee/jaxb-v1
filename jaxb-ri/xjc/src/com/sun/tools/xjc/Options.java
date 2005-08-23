@@ -13,7 +13,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.xml.resolver.CatalogManager;
 import org.apache.xml.resolver.helpers.Debug;
@@ -146,6 +148,9 @@ public class Options
         
     /** {@link ModelAugumentors} that are enabled. */
     public final List enabledModelAugmentors = new ArrayList();
+
+    /** Enabled customization URIs. */ 
+    public final Set enabledCustomizationURIs = new HashSet();
     
     
     /**
@@ -387,6 +392,9 @@ public class Options
             CodeAugmenter ma = (CodeAugmenter)codeAugmenters[j];
             if( ("-"+ma.getOptionName()).equals(args[i]) ) {
                 enabledModelAugmentors.add(ma);
+                if (ma instanceof CodeAugmenterEx) {
+                  enabledCustomizationURIs.addAll(((CodeAugmenterEx) ma).getCustomizationURIs());
+                }
                 return 1;
             }
                     

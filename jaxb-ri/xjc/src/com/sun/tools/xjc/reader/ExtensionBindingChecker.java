@@ -18,6 +18,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+import com.sun.tools.xjc.Options;
+
 /**
  * This filter checks jaxb:extensionBindingPrefix and
  * pass/filter extension bindings.
@@ -49,24 +51,27 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
     
     /** Set of namespace URIs that designates enabled extensions. */
     private final Set enabledExtensions = new HashSet();
-    
+
     private Locator locator;
     
     /**
      * When we are pruning a sub tree, this field holds the depth of
      * elements that are being cut. Used to resume event forwarding.
      * 
-     * As long as this value is 0, we will pass through data.     */
+     * As long as this value is 0, we will pass through data.
+     */
     private int cutDepth=0;
     
     /**
      * This object will receive SAX events while a sub tree is being
-     * pruned.     */
+     * pruned.
+     */
     private static final ContentHandler stub = new DefaultHandler();
     
     /**
      * This field remembers the user-specified ContentHandler.
-     * So that we can restore it once the sub tree is completely pruned.     */
+     * So that we can restore it once the sub tree is completely pruned.
+     */
     private ContentHandler next;
     
     /**
@@ -75,13 +80,15 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
      */
     private final String schemaLanguage;
     
+    private final Options options;
     
     /**
      * @param handler
      *      This error handler will receive detected errors.
      */
-    public ExtensionBindingChecker( String schemaLanguage, ErrorHandler handler ) {
+    public ExtensionBindingChecker( String schemaLanguage, Options options, ErrorHandler handler ) {
         this.schemaLanguage = schemaLanguage;
+        this.options = options;
         setErrorHandler(handler);
     }
     
@@ -90,10 +97,11 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
      * bindings.
      */
     protected boolean isSupportedExtension( String namespaceUri ) {
-        // so far we only support one extension
-        return namespaceUri.equals(Const.XJC_EXTENSION_URI);
+      if(namespaceUri.equals(Const.XJC_EXTENSION_URI))
+        return true;
+      return options.enabledCustomizationURIs.contains(namespaceUri);
     }
-
+    
     /**
      * Returns true if the elements with the given namespace URI
      * should be blocked by this filter.

@@ -219,7 +219,7 @@ public final class GrammarLoader {
                     opt.compatibilityMode == Options.STRICT ? true : false ),
                 handler );
             
-            handler = wrapBy( new ExtensionBindingChecker(Const.XMLSchemaNSURI,errorReceiver), handler );
+            handler = wrapBy( new ExtensionBindingChecker(Const.XMLSchemaNSURI, opt, errorReceiver), handler );
             handler = wrapBy( new IncorrectNamespaceURIChecker(errorReceiver), handler );
             handler = wrapBy( new CustomizationContextChecker(errorReceiver), handler );
 //          handler = wrapBy( new VersionChecker(controller), handler );
@@ -438,7 +438,7 @@ public final class GrammarLoader {
             public void parse(InputSource source, ContentHandler handler,
                 ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {
                 
-                handler = wrapBy( new ExtensionBindingChecker(Const.RELAXNG_URI,errorReceiver), handler );
+                handler = wrapBy( new ExtensionBindingChecker(Const.RELAXNG_URI, opt, errorReceiver), handler );
                 
                 if( opt.strictCheck ) {
                     try {
