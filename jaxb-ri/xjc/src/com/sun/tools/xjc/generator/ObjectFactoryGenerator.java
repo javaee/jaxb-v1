@@ -469,7 +469,7 @@ final class ObjectFactoryGenerator {
          * Generates an association.
          */
         public void add( JDefinedClass _interface, JClass _implementation ) {
-            super.add( _interface.dotclass(), JExpr.lit(_implementation.fullName()) );
+            super.add( _interface.dotclass(), JExpr.lit(_implementation.binaryName()) );
         }
 
         protected JMethod createNewMethod( int uniqueId ) {
