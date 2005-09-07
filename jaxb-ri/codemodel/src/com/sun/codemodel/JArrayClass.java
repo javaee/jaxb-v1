@@ -31,6 +31,10 @@ public class JArrayClass extends JClass {
     public String fullName() {
         return componentType.fullName()+"[]";
     }
+    
+    public String binaryName() {
+        return componentType.binaryName()+"[]";
+    }
 
     public JPackage _package() {
         return owner().rootPackage();

@@ -64,6 +64,10 @@ class JNestedClass
         return outer.fullName()+'.'+name();
     }
     
+    public String binaryName() {
+        return outer.binaryName()+'$'+name();
+    }
+    
     /**
      * Returns the class in which this class is nested, or <tt>null</tt> if
      * this is a top-level class.

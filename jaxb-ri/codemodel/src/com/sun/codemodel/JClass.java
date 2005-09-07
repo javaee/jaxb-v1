@@ -36,7 +36,7 @@ public abstract class JClass
         if(p.isUnnamed())   return name();
         else                return p.name()+'.'+name();
     }
-	
+    
 	/** Gets the package to which this class belongs. */
     abstract public JPackage _package();
 	

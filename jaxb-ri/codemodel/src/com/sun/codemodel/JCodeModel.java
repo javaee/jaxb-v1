@@ -267,6 +267,7 @@ public final class JCodeModel {
         }
 
         public String fullName() {
+            // TODO: this isn't accurate. this computes a binary name, not a full name.
             String name = _class.getName();
             if (name.charAt(0) == '[')
                 return getArrayName(name);
@@ -274,6 +275,14 @@ public final class JCodeModel {
                 return name;
         }
 
+        public String binaryName() {
+            String name = _class.getName();
+            if (name.charAt(0) == '[')
+                return getArrayName(name);
+            else
+                return name;
+        }
+        
         public JPackage _package() {
             String name = fullName();
 

@@ -47,6 +47,15 @@ public abstract class JType implements JGenerable {
     public abstract String fullName();
 
     /**
+     * Gets the binary name of the type.
+     * 
+     * @see http://java.sun.com/docs/books/jls/third_edition/html/binaryComp.html#44909
+     */
+    public String binaryName() {
+        return fullName();
+    }
+    
+    /**
      * Gets the name of this type.
      *
      * @return
