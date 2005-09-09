@@ -41,7 +41,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.10 2005-09-09 21:15:17 kohsuke Exp $
+        $Id: build.xml,v 1.11 2005-09-09 21:16:33 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -387,7 +387,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${bin.installer.stage}" />
             <fileset dir="${jaxb.root}/tools/installer/build/classes"
                 includes="**/*" excludes="*" /><!-- exclude things in the root package -->
-            <zipfileset dir="${jaxb.root}" includes="PRE-RELEASE-LICENSE.txt" fullpath="license.txt"/>
+            <zipfileset dir="${jaxb.root}" includes="license.txt" />
         </jar>
         
         <!-- pack it into a class -->
@@ -489,7 +489,7 @@ Class-Path: ${manifest.classpath}
             </manifest>
             <zipfileset dir="${src.installer.stage}" />
             <zipfileset dir="${jaxb.root}/tools/installer/build/classes" includes="**/*" excludes="license.txt" />
-            <zipfileset dir="${jaxb.root}" includes="license.txt" fullpath="license.txt"/>
+            <zipfileset dir="${jaxb.root}" includes="license.txt" />
         </jar>
         
         <!-- pack it into a class -->
