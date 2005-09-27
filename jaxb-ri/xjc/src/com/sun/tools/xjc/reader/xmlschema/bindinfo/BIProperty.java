@@ -257,19 +257,28 @@ public final class BIProperty extends AbstractDeclarationImpl {
             fi.realization = IsSetFieldRenderer.createFactory( fi.realization );
 
 
-        final XSAnnotation annon = source.getAnnotation();
-        if(annon!=null) {
-            final BindInfo bi = (BindInfo)annon.getAnnotation();
-            if(bi!=null) {
-                final BIDeclaration[] decls = bi.getDecls();
-                for (int index = 0; index < decls.length; index++) {
-                    fi.declarations.add(decls[index]);
-                }
-            }
+        addDeclarations(fi, source.getAnnotation());
+        
+        if (source instanceof XSAttributeUse)
+        {
+          final XSAttributeDecl attributeDecl = ((XSAttributeUse) source).getDecl();
+          addDeclarations(fi, attributeDecl.getAnnotation());
         }
-
         
         return fi;
+    }
+
+
+    private void addDeclarations(FieldItem fi, final XSAnnotation annon) {
+      if(annon!=null) {
+          final BindInfo bi = (BindInfo)annon.getAnnotation();
+          if(bi!=null) {
+              final BIDeclaration[] decls = bi.getDecls();
+              for (int index = 0; index < decls.length; index++) {
+                  fi.declarations.add(decls[index]);
+              }
+          }
+      }
     }
 
     public void markAsAcknowledged() {
