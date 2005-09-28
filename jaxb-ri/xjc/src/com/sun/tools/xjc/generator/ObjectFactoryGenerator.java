@@ -274,27 +274,29 @@ final class ObjectFactoryGenerator {
                              "processing the given property or value" );
         }
 
-        // serialize the bgm for use in the runtime validation system
-        Grammar purifiedGrammar = AGMBuilder.remove( grammar );
-        try {
-            targetPackage.addResourceFile( new JSerializedObject(
-                "bgm.ser",purifiedGrammar) );
-        } catch( IOException e ) {
-            // we know that BGM can be always serialized. So this shouldn't be possible
-            throw new JAXBAssertionError(e);
-        }
-
-        if(debug!=null) {
-            debug.println("---- schema ----");
+        if (_opt.generateValidatingUnmarshallingCode || _opt.generateValidationCode ) {
+            // serialize the bgm for use in the runtime validation system
+            Grammar purifiedGrammar = AGMBuilder.remove( grammar );
             try {
-                RELAXNGWriter w = new RELAXNGWriter();
-                com.sun.org.apache.xml.internal.serialize.OutputFormat format = 
-                    new com.sun.org.apache.xml.internal.serialize.OutputFormat("xml",null,true);
-                format.setIndent(1);
-                w.setDocumentHandler(new com.sun.org.apache.xml.internal.serialize.XMLSerializer(debug,format));
-                w.write(purifiedGrammar);
-            } catch( org.xml.sax.SAXException e ) {
+                targetPackage.addResourceFile( new JSerializedObject(
+                    "bgm.ser",purifiedGrammar) );
+            } catch( IOException e ) {
+                // we know that BGM can be always serialized. So this shouldn't be possible
                 throw new JAXBAssertionError(e);
+            }
+
+            if(debug!=null) {
+                debug.println("---- schema ----");
+                try {
+                    RELAXNGWriter w = new RELAXNGWriter();
+                    com.sun.org.apache.xml.internal.serialize.OutputFormat format = 
+                        new com.sun.org.apache.xml.internal.serialize.OutputFormat("xml",null,true);
+                    format.setIndent(1);
+                    w.setDocumentHandler(new com.sun.org.apache.xml.internal.serialize.XMLSerializer(debug,format));
+                    w.write(purifiedGrammar);
+                } catch( org.xml.sax.SAXException e ) {
+                    throw new JAXBAssertionError(e);
+                }
             }
         }
 
