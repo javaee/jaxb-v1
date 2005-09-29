@@ -17,5 +17,10 @@
 	<classpathentry kind="lib" path="tools/lib/redist/xsdlib.jar"/>
 	<classpathentry kind="lib" path="tools/lib/util/dom4j.jar"/>
 	<classpathentry kind="lib" path="tools/lib/util/relaxngcc.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/dom.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/jaxp-api.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/sax.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/xalan.jar"/>
+	<classpathentry kind="lib" path="tools/lib/redist/xercesImpl.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
