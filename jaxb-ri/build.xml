@@ -56,12 +56,19 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.13 2005-10-06 19:16:17 kk122374 Exp $
+        $Id: build.xml,v 1.14 2005-12-14 00:26:12 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
 
     <property file="${basedir}/build.properties" />
+
+    <!--
+      when building jars for Maven, we want to put suffix
+      (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
+      this property lets you do that.
+    -->
+    <property name="jar.suffix" value="" />
 
     <target name="init">
         <!-- this property is used by "xjc -version" and is also set in each of the
@@ -189,7 +196,7 @@
                            value="com.sun.xml.bind"/>
         </replace>
 
-        <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
+        <jar jarfile="${jaxb.dist}/lib/jaxb-impl${jar.suffix}.jar"
              manifest="${runtime.root}/manifest.rt"
              duplicate="fail">
             <fileset dir="${runtime.classes}"/>
@@ -228,13 +235,13 @@
           even though we don't distribute dom4j, we need to be able to find them
           if they are in the classpath.
         -->
-        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb-libs.jar sax.jar dom.jar jaxp-api.jar xercesImpl.jar xalan.jar jax-qname.jar namespace.jar xsdlib.jar relaxngDatatype.jar dom4j.jar" />
+        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl${jar.suffix}.jar jaxb-libs${jar.suffix}.jar sax.jar dom.jar jaxp-api.jar xercesImpl.jar xalan.jar jax-qname.jar namespace.jar xsdlib.jar relaxngDatatype.jar dom4j.jar" />
         <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.Driver
 Class-Path: ${manifest.classpath}
 
 </echo>
-        <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
+        <jar jarfile="${jaxb.dist}/lib/jaxb-xjc${jar.suffix}.jar"
              manifest="${xjc.root}/manifest.xjc"
          duplicate="fail">
             <fileset dir="${xjc.classes}"/>
@@ -271,7 +278,7 @@ Class-Path: ${manifest.classpath}
             <replacefilter token="@@EXTENSION_NAME@@" 
                            value="com.sun.msv"/>
         </replace>
-        <jar jarfile="${jaxb.dist}/lib/jaxb-libs.jar"
+        <jar jarfile="${jaxb.dist}/lib/jaxb-libs${jar.suffix}.jar"
              duplicate="fail"
              manifest="${jaxb.libs.rebundle}/tmp/META-INF/MANIFEST.MF">
             <fileset dir="${jaxb.libs.rebundle}/tmp"/>
