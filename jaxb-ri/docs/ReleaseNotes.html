@@ -29,24 +29,16 @@
        on-line</a>.</p>
 
 
-    <h2>Java<sup><font size="-2">TM</font></sup> WSDP Directory Structure</h2>
+    <h2>Directory Structure</h2>
        
-    <p>After installing the Java WSDP @@JWSDP_VERSION@@, you will find JAXB and its 
+    <p>After installing the JAXB @@IMPL_VERSION@@, you will find JAXB and its 
        dependent JAR files in the following directories:</p>
     <pre>
-         @@JWSDP_ROOTDIR@@
              jaxb
                  bin            &lt;-- contains scripts to run the binding compiler
                  docs           &lt;-- contains release notes and useful information
                  samples        &lt;-- contains sample applications
-                 lib            &lt;-- contains all of the JAXB specific jar files
-             jaxp
-                 lib            &lt;-- jaxp-api.jar
-                    endorsed    &lt;-- sax.jar, dom.jar, xercesImpl.jar, xalan.jar
-             jwsdp-shared
-                 lib            &lt;-- jax-qname.jar, namespace.jar, xsdlib.jar, relaxngDatatype.jar
-             apache-ant
-                 lib            &lt;-- ant.jar
+                 lib            &lt;-- contains all of the JAXB jar files
     </pre>
     
     
@@ -62,7 +54,7 @@
     <p>This release of JAXB is contained in several JAR files:</p>
     <blockquote>
       <dl>
-        <dt><b>JAXB jar files</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jaxb/lib</tt>)</dt>
+        <dt><b>JAXB jar files</b></dt>
         <dd>
           <dl>
             <dt><b>jaxb-api.jar</b></dt>
@@ -76,8 +68,7 @@
                 runtime framework</dd>
           </dl>
         </dd>
-        <dt><b>JAXP jar files</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jaxp/lib and
-            @@JWSDP_ROOTDIR@@/jaxp/lib/endorsed)</tt></dt>
+        <dt><b>JAXP jar files</b></tt></dt>
         <dd>
           <dl>
             <dt><b>jaxp-api.jar</b></dt>
@@ -98,19 +89,17 @@
         <dt><b>Other JAR files</b></dt>
         <dd>
           <dl>
-            <dt><b>jax-qname.jar</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dt><b>jax-qname.jar</b></dt>
             <dd>A class for handling QNames shared by several JAX* technologies</dd>
-            <dt><b>namespace.jar</b> (contained in <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dt><b>namespace.jar</b></dt>
             <dd>Classes for handling XML namespace contexts shared by several JAX* technologies</dd>
-            <dt><b>xsdlib.jar</b> (contained in 
-                <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dt><b>xsdlib.jar</b></dt>
             <dd>XML Schema type library shared by several JAX* technologies (formerly contained
                 in <tt>jaxb-libs.jar</tt>)</dd>
-            <dt><b>relaxngDatatype.jar</b> (contained in 
-                <tt>@@JWSDP_ROOTDIR@@/jwsdp-shared/lib</tt>)</dt>
+            <dt><b>relaxngDatatype.jar</b></dt>
             <dd>RELAX NG datatype library shared by several JAX* technologies (formerly contained
                 in <tt>jaxb-libs.jar</tt>)</dd>
-            <dt><b>ant.jar</b> (contained in <tt>apache-ant/lib</tt>)</dt>
+            <dt><b>ant.jar</b></dt>
             <dd>Ant 1.5.4</dd>
           </dl>
         </dd>
@@ -147,7 +136,8 @@
 
     <h2>Locating the Normative Binding Schema</h2>
     <p>You may find information about the normative binding schema defined in 
-       the JAXBSpecification at <a href="http://java.sun.com/xml/ns/jaxb">
+       the JAXB
+Specification at <a href="http://java.sun.com/xml/ns/jaxb">
        http://java.sun.com/xml/ns/jaxb</a>.
 
     <a name="changes"></a>
@@ -248,8 +238,8 @@
 
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.2 $<br/>
-	  $Date: 2004-09-22 17:34:39 $
+	  $Revision: 1.3 $<br/>
+	  $Date: 2006-01-25 01:49:52 $
 	</font>
   </body>
 </html>
