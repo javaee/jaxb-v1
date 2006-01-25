@@ -56,7 +56,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.14 2005-12-14 00:26:12 kohsuke Exp $
+        $Id: build.xml,v 1.15 2006-01-25 02:14:25 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -85,6 +85,9 @@
 
         <!-- download all necessary libs -->
         <ant dir="tools/lib" target="prepare-libs" />
+        
+        <property name="installer.suffix" value="${DSTAMP}"/>
+        <property name="installer.classname.suffix" value="${DSTAMP}"/>
     </target>
 
     <!-- compile all of the sources into <project>/build/classes-->
@@ -391,12 +394,12 @@ Class-Path: ${manifest.classpath}
         <tstamp />
         
         <property name="bin.installer.stage" value="${jaxb.root}/build/bin-installer" />
-        <property name="bin.installer.className" value="JAXB1_${DSTAMP}" />
+        <property name="bin.installer.className" value="JAXB1_${installer.classname.suffix}" />
         <property name="bin.installer.class" value="${jaxb.root}/build/${bin.installer.className}.class" />
         
         <mkdir dir="${bin.installer.stage}"/>
         <zip destfile="${bin.installer.stage}/package.zip">
-            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${DSTAMP}" />
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${installer.suffix}" />
         </zip>
         
         <!-- build installer -->
@@ -437,10 +440,10 @@ Class-Path: ${manifest.classpath}
         <tstamp />
         
         <property name="src.installer.stage" value="${jaxb.root}/build/src-installer" />
-        <property name="src.installer.className" value="JAXB1_src_${DSTAMP}" />
+        <property name="src.installer.className" value="JAXB1_src_${installer.classname.suffix}" />
         <property name="src.installer.class" value="${jaxb.root}/build/${src.installer.className}.class" />
         <property name="src.installer.tmp" value="${jaxb.root}/build/src-tmp" />
-        <property name="src.installer.tmpsrc" value="${src.installer.tmp}/jaxb-ri-${DSTAMP}" />
+        <property name="src.installer.tmpsrc" value="${src.installer.tmp}/jaxb-ri-${installer.suffix}" />
 
         <delete dir="${src.installer.tmp}" failonerror="false" />
 
@@ -456,34 +459,34 @@ Class-Path: ${manifest.classpath}
                src="${jaxb.libs.redist}/jaxb-api-src.zip" />
         
         <zip destfile="${src.installer.tmp}/jaxb-src.zip" duplicate="fail" whenempty="fail">
-            <zipfileset dir="${xjc.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+            <zipfileset dir="${xjc.src}" prefix="jaxb-ri-${installer.suffix}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
-            <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+            <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${installer.suffix}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
-            <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+            <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${installer.suffix}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="${src.installer.tmp}" defaultexcludes="true">
                 <patternset refid="src-includes" />
             </zipfileset>
             <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
-                fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
+                fullpath="jaxb-ri-${installer.suffix}/build.xml"/>
             <!-- additional jar files -->
-            <zipfileset dir="${jaxb.libs}/rebundle" prefix="jaxb-ri-${DSTAMP}/lib">
+            <zipfileset dir="${jaxb.libs}/rebundle" prefix="jaxb-ri-${installer.suffix}/lib">
                 <include name="isorelax.jar"/>
                 <include name="msv.jar"/>
                 <include name="resolver.jar"/>
                 <include name="xsom.jar"/>
             </zipfileset>
-            <zipfileset dir="${jaxb.libs}/redist" prefix="jaxb-ri-${DSTAMP}/lib">
+            <zipfileset dir="${jaxb.libs}/redist" prefix="jaxb-ri-${installer.suffix}/lib">
                 <include name="xsdlib.jar"/>
                 <include name="xercesImpl.jar"/>
                 <include name="xalan.jar"/>
                 <include name="relaxngDatatype.jar"/>
             </zipfileset>
-            <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${DSTAMP}/lib">
+            <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${installer.suffix}/lib">
                 <include name="xsom-src.zip"/>
             </zipfileset>
         </zip>
@@ -496,8 +499,8 @@ Class-Path: ${manifest.classpath}
         
         <!-- test the generated source bundle -->
         <unzip dest="${src.installer.tmp}/test" src="${src.installer.tmp}/jaxb-src.zip"/>
-        <copy tofile="${src.installer.tmp}/test/jaxb-ri-${DSTAMP}/lib/dom4j.jar" file="${jaxb.libs.util}/dom4j.jar"/>
-        <ant dir="${src.installer.tmp}/test/jaxb-ri-${DSTAMP}" inheritAll="false" inheritRefs="false"/>
+        <copy tofile="${src.installer.tmp}/test/jaxb-ri-${installer.suffix}/lib/dom4j.jar" file="${jaxb.libs.util}/dom4j.jar"/>
+        <ant dir="${src.installer.tmp}/test/jaxb-ri-${installer.suffix}" inheritAll="false" inheritRefs="false"/>
 
         <!-- delete the srctmp dir -->
         <delete dir="${src.installer.tmp}"/>
