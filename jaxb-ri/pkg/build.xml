@@ -94,7 +94,7 @@
     </copy>
 
     <!-- copy script files into the right directory structure -->
-    <copy file="${basedir}/../tools/bin/xjc.sh" tofile="${pkg.build.dir}/${pkg.jaxb}/usr/bin/xjc" overwrite="yes" />
+    <copy file="${basedir}/../tools/bin/xjc.pkg.template" tofile="${pkg.build.dir}/${pkg.jaxb}/usr/bin/xjc" overwrite="yes" />
 
     <!-- copy jaxb jar files into the right directory structure -->
     <copy todir="${pkg.build.dir}/${pkg.jaxb}/usr/share/lib" overwrite="yes">
