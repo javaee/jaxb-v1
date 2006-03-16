@@ -62,7 +62,7 @@
             <isset property="wspack.home"/>
         </condition>
         
-        <property name="internal.repository" value="http://jse.east/JAXB/jaxb-libs"/>
+        <property name="internal.repository" value="http://jse.east/JAXB/jaxb-ri/1.0/lib"/>
         
 	        <fsget dest="${jaxb.libs.util}/xercesImpl-2.6.2.jar" 
 	               usetimestamp="true">
