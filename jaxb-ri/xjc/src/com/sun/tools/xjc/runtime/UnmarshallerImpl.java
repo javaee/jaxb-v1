@@ -19,7 +19,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.2 2005-09-10 18:20:44 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.3 2006-03-17 19:28:04 kohsuke Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -29,6 +29,7 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
+import javax.xml.transform.sax.SAXSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -198,6 +199,11 @@ public class UnmarshallerImpl extends AbstractUnmarshallerImpl
         } catch( SAXException e ) {
             throw createUnmarshalException(e);
         }
+    }
+    
+    // just to make the the test harness happy by making this method accessible
+    public final Object unmarshal( SAXSource source ) throws JAXBException {
+        return super.unmarshal(source);
     }
     
     private static final DefaultHandler dummyHandler = new DefaultHandler();
