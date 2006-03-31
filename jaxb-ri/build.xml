@@ -56,7 +56,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.15 2006-01-25 02:14:25 kohsuke Exp $
+        $Id: build.xml,v 1.16 2006-03-31 01:43:59 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -763,33 +763,18 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <!-- assumes dist target has been run -->
-    <target name="create.zip" description="Create JAXB zip file distribution">
-      <!-- The zip build directory -->
-      <property name="zip.build.dir"    value="${basedir}/build/zip"/>
-
+    <target name="create.zip" description="Create JAXB zip file distribution for JES">
       <!-- The zip distribution directory -->
       <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
- 
-      <!-- make build and output directories -->
-      <mkdir dir="${zip.build.dir}"/>
       <mkdir dir="${zip.release.dir}"/>
-
-      <!-- copy bin files into the right directory structure -->
-      <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat" overwrite="yes">
-        <fileset dir="${basedir}/tools/bin">
-          <include name="xjc.zip.bat"/>
-        </fileset>
-      </copy>
-
-      <copy tofile="${zip.build.dir}/jaxb/bin/xjc.sh" overwrite="yes">
-        <fileset dir="${basedir}/tools/bin">
-          <include name="xjc.zip.sh"/>
-        </fileset>
-      </copy>
-
-      <!-- copy jaxb jar files into the right directory structure -->
-      <copy todir="${zip.build.dir}/jaxb/lib" overwrite="yes">
-        <fileset dir="${jaxb.dist}/lib">
+      
+      <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" whenempty="fail">
+        <zipfileset dir="${basedir}/tools/bin" includes="xjc.zip.bat"
+                    fullpath="jaxb${release.impl.version}/bin/xjc.bat" />
+        <zipfileset dir="${basedir}/tools/bin" includes="xjc.zip.sh"
+                    fullpath="jaxb${release.impl.version}/bin/xjc.sh" />
+        <zipfileset dir="${jaxb.dist}/lib"
+                    prefix="jaxb${release.impl.version}/lib">
           <exclude name="ant.jar"/>
           <exclude name="dom.jar"/>
           <exclude name="jaxb-api-src.zip"/>   
@@ -802,12 +787,8 @@ Class-Path: ${manifest.classpath}
           <exclude name="relaxngDatatype.jar"/>
           <exclude name="jaxb-api-doc.zip"/>
           <exclude name="xercesImpl.jar"/>
-        </fileset>
-      </copy>
-
-      <!-- make zip file -->
-      <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" basedir="${zip.build.dir}" whenempty="fail"/>
-
+        </zipfileset>
+      </zip>
     </target>
 
 
