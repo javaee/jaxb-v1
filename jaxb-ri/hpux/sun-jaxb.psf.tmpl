@@ -1,0 +1,41 @@
+depot
+	layout_version 1.0
+vendor 
+	tag SUN
+	title SUN Microsystems
+	description "JES"
+end
+
+product
+	tag 		sun-jaxb
+	title		Java Architecture for XML Binding
+	description 	"Java Architecture for XML Binding 1.0.6"
+	copyright	"Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms."
+	revision	@jaxb.version@
+	number		REV=@datestamp@
+	architecture	HP-UX_B.11.11_32/64
+	vendor_tag	SUN
+	machine_type	*
+	os_name 	HP-UX
+	os_release	B.11.11
+	os_version	*
+	is_locatable	true
+	directory	/
+
+	fileset
+		tag		sun-jaxb
+		prerequisite	sun-jaxp
+		prerequisite	sun-wscl
+
+		file -m 0755 -t d -o root -g sys /opt/sun/bin
+		file -m 0755 -t d -o root -g sys /opt/sun/share
+		file -m 0755 -t d -o root -g sys /opt/sun/share/lib
+		file -m 0444 -o root -g sys @libdir@/jaxb-api.jar /opt/sun/share/lib/jaxb-api.jar
+		file -m 0444 -o root -g sys @libdir@/jaxb-impl.jar /opt/sun/share/lib/jaxb-impl.jar
+		file -m 0444 -o root -g sys @libdir@/jaxb-libs.jar /opt/sun/share/lib/jaxb-libs.jar
+		file -m 0444 -o root -g sys @libdir@/jaxb-xjc.jar /opt/sun/share/lib/jaxb-xjc.jar
+
+		file -m 0755 -o root -g sys @bindir@/xjc.pkg.template /opt/sun/bin/xjc
+	end
+end

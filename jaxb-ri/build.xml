@@ -56,7 +56,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.16 2006-03-31 01:43:59 kohsuke Exp $
+        $Id: build.xml,v 1.17 2006-04-10 21:50:45 jitu Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -760,6 +760,11 @@ Class-Path: ${manifest.classpath}
     <!-- assumes dist target has been run -->
     <target name="create.rpm" depends="check.os" if="is.unix">
       <ant dir="rpm" target="deploy-rpm"/>
+    </target>
+
+    <!-- assumes dist target has been run -->
+    <target name="create.hpux" depends="check.os" if="is.unix">
+      <ant dir="hpux" target="deploy-hpux"/>
     </target>
 
     <!-- assumes dist target has been run -->
