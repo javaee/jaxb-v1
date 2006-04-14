@@ -56,7 +56,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.17 2006-04-10 21:50:45 jitu Exp $
+        $Id: build.xml,v 1.18 2006-04-14 18:52:26 jitu Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -767,35 +767,55 @@ Class-Path: ${manifest.classpath}
       <ant dir="hpux" target="deploy-hpux"/>
     </target>
 
-    <!-- assumes dist target has been run -->
+    <!-- assumes dist or wspack target has been run -->
     <target name="create.zip" description="Create JAXB zip file distribution for JES">
+      <!-- The zip build directory -->
+      <property name="zip.build.dir"    value="${basedir}/build/zip"/>
+
       <!-- The zip distribution directory -->
       <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
-      <mkdir dir="${zip.release.dir}"/>
-      
-      <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" whenempty="fail">
-        <zipfileset dir="${basedir}/tools/bin" includes="xjc.zip.bat"
-                    fullpath="jaxb${release.impl.version}/bin/xjc.bat" />
-        <zipfileset dir="${basedir}/tools/bin" includes="xjc.zip.sh"
-                    fullpath="jaxb${release.impl.version}/bin/xjc.sh" />
-        <zipfileset dir="${jaxb.dist}/lib"
-                    prefix="jaxb${release.impl.version}/lib">
-          <exclude name="ant.jar"/>
-          <exclude name="dom.jar"/>
-          <exclude name="jaxb-api-src.zip"/>   
-          <exclude name="jaxp-api.jar"/>
-          <exclude name="sax.jar"/>
-          <exclude name="xalan.jar"/>
-          <exclude name="namespace.jar"/>
-          <exclude name="xsdlib.jar"/>
-          <exclude name="jax-qname.jar"/>
-          <exclude name="relaxngDatatype.jar"/>
-          <exclude name="jaxb-api-doc.zip"/>
-          <exclude name="xercesImpl.jar"/>
-        </zipfileset>
-      </zip>
-    </target>
 
+      <property name="zip.release"    value="1"/>
+ 
+      <!-- make build and output directories -->
+      <mkdir dir="${zip.build.dir}"/>
+      <mkdir dir="${zip.release.dir}"/>
+
+      <!-- copy files into the right directory structure -->
+        <copy todir="${zip.build.dir}" overwrite="yes">
+          <fileset dir="${basedir}/zip">
+            <include name="filelist.txt"/>
+            <include name="version"/>
+          </fileset>
+        </copy>
+        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
+        <copy todir="${zip.build.dir}/jaxb/lib">
+          <fileset dir="${jaxb.dist}/lib">
+            <include name="jaxb-api.jar"/>
+            <include name="jaxb-impl.jar"/>
+            <include name="jaxb-libs.jar"/>
+            <include name="jaxb-xjc.jar"/>
+          </fileset>
+        </copy>
+
+      <!-- replace parameters in version file  -->
+      <replace file="${zip.build.dir}/version" value="${release.impl.version}">
+        <replacetoken>@jaxb.version@</replacetoken>
+      </replace>
+      <!-- replace date stamp... 1st specify correct format  -->
+      <tstamp>
+        <format property="pkg.datestamp" pattern="yyyyMMdd"/>
+      </tstamp>
+      <replace file="${zip.build.dir}/version" value="${pkg.datestamp}">
+        <replacetoken>@datestamp@</replacetoken>
+      </replace>
+      <replace file="${zip.build.dir}/version" value="${zip.release}">
+        <replacetoken>@zip.release@</replacetoken>
+      </replace>
+
+      <!-- make zip file -->
+      <zip destfile="${zip.release.dir}/jaxb.zip" basedir="${zip.build.dir}" />
+    </target>
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
       <antstructure output="project.dtd"/>

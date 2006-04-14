@@ -1,0 +1,5 @@
+jaxb/bin/xjc.bat
+jaxb/lib/jaxb-api.jar 
+jaxb/lib/jaxb-impl.jar 
+jaxb/lib/jaxb-libs.jar
+jaxb/lib/jaxb-xjc.jar
