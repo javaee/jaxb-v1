@@ -27,7 +27,7 @@ rem
 set PRG=%0
 set WEBSERVICES_LIB=%PRG%\..\..\..
 
-set CLASSPATH=%WEBSERVICES_LIB%\jwsdp-shared\lib\jax-qname.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jwsdp-shared\lib\namespace.jar;%WEBSERVICES_LIB%\jwsdp-shared\lib\relaxngDatatype.jar;%WEBSERVICES_LIB%\jwsdp-shared\lib\xsdlib.jar;%WEBSERVICES_LIB%\dom.jar
+set CLASSPATH=%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-libs.jar;%WEBSERVICES_LIB%\wscl\lib\xsdlib.jar;%WEBSERVICES_LIB%\wscl\lib\relaxngDatatype.jar
 
 
 :CHECKJAVAHOME
