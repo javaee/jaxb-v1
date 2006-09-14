@@ -19,7 +19,7 @@
  */
 
 /*
- * @(#)$Id: GrammarInfoImpl.java,v 1.2 2005-09-10 18:20:43 kohsuke Exp $
+ * @(#)$Id: GrammarInfoImpl.java,v 1.3 2006-09-14 00:48:00 kohsuke Exp $
  */
 package com.sun.tools.xjc.runtime;
 
@@ -136,7 +136,11 @@ public class GrammarInfoImpl implements GrammarInfo
         try {
             // TODO: we could potentially improve this performance
             // by caching the obtained Class objects.
-            return Class.forName((String)defaultImplementationMap.get(javaContentInterface), true, classLoader );
+            String name = (String)defaultImplementationMap.get(javaContentInterface);
+            if(name==null)
+                return null;
+            else
+                return Class.forName(name, true, classLoader );
         } catch (ClassNotFoundException e) {
             throw new NoClassDefFoundError(e.toString());
         }
