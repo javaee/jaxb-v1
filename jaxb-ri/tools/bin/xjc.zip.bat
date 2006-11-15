@@ -25,9 +25,9 @@ rem Make sure that WEBSERVICES_LIB, CLASSPATH, and JAVA_HOME are set
 rem
 
 set PRG=%0
-set WEBSERVICES_LIB=%PRG%\..\..\..
+set WEBSERVICES_LIB=%PRG%\..\..\lib
 
-set CLASSPATH=%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-libs.jar;%WEBSERVICES_LIB%\wscl\lib\xsdlib.jar;%WEBSERVICES_LIB%\wscl\lib\relaxngDatatype.jar
+set CLASSPATH=%WEBSERVICES_LIB%\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb-libs.jar;%WEBSERVICES_LIB%\xsdlib.jar;%WEBSERVICES_LIB%\relaxngDatatype.jar
 
 
 :CHECKJAVAHOME
