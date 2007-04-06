@@ -163,7 +163,7 @@
 	        <fsget dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
 	               usetimestamp="true">
 	          <source                                  url="${internal.repository}/ant-contrib-0.6-bin.zip" if="in.wspack" />
-	          <source url="http://voxel.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" />
+	          <source url="http://superb-west.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/jing.jar" 
@@ -181,7 +181,7 @@
 	        <fsget dest="${jaxb.libs.util}/args4j-1.0.zip" 
 	               usetimestamp="true">
 	          <source                             url="${internal.repository}/args4j-1.0.zip" if="in.wspack" />
-	          <source url="http://voxel.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" />
+	          <source url="http://superb-west.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/gsc.20031120.zip" 
