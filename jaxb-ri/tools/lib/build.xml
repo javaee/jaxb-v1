@@ -157,7 +157,7 @@
 	        <fsget dest="${jaxb.libs.util}/relaxngcc-20031218.zip" 
 	               usetimestamp="true">
 	          <source                                url="${internal.repository}/relaxngcc-20031218.zip" if="in.wspack" />
-	          <source url="http://voxel.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" />
+	          <source url="http://superb-east.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
