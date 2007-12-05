@@ -56,7 +56,7 @@
 
         Be sure to set both http and https proxies.
 
-        $Id: build.xml,v 1.18 2006-04-14 18:52:26 jitu Exp $
+        $Id: build.xml,v 1.19 2007-12-05 18:33:59 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -553,6 +553,7 @@ Class-Path: ${manifest.classpath}
             description="clean dist, build, docs, and each sub-project">
         <!-- clean dist, and srcbundle -->
         <delete dir="${jaxb.dist}" />
+        <delete dir="${jaxb.root}/zip-dist" />
         <delete dir="${srcbundle.dist}" />
 
         <!-- clean deployed classes -->
