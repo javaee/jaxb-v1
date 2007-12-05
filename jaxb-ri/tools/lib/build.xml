@@ -193,7 +193,7 @@
 	        <fsget dest="${jaxb.libs.util}/vmtools-0.5.jar" 
 	               usetimestamp="true">
 	          <source url="${internal.repository}/vmtools-0.5.jar" if="in.wspack" />
-		  <source url="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&hideattic=0&content-type=application/java-archive" />
+		  <source url="http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/*checkout*/sync4j/sync4j/sync4j/lib/vmtools-0.5.jar?rev=1.1&amp;hideattic=0&amp;content-type=application/java-archive" />
 	        </fsget>
         
         <!--
