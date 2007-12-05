@@ -175,7 +175,7 @@
 	        <fsget dest="${jaxb.libs.util}/sfx4j-1.0-RC2.jar" 
 	               usetimestamp="true">
 	          <source                    url="${internal.repository}/sfx4j-1.0-RC2.jar" if="in.wspack" />
-	          <source url="https://sfx4j.dev.java.net/nonav/releases/sfx4j-1.0-RC2.jar" />
+		  <source url="http://fisheye5.cenqua.com/browse/~raw,r=1.1/jaxp-sources/jaxp-ri/util/sfx4j-1.0-RC2.jar" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/args4j-1.0.zip" 
