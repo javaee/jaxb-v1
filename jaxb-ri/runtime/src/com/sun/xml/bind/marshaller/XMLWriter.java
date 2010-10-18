@@ -1,3 +1,43 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ *
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License.  You can
+ * obtain a copy of the License at
+ * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * or packager/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ *
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at packager/legal/LICENSE.txt.
+ *
+ * GPL Classpath Exception:
+ * Oracle designates this particular file as subject to the "Classpath"
+ * exception as provided by Oracle in the GPL Version 2 section of the License
+ * file that accompanied this code.
+ *
+ * Modifications:
+ * If applicable, add the following below the License Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyright [year] [name of copyright owner]"
+ *
+ * Contributor(s):
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 // @@3RD PARTY CODE@@
 
 // XMLWriter.java - serialize an XML document.
@@ -255,7 +295,11 @@ public class XMLWriter extends XMLFilterImpl
      *
      * <p>Write to the writer provided.</p>
      *
-     * @param writer     *      The output destination, or null to use standard output.     * @param encoding      *      If non-null string is specified, it is written as a part     *      of the XML declaration.
+     * @param writer
+     *      The output destination, or null to use standard output.
+     * @param encoding 
+     *      If non-null string is specified, it is written as a part
+     *      of the XML declaration.
      */
     public XMLWriter (Writer writer, String encoding, CharacterEscapeHandler _escapeHandler ) 
     {
@@ -346,7 +390,8 @@ public class XMLWriter extends XMLFilterImpl
     public void setOutput (Writer writer,String _encoding)
     {
         if (writer == null) {
-            output = new OutputStreamWriter(System.out);        } else {
+            output = new OutputStreamWriter(System.out);
+        } else {
             output = writer;
         }
         encoding = _encoding;
@@ -377,8 +422,10 @@ public class XMLWriter extends XMLFilterImpl
     }
     
 
-    private final HashMap locallyDeclaredPrefix = new HashMap();    public void startPrefixMapping( String prefix, String uri ) throws SAXException {
-        locallyDeclaredPrefix.put(prefix,uri);    }
+    private final HashMap locallyDeclaredPrefix = new HashMap();
+    public void startPrefixMapping( String prefix, String uri ) throws SAXException {
+        locallyDeclaredPrefix.put(prefix,uri);
+    }
     
 
     ////////////////////////////////////////////////////////////////////
@@ -401,7 +448,8 @@ public class XMLWriter extends XMLFilterImpl
         try {
             reset();
             
-            if(writeXmlDecl) {                String e="";
+            if(writeXmlDecl) {
+                String e="";
                 if(encoding!=null)
                     e = " encoding=\""+encoding+"\"";
             
@@ -483,8 +531,10 @@ public class XMLWriter extends XMLFilterImpl
             writeName(uri, localName, qName, true);
             writeAttributes(atts);
             
-            // declare namespaces specified by the startPrefixMapping methods            Iterator itr = locallyDeclaredPrefix.entrySet().iterator();
-            while(itr.hasNext()) {                Map.Entry e = (Map.Entry)itr.next();
+            // declare namespaces specified by the startPrefixMapping methods
+            Iterator itr = locallyDeclaredPrefix.entrySet().iterator();
+            while(itr.hasNext()) {
+                Map.Entry e = (Map.Entry)itr.next();
                 String p = (String)e.getKey();
                 String u = (String)e.getValue();
                 if (u == null) {
@@ -502,7 +552,8 @@ public class XMLWriter extends XMLFilterImpl
                 writeEsc(ch, 0, ch.length, true);
                 write('\"');
             }
-            locallyDeclaredPrefix.clear();  // clear the contents            
+            locallyDeclaredPrefix.clear();  // clear the contents
+            
 //            if (elementLevel == 1) {
 //                forceNSDecls();
 //            }
@@ -966,7 +1017,8 @@ public class XMLWriter extends XMLFilterImpl
     ////////////////////////////////////////////////////////////////////
 
     private int elementLevel = 0;
-    private Writer output;    private String encoding;
+    private Writer output;
+    private String encoding;
     private boolean writeXmlDecl = true;
     /**
      * This string will be written right after the xml declaration
