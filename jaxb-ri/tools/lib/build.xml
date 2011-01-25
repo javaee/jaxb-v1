@@ -178,13 +178,13 @@
 	        <fsget dest="${jaxb.libs.util}/relaxngcc-20031218.zip" 
 	               usetimestamp="true">
 	          <source                                url="${internal.repository}/relaxngcc-20031218.zip" if="in.wspack" />
-	          <source url="http://superb-east.dl.sourceforge.net/sourceforge/relaxngcc/relaxngcc-20031218.zip" />
+	          <source url="http://downloads.sourceforge.net/project/relaxngcc/stable/ver.1.12/relaxngcc-20031218.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/ant-contrib-0.6-bin.zip" 
 	               usetimestamp="true">
 	          <source                                  url="${internal.repository}/ant-contrib-0.6-bin.zip" if="in.wspack" />
-	          <source url="http://superb-west.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-0.6-bin.zip" />
+	          <source url="http://downloads.sourceforge.net/project/ant-contrib/ant-contrib/ant-contrib-0.6/ant-contrib-0.6-bin.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/jing.jar" 
@@ -202,7 +202,7 @@
 	        <fsget dest="${jaxb.libs.util}/args4j-1.0.zip" 
 	               usetimestamp="true">
 	          <source                             url="${internal.repository}/args4j-1.0.zip" if="in.wspack" />
-	          <source url="http://superb-west.dl.sourceforge.net/sourceforge/args4j/args4j-1.0.zip" />
+	          <source url="http://downloads.sourceforge.net/project/args4j/args4j/1.0/args4j-1.0.zip" />
 	        </fsget>
 	        
 	        <fsget dest="${jaxb.libs.util}/gsc.20031120.zip" 
