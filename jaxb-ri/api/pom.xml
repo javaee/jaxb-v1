@@ -70,9 +70,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.java.net/svn/jaxb~version1/trunk/jaxb-ri/tools/lib/redist</connection>
-    <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version1/trunk/jaxb-ri/tools/lib/redist</developerConnection>
-    <url>http://java.net/projects/jaxb/sources/version1/show/trunk/jaxb-ri/tools/lib/redist</url>
+    <connection>scm:svn:https://svn.java.net/svn/jaxb~version1/trunk/jaxb-ri/api</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version1/trunk/jaxb-ri/api</developerConnection>
+    <url>http://java.net/projects/jaxb/sources/version1/show/trunk/jaxb-ri/api</url>
   </scm>
 
  
