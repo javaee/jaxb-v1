@@ -78,9 +78,6 @@
   <xsl:variable name="isHog" select="/sample/@hog" />
   
   <xsl:template match="/">
-    <xsl:comment>
-      Copyright 2004 Sun Microsystems, Inc. All rights reserved.
-    </xsl:comment>
     <project basedir="." default="run">
       
       <description><xsl:value-of select="sample/description"/></description>
