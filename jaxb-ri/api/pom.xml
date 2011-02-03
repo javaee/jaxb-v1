@@ -47,14 +47,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>javax.xml.bind</groupId>
   <artifactId>jaxb-api</artifactId>
-  <version>1.0-1</version>
+  <version>1.0.6</version>
   <packaging>jar</packaging>
   <name>Java Architecture for XML Binding</name>
   <description>JAXB API</description>
   <url>http://jaxb.java.net</url>
 
   <organisation>
-    <name>Sun Microsystems, Inc.</name>
+    <name>Oracle Corporation</name>
   </organisation>
 
   <licenses>
